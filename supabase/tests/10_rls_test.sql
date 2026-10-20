@@ -95,3 +95,20 @@ do $$ declare j public.processing_jobs; begin
 end $$;
 reset role;
 select 'RLS + queue testlari o''tdi' as ok;
+
+-- Default privileges bo'lsa ham queue funksiyalari foydalanuvchiga yopiq
+set role authenticated;
+do $$ begin
+  perform public.claim_job('x', array['parse_demo']::job_type[]);
+  raise exception 'authenticated claim_job chaqira oldi!';
+exception when insufficient_privilege then null;
+end $$;
+reset role;
+set role anon;
+do $$ begin
+  perform 1 from public.matches;
+  raise exception 'anon matches jadvalini o''qiy oldi!';
+exception when insufficient_privilege then null;
+end $$;
+reset role;
+select 'default privileges testlari o''tdi' as ok;

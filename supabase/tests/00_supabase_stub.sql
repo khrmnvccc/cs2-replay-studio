@@ -27,3 +27,7 @@ $$;
 grant usage on schema storage to authenticated, service_role;
 grant select, insert, delete on storage.objects to authenticated;
 grant all on all tables in schema storage to service_role;
+-- Supabase'dagi kabi: yangi jadval va funksiyalarga anon/authenticated'ga to'liq huquq
+alter default privileges in schema public grant all on tables to anon, authenticated, service_role;
+alter default privileges in schema public grant all on functions to anon, authenticated, service_role;
+grant usage on schema public to anon, authenticated, service_role;

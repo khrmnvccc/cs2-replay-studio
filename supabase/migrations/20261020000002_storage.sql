@@ -3,11 +3,12 @@
 
 insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
 values
-  -- CS2 demolar 50–600 MB bo'ladi. Supabase Free plan global limiti 50 MB —
-  -- katta demolar uchun Pro plan va Storage > Settings da global limitni oshiring.
-  ('demos',   'demos',   false, 1073741824, array['application/octet-stream', 'application/x-bzip2']),
-  ('clips',   'clips',   false, 524288000,  array['video/mp4', 'image/jpeg']),
-  ('exports', 'exports', false, 2147483648, array['application/zip'])
+  -- Supabase Free plan global limiti 50 MB, shuning uchun bucket limitlari 50 MB.
+  -- CS2 demolar 50–600 MB bo'ladi: Pro planga o'tib, Storage > Settings da global
+  -- limitni oshiring va bu qiymatlarni (masalan 1 GB) yangilang + DEMO_MAX_MB.
+  ('demos',   'demos',   false, 52428800, array['application/octet-stream', 'application/x-bzip2']),
+  ('clips',   'clips',   false, 52428800, array['video/mp4', 'image/jpeg']),
+  ('exports', 'exports', false, 52428800, array['application/zip'])
 on conflict (id) do update
   set public = excluded.public,
       file_size_limit = excluded.file_size_limit,
@@ -16,21 +17,21 @@ on conflict (id) do update
 -- Demo: foydalanuvchi faqat o'z papkasiga yuklaydi (TUS resumable upload)
 create policy "demos: owner can upload"
   on storage.objects for insert to authenticated
-  with check (bucket_id = 'demos' and (storage.foldername(name))[1] = auth.uid()::text);
+  with check (bucket_id = 'demos' and (storage.foldername(name))[1] = (select auth.uid())::text);
 
 create policy "demos: owner can read"
   on storage.objects for select to authenticated
-  using (bucket_id = 'demos' and (storage.foldername(name))[1] = auth.uid()::text);
+  using (bucket_id = 'demos' and (storage.foldername(name))[1] = (select auth.uid())::text);
 
 create policy "demos: owner can delete"
   on storage.objects for delete to authenticated
-  using (bucket_id = 'demos' and (storage.foldername(name))[1] = auth.uid()::text);
+  using (bucket_id = 'demos' and (storage.foldername(name))[1] = (select auth.uid())::text);
 
 -- Clip va eksportlarni faqat worker (service_role) yozadi; egasi o'qiy oladi
 create policy "clips: owner can read"
   on storage.objects for select to authenticated
-  using (bucket_id = 'clips' and (storage.foldername(name))[1] = auth.uid()::text);
+  using (bucket_id = 'clips' and (storage.foldername(name))[1] = (select auth.uid())::text);
 
 create policy "exports: owner can read"
   on storage.objects for select to authenticated
-  using (bucket_id = 'exports' and (storage.foldername(name))[1] = auth.uid()::text);
+  using (bucket_id = 'exports' and (storage.foldername(name))[1] = (select auth.uid())::text);

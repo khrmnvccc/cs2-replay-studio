@@ -23,7 +23,7 @@ create type job_status as enum ('queued', 'running', 'succeeded', 'failed', 'can
 -- Helpers
 -- ---------------------------------------------------------------------------
 create or replace function public.touch_updated_at() returns trigger
-language plpgsql as $$
+language plpgsql set search_path = public as $$
 begin
   new.updated_at = now();
   return new;
@@ -318,10 +318,13 @@ language sql security definer set search_path = public stable as $$
    group by c;
 $$;
 
-revoke all on function public.claim_job(text, job_type[]) from public;
-revoke all on function public.requeue_stale_jobs(interval) from public;
-revoke all on function public.worker_capabilities_online(interval) from public;
-grant execute on function public.worker_capabilities_online(interval) to authenticated;
+-- Supabase default privileges anon/authenticated'ga funksiyalarni ochib beradi — aniq yopamiz
+revoke all on function public.claim_job(text, job_type[]) from public, anon, authenticated;
+revoke all on function public.requeue_stale_jobs(interval) from public, anon, authenticated;
+revoke all on function public.worker_capabilities_online(interval) from public, anon, authenticated;
+grant execute on function public.claim_job(text, job_type[]) to service_role;
+grant execute on function public.requeue_stale_jobs(interval) to service_role;
+grant execute on function public.worker_capabilities_online(interval) to authenticated, service_role;
 
 -- ---------------------------------------------------------------------------
 -- Row Level Security
@@ -340,52 +343,52 @@ alter table public.workers enable row level security;
 -- sessions, openid_nonces, workers: siyosat yo'q => faqat service_role.
 
 create policy users_select on public.users for select to authenticated
-  using (id = auth.uid());
+  using (id = (select auth.uid()));
 create policy users_update on public.users for update to authenticated
-  using (id = auth.uid()) with check (id = auth.uid());
+  using (id = (select auth.uid())) with check (id = (select auth.uid()));
 
 create policy steam_select on public.steam_accounts for select to authenticated
-  using (user_id = auth.uid());
+  using (user_id = (select auth.uid()));
 -- steam_accounts faqat server (service_role) orqali yoziladi: Steam ma'lumotlari
 -- foydalanuvchi tomonidan soxtalashtirilmasligi uchun.
 
 create policy matches_select on public.matches for select to authenticated
-  using (user_id = auth.uid());
+  using (user_id = (select auth.uid()));
 create policy matches_insert on public.matches for insert to authenticated
-  with check (user_id = auth.uid());
+  with check (user_id = (select auth.uid()));
 create policy matches_delete on public.matches for delete to authenticated
-  using (user_id = auth.uid());
+  using (user_id = (select auth.uid()));
 
 create policy rounds_select on public.match_rounds for select to authenticated
-  using (user_id = auth.uid());
+  using (user_id = (select auth.uid()));
 
 create policy demos_select on public.demo_files for select to authenticated
-  using (user_id = auth.uid());
+  using (user_id = (select auth.uid()));
 create policy demos_insert on public.demo_files for insert to authenticated
-  with check (user_id = auth.uid() and status = 'uploading');
+  with check (user_id = (select auth.uid()) and status = 'uploading');
 create policy demos_delete on public.demo_files for delete to authenticated
-  using (user_id = auth.uid());
+  using (user_id = (select auth.uid()));
 
 create policy kills_select on public.kill_events for select to authenticated
-  using (user_id = auth.uid());
+  using (user_id = (select auth.uid()));
 
 create policy clips_select on public.clips for select to authenticated
-  using (user_id = auth.uid());
+  using (user_id = (select auth.uid()));
 create policy clips_insert on public.clips for insert to authenticated
-  with check (user_id = auth.uid() and status = 'queued' and storage_path is null);
+  with check (user_id = (select auth.uid()) and status = 'queued' and storage_path is null);
 create policy clips_update on public.clips for update to authenticated
-  using (user_id = auth.uid()) with check (user_id = auth.uid());
+  using (user_id = (select auth.uid())) with check (user_id = (select auth.uid()));
 create policy clips_delete on public.clips for delete to authenticated
-  using (user_id = auth.uid());
+  using (user_id = (select auth.uid()));
 
 create policy jobs_select on public.processing_jobs for select to authenticated
-  using (user_id = auth.uid());
+  using (user_id = (select auth.uid()));
 create policy jobs_insert on public.processing_jobs for insert to authenticated
-  with check (user_id = auth.uid() and status = 'queued' and attempts = 0);
+  with check (user_id = (select auth.uid()) and status = 'queued' and attempts = 0);
 
 -- Foydalanuvchi clip faylini yoki statusini o'zi o'zgartira olmasin (faqat nom).
 create or replace function public.clips_guard_user_update() returns trigger
-language plpgsql as $$
+language plpgsql set search_path = public as $$
 begin
   if current_user = 'authenticated' then
     if new.status is distinct from old.status
@@ -405,7 +408,7 @@ create trigger clips_guard before update on public.clips
 
 -- Foydalanuvchi faqat settings ustunini o'zgartira oladi
 create or replace function public.users_guard_user_update() returns trigger
-language plpgsql as $$
+language plpgsql set search_path = public as $$
 begin
   if current_user = 'authenticated' then
     if new.id is distinct from old.id or new.created_at is distinct from old.created_at
@@ -418,6 +421,9 @@ end $$;
 create trigger users_guard before update on public.users
   for each row execute function public.users_guard_user_update();
 
+-- Supabase default privileges anon va authenticated'ga barcha jadvallarda to'liq huquq beradi.
+-- Avval hammasini olib tashlab, faqat kerakli minimumni beramiz (RLS bilan birga ikki qatlam himoya).
+revoke all on all tables in schema public from anon, authenticated;
 grant usage on schema public to authenticated;
 grant select, update on public.users to authenticated;
 -- auth_code_encrypted ustuni foydalanuvchiga ham qaytarilmaydi (ustun darajasidagi grant)
