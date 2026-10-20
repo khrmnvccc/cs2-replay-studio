@@ -236,7 +236,7 @@ Eslatmalar:
 
 **Web (Vercel):**
 
-1. Repo'ni GitHub'ga yuklang (13-bo'lim) va Vercel'da **Import Project** qiling (framework: Next.js).
+1. Repo'ni GitHub'ga yuklang (13-bo'lim) va Vercel'da **Import Project** qiling. Framework: **Next.js**, Root Directory: **bo'sh** (`public` emas!).
 2. **Settings → Environment Variables** ga `.env.example` dagi barcha o'zgaruvchilarni kiriting. `APP_URL=https://<domeningiz>` bo'lsin.
 3. Steam API key'dagi domenni Vercel domeniga moslang.
 4. Deploy. `worker/` papkasi Vercel build'ga kirmaydi.
