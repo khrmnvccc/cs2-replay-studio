@@ -3,7 +3,8 @@ import { z } from "zod";
 
 const schema = z.object({
   APP_URL: z.string().url(),
-  STEAM_API_KEY: z.string().min(20, "STEAM_API_KEY kerak (https://steamcommunity.com/dev/apikey)"),
+  // Ixtiyoriy: login usiz ham ishlaydi (ochiq profil XML). Match tarixi uchun kerak.
+  STEAM_API_KEY: z.preprocess((v) => (v === "" ? undefined : v), z.string().min(20, "STEAM_API_KEY noto'g'ri (https://steamcommunity.com/dev/apikey)").optional()),
   SESSION_SECRET: z.string().min(32, "SESSION_SECRET kamida 32 belgi bo'lsin"),
   APP_ENCRYPTION_KEY: z.string().regex(/^[A-Za-z0-9+/]{43}=$/, "APP_ENCRYPTION_KEY: 32 baytli base64 (openssl rand -base64 32)"),
   NEXT_PUBLIC_SUPABASE_URL: z.string().url(),

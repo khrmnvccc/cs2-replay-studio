@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { timingSafeEqual } from "node:crypto";
 import { verifySteamOpenId } from "@/lib/steam/openid";
-import { getPlayerSummary } from "@/lib/steam/web-api";
+import { getProfile } from "@/lib/steam/web-api";
 import { env } from "@/lib/server/env";
 import { adminDb } from "@/lib/server/supabase";
 import { createSession } from "@/lib/server/session";
@@ -40,7 +40,7 @@ export async function GET(req: Request) {
 
   let profile;
   try {
-    profile = await getPlayerSummary(STEAM_API_KEY, result.steamId64);
+    profile = await getProfile(STEAM_API_KEY, result.steamId64);
   } catch (e) {
     return fail(APP_URL, e instanceof Error ? e.message : "Steam profili olinmadi");
   }

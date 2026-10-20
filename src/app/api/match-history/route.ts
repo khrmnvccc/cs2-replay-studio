@@ -17,6 +17,7 @@ const body = z.object({
 export const POST = authed(async (req, _ctx, user) => {
   const { authCode, shareCode } = await parseBody(req, body);
   const e = env();
+  if (!e.STEAM_API_KEY) throw new HttpError(503, "Match tarixi uchun serverda STEAM_API_KEY sozlanmagan. Sayt egasi uni qo'shishi kerak.");
   // Kodlarni Valve'da haqiqatan tekshiramiz — noto'g'ri bo'lsa saqlamaymiz.
   const check = await getNextMatchSharingCode(e.STEAM_API_KEY, user.steamId64, authCode, shareCode);
   if (check.kind === "invalid_auth") throw new HttpError(400, "Steam authentication code noto'g'ri yoki bu akkauntga tegishli emas");

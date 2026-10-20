@@ -138,7 +138,7 @@ npm start
 
 ## 5. Steam OpenID va Steam API key
 
-1. [steamcommunity.com/dev/apikey](https://steamcommunity.com/dev/apikey) da domeningizni kiritib API key oling → `STEAM_API_KEY`.
+1. [steamcommunity.com/dev/apikey](https://steamcommunity.com/dev/apikey) da domeningizni kiritib API key oling → `STEAM_API_KEY`. **Ixtiyoriy:** kalitsiz ham Steam login ishlaydi (nik va avatar ochiq profil XML'dan olinadi), faqat match tarixi ulanmaydi. Steam kalitni faqat o'yin sotib olingan akkauntga beradi.
    Key faqat serverda ishlatiladi (`NEXT_PUBLIC_` prefiksi yo'q).
 2. `APP_URL` ni saytning haqiqiy manziliga qo'ying (`https://replay.example.com`). Steam `return_to` va `realm` shu manzildan quriladi. Lokalda `http://localhost:3000` ishlaydi.
 3. OpenID uchun Steam'da alohida ro'yxatdan o'tish shart emas.

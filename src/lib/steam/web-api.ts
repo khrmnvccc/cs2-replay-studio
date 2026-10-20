@@ -55,6 +55,44 @@ export async function getPlayerSummary(apiKey: string, steamId64: string, fetchI
   };
 }
 
+/** XML CDATA yoki oddiy teg qiymatini oladi. */
+function xmlTag(xml: string, tag: string): string | null {
+  const m = xml.match(new RegExp(`<${tag}>(?:<!\\[CDATA\\[([\\s\\S]*?)\\]\\]>|([^<]*))</${tag}>`));
+  const v = (m?.[1] ?? m?.[2] ?? "").trim();
+  return v || null;
+}
+
+/**
+ * API kalitsiz profil: steamcommunity.com/profiles/<id>/?xml=1 (rasmiy ochiq profil XML).
+ * Yopiq profilda ham nik va avatar qaytadi.
+ */
+export async function getPublicProfile(steamId64: string, fetchImpl: typeof fetch = fetch): Promise<SteamProfile> {
+  const res = await steamFetch(`https://steamcommunity.com/profiles/${steamId64}/?xml=1`, fetchImpl);
+  if (!res.ok) throw new SteamApiError(`Steam profil xatosi ${res.status}`, res.status);
+  const xml = await res.text();
+  if (xmlTag(xml, "steamID64") !== steamId64) throw new SteamApiError("Steam profili topilmadi");
+  const custom = xmlTag(xml, "customURL");
+  return {
+    steamId64,
+    personaName: xmlTag(xml, "steamID") ?? "Steam user",
+    avatarUrl: xmlTag(xml, "avatarFull"),
+    profileUrl: custom ? `https://steamcommunity.com/id/${custom}/` : `https://steamcommunity.com/profiles/${steamId64}/`,
+    countryCode: null,
+  };
+}
+
+/** Kalit bo'lsa Web API, bo'lmasa (yoki u ishlamasa) ochiq profil XML. */
+export async function getProfile(apiKey: string | undefined, steamId64: string, fetchImpl: typeof fetch = fetch): Promise<SteamProfile> {
+  if (apiKey) {
+    try {
+      return await getPlayerSummary(apiKey, steamId64, fetchImpl);
+    } catch {
+      // kalit bloklangan yoki API ishlamayapti — zaxira yo'lga o'tamiz
+    }
+  }
+  return getPublicProfile(steamId64, fetchImpl);
+}
+
 export type NextShareCodeResult =
   | { kind: "next"; code: string }
   | { kind: "none" } // yangi match yo'q

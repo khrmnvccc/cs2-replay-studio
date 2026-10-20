@@ -4,6 +4,7 @@ import { HistoryForm, PreferencesForm } from "@/components/settings-forms";
 import { Button } from "@/components/ui/button";
 import { Badge, Card, Notice, SectionTitle } from "@/components/ui/primitives";
 import { getSettings, getSteamAccount } from "@/lib/server/data";
+import { env } from "@/lib/server/env";
 import { requireUser } from "@/lib/server/http";
 import { adminDb, userDb } from "@/lib/server/supabase";
 import { formatDate } from "@/lib/utils";
@@ -56,7 +57,13 @@ export default async function SettingsPage() {
             Valve matchmaking tarixini faqat <b className="text-fg">ICSGOPlayers_730/GetNextMatchSharingCode</b> orqali beradi: u yangi matchlarning share code&apos;larini qaytaradi. Sana, hisob va K/D uchun Valve Game Coordinator (GC bot worker) yoki demo tahlili kerak. FACEIT va boshqa platformalar matchlari bu API&apos;da yo&apos;q — ularning demosini yuklang.
           </Notice>
           {steam.history_last_error && <Notice tone="danger">{steam.history_last_error}</Notice>}
-          <HistoryForm enabled={steam.history_enabled} lastShareCode={steam.last_share_code} />
+          {env().STEAM_API_KEY ? (
+            <HistoryForm enabled={steam.history_enabled} lastShareCode={steam.last_share_code} />
+          ) : (
+            <Notice tone="warn">
+              Serverda <b className="text-fg">STEAM_API_KEY</b> sozlanmagan, shuning uchun match tarixini ulab bo&apos;lmaydi. Login va demo yuklash bunga bog&apos;liq emas — demoni qo&apos;lda yuklab, kill&apos;larni ko&apos;rishingiz mumkin.
+            </Notice>
+          )}
         </Card>
       </section>
 
