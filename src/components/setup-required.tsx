@@ -6,8 +6,9 @@ export function SetupRequired({ missing }: { missing: string[] }) {
       <Logo />
       <h1 className="mt-10 font-display text-4xl font-bold uppercase">Server hali sozlanmagan</h1>
       <p className="mt-3 text-muted">
-        Quyidagi muhit o&apos;zgaruvchilari yo&apos;q yoki noto&apos;g&apos;ri. <span className="font-mono text-fg">.env.example</span> faylini{" "}
-        <span className="font-mono text-fg">.env.local</span> ga nusxalang va to&apos;ldiring (README → &quot;Lokal ishga tushirish&quot;).
+        Quyidagi muhit o&apos;zgaruvchilari yo&apos;q yoki noto&apos;g&apos;ri. Sayt egasi ularni{" "}
+        <span className="font-mono text-fg">Vercel → Settings → Environment Variables</span> ga qo&apos;shib, qayta deploy
+        qilishi kerak (lokalda: <span className="font-mono text-fg">.env.local</span>, README → &quot;Lokal ishga tushirish&quot;).
       </p>
       <ul className="mt-6 space-y-2">
         {missing.map((m) => (
