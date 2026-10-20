@@ -10,8 +10,18 @@ const schema = z.object({
   NEXT_PUBLIC_SUPABASE_ANON_KEY: z.string().min(20),
   SUPABASE_SERVICE_ROLE_KEY: z.string().min(20),
   SUPABASE_JWT_SECRET: z.string().min(32),
-  DEMO_MAX_MB: z.coerce.number().int().positive().default(1024),
+  // Supabase Free plan fayl limiti 50 MB; Pro planda oshiring
+  DEMO_MAX_MB: z.coerce.number().int().positive().default(50),
 });
+
+/** APP_URL berilmasa Vercel'ning production domenidan olinadi. */
+function input(): Record<string, string | undefined> {
+  const vercelUrl = process.env.VERCEL_PROJECT_PRODUCTION_URL;
+  return {
+    ...process.env,
+    APP_URL: process.env.APP_URL || (vercelUrl ? `https://${vercelUrl}` : undefined),
+  };
+}
 
 export type Env = z.infer<typeof schema>;
 let cached: Env | null = null;
@@ -19,7 +29,7 @@ let cached: Env | null = null;
 /** Muhit o'zgaruvchilarini tekshiradi. Xato bo'lsa — aniq xabar bilan to'xtaydi. */
 export function env(): Env {
   if (cached) return cached;
-  const parsed = schema.safeParse(process.env);
+  const parsed = schema.safeParse(input());
   if (!parsed.success) {
     const issues = parsed.error.issues.map((i) => `${i.path.join(".")}: ${i.message}`).join("; ");
     throw new ConfigError(`Server sozlanmagan: ${issues}`);
@@ -29,7 +39,7 @@ export function env(): Env {
 }
 
 export function envStatus(): { ok: boolean; missing: string[] } {
-  const parsed = schema.safeParse(process.env);
+  const parsed = schema.safeParse(input());
   if (parsed.success) return { ok: true, missing: [] };
   return { ok: false, missing: [...new Set(parsed.error.issues.map((i) => String(i.path[0])))] };
 }
