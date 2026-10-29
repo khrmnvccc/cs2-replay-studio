@@ -15,15 +15,15 @@ export function RecordCard({ r, t, lang }: { r: RecordItem; t: TFn; lang: Lang }
         <path d="M50 4 96 38 78 96H22L4 38Z" fill={m ? `hsl(${hue} 70% 55%)` : "currentColor"} />
       </svg>
       <div className="label !text-[11px] !tracking-[0.12em] !text-muted">{t(r.label)}</div>
-      <div className={cn("mt-2 whitespace-nowrap font-display font-bold tabular-nums", (r.value?.length ?? 0) > 5 ? "text-3xl" : "text-4xl")}>{r.value ?? "—"}</div>
-      <div className="mt-auto pt-10">
+      <div className={cn("mt-2 whitespace-nowrap font-display font-bold tabular-nums", (r.value?.length ?? 0) > 5 ? "text-2xl" : "text-3xl")}>{r.value ?? "—"}</div>
+      <div className="mt-auto pt-6">
         {m ? (
           <>
             <div className="flex items-center gap-2">
               <MapBadge map={m.map_name} className="size-6 rounded-md text-[9px]" />
-              <span className="truncate text-[15px]">{mapMeta(m.map_name).name}</span>
+              <span className="truncate text-[13px] font-medium">{mapMeta(m.map_name).name}</span>
               {m.score_own != null && (
-                <span className={cn("font-mono text-[15px] font-semibold tabular-nums", m.result === "win" ? "text-neon" : m.result === "loss" ? "text-danger" : "text-muted")}>
+                <span className={cn("font-mono text-[13px] font-semibold tabular-nums", m.result === "win" ? "text-neon" : m.result === "loss" ? "text-danger" : "text-muted")}>
                   {m.score_own}:{m.score_enemy}
                 </span>
               )}
@@ -39,7 +39,7 @@ export function RecordCard({ r, t, lang }: { r: RecordItem; t: TFn; lang: Lang }
       </div>
     </>
   );
-  const cls = "panel relative flex min-h-56 flex-col overflow-hidden p-4 transition";
+  const cls = "panel relative flex min-h-44 flex-col overflow-hidden p-4 transition";
   return m ? (
     <Link href={`/matches/${m.id}`} className={cn(cls, "hover:-translate-y-0.5 active:scale-[0.99]")}>
       {body}

@@ -79,35 +79,35 @@ export function MatchCard({ m, lang = "uz" }: { m: MatchRow; lang?: Lang }) {
   return (
     <Link
       href={`/matches/${m.id}`}
-      className="group relative block overflow-hidden rounded-[1.75rem] text-white shadow-[0_14px_30px_-18px_rgb(16_42_67/0.55)] transition active:scale-[0.99]"
+      className="group relative block overflow-hidden rounded-[1.5rem] text-white shadow-[0_14px_30px_-18px_rgb(16_42_67/0.55)] transition active:scale-[0.99]"
       style={{ background: mapGradient(m.map_name) }}
     >
-      <CardWatermark className="-right-6 -top-4 size-44 transition duration-500 group-hover:rotate-6" />
-      <div className="relative flex items-start gap-3 p-5 pb-3">
+      <CardWatermark className="-right-6 -top-4 size-36 transition duration-500 group-hover:rotate-6" />
+      <div className="relative flex items-start gap-3 p-4 pb-2">
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2">
-            <span className="truncate text-xl font-extrabold tracking-tight">{mapMeta(m.map_name).name}</span>
+            <span className="truncate text-[17px] font-extrabold tracking-tight">{mapMeta(m.map_name).name}</span>
             <ModeTag m={m} className="border-white/60 text-white" />
           </div>
-          <div className="mt-0.5 text-[13px] font-semibold uppercase tracking-wider text-white/70">
+          <div className="mt-0.5 text-[11px] font-semibold uppercase tracking-wider text-white/70">
             {m.played_at ? time(m.played_at) : m.source === "demo_upload" ? t("Yuklangan demo") : t("Sana aniqlanmoqda")}
           </div>
         </div>
         {m.result && (
-          <span className="shrink-0 rounded-full bg-white/20 px-3 py-1 text-xs font-bold uppercase tracking-wider">
+          <span className="shrink-0 rounded-full bg-white/20 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider">
             {t(m.result === "win" ? "G'alaba" : m.result === "loss" ? "Mag'lubiyat" : "Durang")}
           </span>
         )}
       </div>
-      <div className="relative flex items-end justify-between px-5 pb-5">
+      <div className="relative flex items-end justify-between px-4 pb-4">
         <div>
-          <div className="text-[11px] font-bold uppercase tracking-wider text-white/65">{t("Hisob")}</div>
-          <div className="font-display text-4xl font-extrabold tabular-nums leading-none">{hasScore ? `${m.score_own} : ${m.score_enemy}` : "– : –"}</div>
+          <div className="text-[10px] font-bold uppercase tracking-wider text-white/65">{t("Hisob")}</div>
+          <div className="font-display text-[28px] font-extrabold tabular-nums leading-none">{hasScore ? `${m.score_own} : ${m.score_enemy}` : "– : –"}</div>
         </div>
         <div className="text-right">
-          <div className="text-[11px] font-bold uppercase tracking-wider text-white/65">K / D / A</div>
-          <div className="font-mono text-lg font-semibold">{m.kills != null ? `${m.kills} / ${m.deaths ?? 0} / ${m.assists ?? 0}` : "—"}</div>
-          {ratio != null && <div className="text-xs font-semibold text-white/80">K/D {kd(m.kills, m.deaths)}</div>}
+          <div className="text-[10px] font-bold uppercase tracking-wider text-white/65">K / D / A</div>
+          <div className="font-mono text-[15px] font-semibold">{m.kills != null ? `${m.kills} / ${m.deaths ?? 0} / ${m.assists ?? 0}` : "—"}</div>
+          {ratio != null && <div className="text-[11px] font-semibold text-white/80">K/D {kd(m.kills, m.deaths)}</div>}
         </div>
       </div>
     </Link>

@@ -35,7 +35,7 @@ export function Sheet({
         >
           <div className="mx-auto mt-2.5 h-1.5 w-10 shrink-0 rounded-full bg-fg/15 lg:hidden" />
           <div className="flex shrink-0 items-center gap-3 px-5 pb-3 pt-3">
-            <D.Title className="flex-1 truncate text-xl font-bold tracking-tight">{title}</D.Title>
+            <D.Title className="flex-1 truncate text-lg font-extrabold tracking-tight">{title}</D.Title>
             {actions}
             <D.Close className="grid size-10 place-items-center rounded-full bg-fg/[0.06] text-muted transition hover:text-fg" aria-label={closeLabel}>
               <X className="size-5" />

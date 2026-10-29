@@ -52,6 +52,12 @@ function parts(d: Date) {
   return { y: p.year, m: Number(p.month) - 1, d: Number(p.day), hh: p.hour, mm: p.minute, wd };
 }
 
+/** "28 okt" / "28 окт" — qisqa kun va oy. */
+export function formatDayMonth(iso: string, lang: Lang = "uz"): string {
+  const p = parts(new Date(iso));
+  return `${p.d} ${MONTHS[lang][p.m]}`;
+}
+
 export function formatDate(iso: string | null | undefined, withTime = true, lang: Lang = "uz"): string {
   if (!iso) return "—";
   const p = parts(new Date(iso));

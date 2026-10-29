@@ -599,4 +599,6 @@ export const RU: Record<string, string> = {
   "ADR, reyting va clutch rekordlari tez orada qo'shiladi.": "Рекорды ADR, рейтинга и клатчей появятся скоро.",
   "Darslik": "Обучение",
   "Navbatda: fayl saqlandi, server ishga tushishi bilan boshlanadi. Odatda 1–2 daqiqa.": "В очереди: файл сохранён, обработка начнётся, как только запустится сервер. Обычно 1–2 минуты.",
+  "Shaxsiy rekord": "Личный рекорд",
+  "Demo tahlil qilingach, eng yaxshi natijalaringiz shu yerda aylanib turadi.": "После анализа демо здесь будут сменяться ваши лучшие результаты.",
 };

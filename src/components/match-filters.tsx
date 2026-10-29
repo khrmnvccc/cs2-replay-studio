@@ -20,8 +20,8 @@ export function MapSelect({ maps }: { maps: { id: string; name: string }[] }) {
     router.push(`/matches${q.size ? `?${q}` : ""}`, { scroll: false });
   };
   return (
-    <label className="relative flex h-14 w-full items-center justify-center gap-2 rounded-2xl border border-line bg-surface-2 text-[15px] font-semibold">
-      <MapIcon className="size-5 text-muted" />
+    <label className="relative flex h-11 w-full items-center justify-center gap-2 rounded-2xl bg-surface text-sm font-semibold shadow-[0_4px_14px_-10px_rgb(16_42_67/0.4)]">
+      <MapIcon className="size-4 text-muted" />
       <span>{maps.find((m) => m.id === sp.get("map"))?.name ?? t("Barcha xaritalar")}</span>
       <svg viewBox="0 0 10 6" className="size-2.5 text-muted" fill="currentColor" aria-hidden>
         <path d="M0 0h10L5 6z" />

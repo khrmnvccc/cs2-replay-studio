@@ -24,10 +24,10 @@ function ActionCard({ icon, title, text, soon, onClick }: { icon: ReactNode; tit
       aria-disabled={soon}
       className={cn("panel flex w-full items-center gap-4 p-4 text-left transition", soon ? "cursor-default" : "hover:-translate-y-0.5 active:scale-[0.99]")}
     >
-      <span className={cn("grid size-11 shrink-0 place-items-center [&_svg]:size-7", soon ? "text-subtle" : "text-neon")}>{icon}</span>
+      <span className={cn("grid size-10 shrink-0 place-items-center [&_svg]:size-6", soon ? "text-subtle" : "text-neon")}>{icon}</span>
       <span className="min-w-0 flex-1">
-        <span className="block text-[17px] font-semibold">{t(title)}</span>
-        <span className="mt-0.5 block text-sm leading-snug text-muted">{t(text)}</span>
+        <span className="block text-[15px] font-semibold">{t(title)}</span>
+        <span className="mt-0.5 block text-[13px] leading-snug text-muted">{t(text)}</span>
       </span>
       {soon ? (
         <span className="shrink-0 rounded-full bg-fg/[0.06] px-2.5 py-1 text-[11px] font-medium text-subtle">{t("Tez orada")}</span>
@@ -63,7 +63,7 @@ export function MatchView({ panels, initial = "board" }: { panels: Record<MatchT
               type="button"
               onClick={() => setTab(id)}
               className={cn(
-                "relative shrink-0 px-3.5 pb-3 pt-1 text-[15px] font-semibold transition",
+                "relative shrink-0 px-3 pb-2.5 pt-1 text-sm font-semibold transition",
                 tab === id ? "text-fg after:absolute after:inset-x-2 after:bottom-0 after:h-[3px] after:rounded-full after:bg-neon" : "text-muted hover:text-fg",
               )}
             >

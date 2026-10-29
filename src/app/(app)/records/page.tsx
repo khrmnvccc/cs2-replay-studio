@@ -23,7 +23,7 @@ export default async function RecordsPage() {
 
   return (
     <div className="space-y-4">
-      <p className="text-[15px] text-muted">{t("{a} / {b} ta rekord o'rnatilgan", { a: set, b: records.length })}</p>
+      <p className="text-[13px] text-muted">{t("{a} / {b} ta rekord o'rnatilgan", { a: set, b: records.length })}</p>
       <div data-tour="records-grid" className="grid grid-cols-2 gap-3 lg:grid-cols-3 xl:grid-cols-4">
         {records.map((r) => (
           <RecordCard key={r.id} r={r} t={t} lang={lang} />

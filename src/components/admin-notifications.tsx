@@ -163,7 +163,7 @@ export function AdminNotifications({ templates, bot, linkedCount, sent, sentCoun
           <button
             key={id}
             onClick={() => setTop(id)}
-            className={cn("flex shrink-0 items-center gap-2 rounded-2xl px-4 py-2.5 text-[15px] font-semibold transition", top === id ? "bg-neon/10 text-fg" : "text-muted hover:text-fg")}
+            className={cn("flex shrink-0 items-center gap-2 rounded-2xl px-3.5 py-2 text-sm font-semibold transition", top === id ? "bg-neon/10 text-fg" : "text-muted hover:text-fg")}
           >
             <Icon className={cn("size-5", top === id && "text-neon")} />
             {t(label)}
@@ -286,7 +286,7 @@ export function AdminNotifications({ templates, bot, linkedCount, sent, sentCoun
               {draft && (
                 <section id="tpl-editor" data-tour="admin-editor" className="scroll-mt-24 space-y-5 border-t border-line pt-6">
                   <div>
-                    <h2 className="text-2xl font-bold tracking-tight">{draft.title_uz}</h2>
+                    <h2 className="text-xl font-extrabold tracking-tight">{draft.title_uz}</h2>
                     <span className="mt-2 inline-flex items-center gap-2 rounded-full border border-line bg-surface px-3 py-1.5 text-sm text-muted">
                       <Zap className="size-4" /> {lang === "ru" ? draft.trigger_ru || draft.trigger_uz : draft.trigger_uz}
                     </span>

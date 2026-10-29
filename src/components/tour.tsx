@@ -187,8 +187,8 @@ function TourOverlay({ steps, onClose }: { steps: TourStep[]; onClose: () => voi
               <Badge kind={step.badge} lang={lang} />
             </div>
           )}
-          <h2 className="mt-3 text-[22px] font-extrabold leading-tight tracking-tight">{step.title[lang]}</h2>
-          {step.text && <p className="mt-2 text-[15px] leading-relaxed text-[#5b7083] dark:text-white/70">{step.text[lang]}</p>}
+          <h2 className="mt-3 text-[19px] font-extrabold leading-tight tracking-tight">{step.title[lang]}</h2>
+          {step.text && <p className="mt-2 text-sm leading-relaxed text-[#5b7083] dark:text-white/70">{step.text[lang]}</p>}
           {step.legend && (
             <div className="mt-3 space-y-2.5">
               {(

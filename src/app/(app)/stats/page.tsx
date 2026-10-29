@@ -46,7 +46,7 @@ export default async function StatsPage() {
           <div className="size-[72px] rounded-2xl bg-surface-3" />
         )}
         <div className="min-w-0 flex-1">
-          <h2 className="truncate text-2xl font-bold tracking-tight">{steam.persona_name}</h2>
+          <h2 className="truncate text-xl font-extrabold tracking-tight">{steam.persona_name}</h2>
           <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-muted">
             {steam.profile_url && (
               <a href={steam.profile_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 hover:text-neon">

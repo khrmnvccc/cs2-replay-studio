@@ -35,6 +35,7 @@ import { ListGroup, Sheet } from "@/components/ui/sheet";
 import { LangSwitch } from "@/components/prefs";
 import { useT } from "@/components/i18n";
 import { TourProvider, useTour } from "@/components/tour";
+import { RecordsCarousel } from "@/components/records-carousel";
 import { api, toastError } from "@/lib/client/api";
 import { cn } from "@/lib/utils";
 
@@ -89,8 +90,8 @@ export function PageTitle() {
   const [, title, Icon] = hit;
   return (
     <div className="flex min-w-0 items-center gap-2.5">
-      <Icon className="size-6 shrink-0 text-neon" />
-      <h1 className="truncate text-2xl font-bold tracking-tight">{t(title)}</h1>
+      <Icon className="size-5 shrink-0 text-neon" />
+      <h1 className="truncate text-xl font-extrabold tracking-tight">{t(title)}</h1>
     </div>
   );
 }
@@ -102,19 +103,19 @@ export function HeaderActions() {
   return (
     <div className="flex items-center gap-1 rounded-full bg-surface p-1 shadow-[0_6px_18px_-12px_rgb(16_42_67/0.35)]">
       {tour.available && (
-        <button data-tour="help" onClick={tour.start} className="grid size-10 place-items-center rounded-full text-muted transition hover:text-fg" aria-label={t("Darslik")} title={t("Darslik")}>
-          <CircleHelp className="size-5" />
+        <button data-tour="help" onClick={tour.start} className="grid size-9 place-items-center rounded-full text-muted transition hover:text-fg" aria-label={t("Darslik")} title={t("Darslik")}>
+          <CircleHelp className="size-[18px]" />
         </button>
       )}
-      <button data-tour="bell" onClick={openBell} className="relative grid size-10 place-items-center rounded-full text-muted transition hover:text-fg" aria-label={t("Bildirishnomalar")}>
-        <Bell className="size-5" />
-        {unread > 0 && <span className="absolute right-2 top-2 size-2.5 rounded-full bg-danger ring-2 ring-surface" />}
+      <button data-tour="bell" onClick={openBell} className="relative grid size-9 place-items-center rounded-full text-muted transition hover:text-fg" aria-label={t("Bildirishnomalar")}>
+        <Bell className="size-[18px]" />
+        {unread > 0 && <span className="absolute right-1.5 top-1.5 size-2.5 rounded-full bg-danger ring-2 ring-surface" />}
       </button>
       <button onClick={openMenu} className="rounded-full ring-2 ring-transparent transition hover:ring-neon/40" aria-label={t("Profil")}>
         {user.avatarUrl ? (
-          <Image src={user.avatarUrl} alt="" width={40} height={40} className="size-10 rounded-full object-cover" unoptimized />
+          <Image src={user.avatarUrl} alt="" width={36} height={36} className="size-9 rounded-full object-cover" unoptimized />
         ) : (
-          <span className="block size-10 rounded-full bg-surface-3" />
+          <span className="block size-9 rounded-full bg-surface-3" />
         )}
       </button>
     </div>
@@ -190,8 +191,8 @@ function Row({ icon, label, value, href, soon, onClick, tone }: { icon: ReactNod
   const t = useT();
   const body = (
     <>
-      <span className={cn("grid size-10 shrink-0 place-items-center rounded-xl bg-fg/[0.06] [&_svg]:size-5", tone === "danger" ? "text-danger" : "text-fg/80")}>{icon}</span>
-      <span className={cn("flex-1 text-[15px]", tone === "danger" && "text-danger")}>{t(label)}</span>
+      <span className={cn("grid size-9 shrink-0 place-items-center rounded-xl bg-fg/[0.06] [&_svg]:size-[18px]", tone === "danger" ? "text-danger" : "text-fg/80")}>{icon}</span>
+      <span className={cn("flex-1 text-sm font-medium", tone === "danger" && "text-danger")}>{t(label)}</span>
       {soon ? (
         <span className="rounded-full bg-fg/[0.06] px-2.5 py-1 text-[11px] font-medium text-subtle">{t("Tez orada")}</span>
       ) : (
@@ -200,7 +201,7 @@ function Row({ icon, label, value, href, soon, onClick, tone }: { icon: ReactNod
       {!soon && (href || onClick) && tone !== "danger" && <ChevronRight className="size-4 text-subtle" />}
     </>
   );
-  const cls = cn("flex w-full items-center gap-3 px-3.5 py-3 text-left", soon ? "cursor-default opacity-75" : "transition hover:bg-fg/[0.03]");
+  const cls = cn("flex w-full items-center gap-3 px-3.5 py-2.5 text-left", soon ? "cursor-default opacity-75" : "transition hover:bg-fg/[0.03]");
   if (href && !soon)
     return (
       <Link href={href} className={cls}>
@@ -237,6 +238,10 @@ function MenuSheet({ open, onOpenChange, user }: { open: boolean; onOpenChange: 
           </div>
         </div>
 
+        <div className="mt-3">
+          <RecordsCarousel active={open} onNavigate={close} />
+        </div>
+
         <ListGroup>
           <Row
             icon={<SteamGlyph />}
@@ -270,7 +275,7 @@ function MenuSheet({ open, onOpenChange, user }: { open: boolean; onOpenChange: 
               <span className="grid size-10 place-items-center rounded-xl bg-danger/10">
                 <LogOut className="size-5" />
               </span>
-              <span className="text-[15px]">{t("Chiqish")}</span>
+              <span className="text-sm font-medium">{t("Chiqish")}</span>
             </button>
           </ListGroup>
         </form>

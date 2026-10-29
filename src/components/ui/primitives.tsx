@@ -10,7 +10,7 @@ export function SectionTitle({ eyebrow, title, action, className }: { eyebrow?: 
     <div className={cn("mb-4 flex flex-wrap items-end justify-between gap-x-4 gap-y-2", className)}>
       <div className="min-w-0">
         {eyebrow && <div className="label mb-1.5">{eyebrow}</div>}
-        <h2 className="font-display text-xl font-semibold tracking-tight text-fg sm:text-2xl">{title}</h2>
+        <h2 className="font-display text-lg font-bold tracking-tight text-fg sm:text-xl">{title}</h2>
       </div>
       {action}
     </div>
@@ -101,7 +101,7 @@ export function Stat({ label, value, sub, accent }: { label: string; value: Reac
   return (
     <div className="panel relative overflow-hidden p-4 sm:p-5">
       <div className="label">{label}</div>
-      <div className={cn("mt-2 font-display text-2xl font-bold tabular-nums tracking-tight sm:text-3xl", accent ? "text-neon" : "text-fg")}>{value}</div>
+      <div className={cn("mt-1.5 font-display text-2xl font-extrabold tabular-nums tracking-tight", accent ? "text-neon" : "text-fg")}>{value}</div>
       {sub && <div className="mt-1 text-xs text-muted">{sub}</div>}
     </div>
   );

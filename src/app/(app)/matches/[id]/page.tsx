@@ -165,20 +165,20 @@ export default async function MatchPage({ params }: PageProps<"/matches/[id]">) 
               <ArrowLeft className="size-5" />
             </Link>
             <ModeTag m={m} className="border-white/60 px-2.5 py-1 text-xs text-white" />
-            <span className="text-[15px] font-semibold text-white/90">{m.played_at ? formatDate(m.played_at, false, lang) : m.source === "demo_upload" ? t("Yuklangan demo") : ""}</span>
+            <span className="text-[13px] font-semibold text-white/90">{m.played_at ? formatDate(m.played_at, false, lang) : m.source === "demo_upload" ? t("Yuklangan demo") : ""}</span>
           </div>
 
           <div className="mt-6 grid grid-cols-[1fr_auto_1fr] items-center gap-3">
             <div className="text-right">
-              <div className="truncate text-base font-bold">{board.userStart ? t("Sizning jamoa") : t("1-jamoa")}</div>
+              <div className="truncate text-sm font-bold">{board.userStart ? t("Sizning jamoa") : t("1-jamoa")}</div>
             </div>
-            <div className="font-display text-6xl font-bold tabular-nums sm:text-7xl">
+            <div className="font-display text-5xl font-bold tabular-nums sm:text-6xl">
               <span>{scoreA ?? "–"}</span>
               <span className="mx-2 text-white/40">:</span>
               <span className="text-white/70">{scoreB ?? "–"}</span>
             </div>
             <div>
-              <div className="truncate text-base font-bold">{board.userStart ? t("Raqiblar") : t("2-jamoa")}</div>
+              <div className="truncate text-sm font-bold">{board.userStart ? t("Raqiblar") : t("2-jamoa")}</div>
             </div>
           </div>
 
