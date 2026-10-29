@@ -5,15 +5,10 @@ import { cn } from "@/lib/utils";
 export function Logo({ className, href = "/", sub = "CS2 match studio" }: { className?: string; href?: string; sub?: string }) {
   return (
     <Link href={href} className={cn("group inline-flex items-center gap-3", className)}>
-      <span className="relative grid size-10 place-items-center rounded-2xl bg-gradient-to-br from-neon to-[#0ea5e9] text-white shadow-[0_8px_20px_-8px_rgb(22_163_74/0.6)]">
-        <svg viewBox="0 0 24 24" className="size-5" fill="none" stroke="currentColor" strokeWidth="2.2" aria-hidden>
-          <circle cx="12" cy="12" r="7" />
-          <path d="M12 2v5M12 17v5M2 12h5M17 12h5" strokeLinecap="round" />
-          <circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none" />
-        </svg>
-      </span>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src="/logo.png" alt="ACE" width={40} height={40} className="size-10 rounded-2xl object-cover shadow-[0_8px_20px_-8px_rgb(0_0_0/0.45)] ring-1 ring-black/5" />
       <span className="leading-tight">
-        <span className="block text-[15px] font-semibold tracking-tight text-fg">Replay Studio</span>
+        <span className="block text-[15px] font-semibold tracking-tight text-fg">ACE</span>
         <span className="block text-[10.5px] font-medium uppercase tracking-[0.14em] text-subtle">{sub}</span>
       </span>
     </Link>

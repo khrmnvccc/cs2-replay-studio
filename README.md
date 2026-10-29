@@ -1,4 +1,4 @@
-# CS2 Match Replay Studio
+# ACE — CS2 Match Replay Studio
 
 Counter-Strike 2 o'yinchilari uchun platforma: Steam akkauntini ulash, matchlarni ko'rish, demo fayldan barcha kill lavhalarini topish va ularni MP4 qilib yuklab olish.
 

@@ -423,4 +423,10 @@ export const RU: Record<string, string> = {
   "CS2 ishga tushirilmoqda": "Запускается CS2",
   "MP4 ga kodlanmoqda (FFmpeg)": "Кодирование в MP4 (FFmpeg)",
   "Xato — qayta urinish navbatda": "Ошибка — повторная попытка в очереди",
+
+  // Ilova (PWA) o'rnatish oynasi
+  "ACE ilovasini yuklab oling": "Скачайте приложение ACE",
+  "Telefoningizga o'rnating: tez ochiladi va alohida ilova bo'lib ishlaydi": "Установите на телефон: быстро открывается и работает как отдельное приложение",
+  "Safari'da pastdagi": "В Safari нажмите внизу",
+  "tugmasini bosing va «Bosh ekranga qo'shish»ni tanlang": "и выберите «На экран „Домой“»",
 };
