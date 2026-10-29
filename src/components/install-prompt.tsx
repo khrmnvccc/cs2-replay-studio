@@ -71,7 +71,7 @@ export function InstallPrompt() {
   if (mode === "hidden") return null;
   return (
     <div className="fixed inset-x-3 bottom-[calc(5.5rem+env(safe-area-inset-bottom))] z-[60] mx-auto max-w-md lg:bottom-6 lg:w-[26rem] lg:right-6 lg:left-auto lg:mx-0">
-      <div className="glass flex items-center gap-3 rounded-3xl p-3 pr-2">
+      <div className="flex items-center gap-3 rounded-3xl border border-line bg-white/95 p-3 pr-2 shadow-[0_20px_50px_-15px_rgb(15_23_42/0.35)] backdrop-blur-xl dark:bg-[#111827]/95">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src="/icons/icon-192.png" alt="" width={48} height={48} className="size-12 shrink-0 rounded-2xl object-cover" />
         <div className="min-w-0 flex-1">
