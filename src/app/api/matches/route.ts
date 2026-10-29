@@ -2,6 +2,8 @@ import { z } from "zod";
 import { authed, HttpError, json, parseBody } from "@/lib/server/http";
 import { userDb } from "@/lib/server/supabase";
 import { decodeShareCode, isValidShareCode } from "@shared/sharecode";
+import { after } from "next/server";
+import { wakeCloudWorker } from "@/lib/server/worker-wake";
 
 const body = z.object({ text: z.string().max(5000) });
 const CODE_RE = /CSGO(?:-[A-Za-z0-9]{5}){5}/g;
@@ -38,6 +40,7 @@ export const POST = authed(async (req, _ctx, user) => {
       fresh.map((shareCode) => ({ user_id: user.userId, type: "fetch_match_info", payload: { shareCode, autoDownload: true }, max_attempts: 3 })),
     );
     if (jobErr) throw new Error(jobErr.message);
+    after(wakeCloudWorker);
   }
   return json({ ok: true, added: fresh.length, skipped: codes.length - fresh.length });
 }, { limit: 20 });

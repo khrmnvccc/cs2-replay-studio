@@ -5,6 +5,7 @@ import { HistorySyncError, syncMatchHistory } from "@/lib/steam/sync-history";
 import { enqueueJob, JOB_COLUMNS } from "./data";
 import { env } from "./env";
 import { adminDb } from "./supabase";
+import { wakeCloudWorker } from "./worker-wake";
 import type { JobRow } from "@/lib/types";
 
 /**
@@ -34,6 +35,7 @@ export async function startHistorySync(db: SupabaseClient, userId: string): Prom
         progress: (progress, progress_message) => update({ progress, progress_message, heartbeat_at: new Date().toISOString() }),
       });
       await update({ status: "succeeded", progress: 100, progress_message: null, result, locked_by: null });
+      await wakeCloudWorker(); // yangi matchlar uchun GC ishlari navbatda
     } catch (err) {
       const msg = err instanceof HistorySyncError ? err.message : "Valve'dan match tarixini olib bo'lmadi, birozdan keyin qayta urinib ko'ring";
       if (!(err instanceof HistorySyncError)) console.error("history sync", err);

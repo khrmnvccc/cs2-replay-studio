@@ -13,6 +13,9 @@ const schema = z.object({
   SUPABASE_JWT_SECRET: z.string().min(32),
   // Supabase Free plan fayl limiti 50 MB; Pro planda oshiring
   DEMO_MAX_MB: z.coerce.number().int().positive().default(50),
+  // Ixtiyoriy: yangi ish tushganda bulutdagi worker'ni darhol uyg'otish (Actions: write ruxsatli token)
+  GITHUB_DISPATCH_TOKEN: z.preprocess((v) => (v === "" ? undefined : v), z.string().optional()),
+  GITHUB_REPO: z.string().default("khrmnvccc/cs2-replay-studio"),
 });
 
 /** APP_URL berilmasa Vercel'ning production domenidan olinadi. */

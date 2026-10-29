@@ -2,7 +2,9 @@ import "server-only";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { JobType } from "@shared/jobs";
 import { DEFAULT_SETTINGS, type ClipRow, type DemoFileRow, type JobRow, type KillEventRow, type MatchRow, type RoundRow, type UserSettings } from "@/lib/types";
+import { after } from "next/server";
 import { HttpError } from "./http";
+import { wakeCloudWorker } from "./worker-wake";
 
 export const MATCH_COLUMNS =
   "id, source, share_code, valve_match_id, map_name, played_at, duration_seconds, game_mode, score_ct, score_t, score_own, score_enemy, user_side, result, kills, deaths, assists, headshots, demo_availability, demo_url, info_source, user_in_demo, created_at";
@@ -103,6 +105,7 @@ export async function enqueueJob(db: SupabaseClient, userId: string, type: JobTy
   const row = check(
     await db.from("processing_jobs").insert({ user_id: userId, type, payload, max_attempts: maxAttempts }).select(JOB_COLUMNS).single(),
   ) as JobRow;
+  after(wakeCloudWorker);
   return row;
 }
 
