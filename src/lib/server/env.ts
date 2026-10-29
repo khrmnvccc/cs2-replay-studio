@@ -16,6 +16,8 @@ const schema = z.object({
   // Ixtiyoriy: yangi ish tushganda bulutdagi worker'ni darhol uyg'otish (Actions: write ruxsatli token)
   GITHUB_DISPATCH_TOKEN: z.preprocess((v) => (v === "" ? undefined : v), z.string().optional()),
   GITHUB_REPO: z.string().default("khrmnvccc/cs2-replay-studio"),
+  // Sayt egasi(lar)ining SteamID64'lari (vergul bilan): texnik "Tizim holati" faqat ularga ko'rinadi
+  OWNER_STEAM_IDS: z.string().default("76561199860392436"),
 });
 
 /** APP_URL berilmasa Vercel'ning production domenidan olinadi. */

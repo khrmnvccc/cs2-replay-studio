@@ -61,7 +61,7 @@ export default async function SettingsPage() {
         />
         <Card className="space-y-5 p-5">
           <Notice tone="neutral">
-            {t("Valve matchmaking tarixini faqat share code'lar orqali beradi. Sana, hisob va K/D Valve Game Coordinator (bot) yoki demo tahlilidan olinadi. FACEIT va boshqa platformalar matchlari bu yerda yo'q — ularning demosini yuklang.")}
+            {t("Matchmaking matchlaringiz shu yerdan avtomatik olinadi. FACEIT va boshqa platformalar matchlari uchun demo faylni o'zingiz yuklang.")}
           </Notice>
           {steam.history_last_error && <Notice tone="danger">{t(steam.history_last_error)}</Notice>}
           {env().STEAM_API_KEY ? (

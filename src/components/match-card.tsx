@@ -59,7 +59,7 @@ export function MatchCard({ m, lang = "uz" }: { m: MatchRow; lang?: Lang }) {
           ))}
         </div>
         <div className="mt-auto flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted">
-          <span>{m.played_at ? formatDate(m.played_at, true, lang) : m.source === "demo_upload" ? `${t("Yuklangan")}: ${formatDate(m.created_at, false, lang)}` : t("Sana: GC kutilmoqda")}</span>
+          <span>{m.played_at ? formatDate(m.played_at, true, lang) : m.source === "demo_upload" ? `${t("Yuklangan")}: ${formatDate(m.created_at, false, lang)}` : t("Sana aniqlanmoqda")}</span>
           {m.duration_seconds != null && (
             <span className="inline-flex items-center gap-1">
               <Timer className="size-3" />

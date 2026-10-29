@@ -127,7 +127,7 @@ export function PreferencesForm({ initial }: { initial: UserSettings }) {
       <div>
         <h3 className="mb-4 text-base font-semibold">{t("Saqlash")}</h3>
         <div className="grid gap-4 sm:grid-cols-2">
-          <Field label={t("Demo fayllarni saqlash muddati")} hint={t("Muddati o'tgan demo fayllar storage'dan o'chiriladi; kill eventlar va tayyor cliplar qoladi.")}>
+          <Field label={t("Demo fayllarni saqlash muddati")} hint={t("Eski demo fayllar o'chiriladi, killlar va tayyor kliplar qoladi.")}>
             <Select value={s.retention_days} onChange={(e) => set("retention_days", Number(e.target.value))}>
               {[7, 14, 30, 60, 90, 180, 365].map((d) => (
                 <option key={d} value={d}>
@@ -140,7 +140,7 @@ export function PreferencesForm({ initial }: { initial: UserSettings }) {
             <input type="checkbox" className="mt-0.5" checked={s.auto_download_demos} onChange={(e) => set("auto_download_demos", e.target.checked)} />
             <span>
               <span className="font-medium">{t("Valve demolarini avtomatik yuklab olish")}</span>
-              <span className="mt-0.5 block text-xs text-muted">{t("GC bot demo havolasini topsa, demo yuklanib darhol tahlil qilinadi (storage hajmini oshiradi).")}</span>
+              <span className="mt-0.5 block text-xs text-muted">{t("Yangi match topilganda uning demosi avtomatik yuklanib, killlar tahlil qilinadi.")}</span>
             </span>
           </label>
         </div>

@@ -13,12 +13,9 @@ const NEEDS: Record<string, string> = {
   fetch_match_info: "gc",
   render_clip: "render",
 };
+// Oddiy foydalanuvchiga texnik tafsilotsiz: bulutdagi xizmat ishni o'zi oladi
 const NEEDS_TEXT: Record<string, string> = {
-  gc: "GC bot worker ulanmagan — ish navbatda kutadi",
-  render: "Render worker (Windows + CS2 + HLAE) onlayn emas — ish navbatda kutadi",
-  parse: "Worker ishlamayapti — ish navbatda kutadi",
-  sync: "Worker ishlamayapti — ish navbatda kutadi",
-  zip: "Worker ishlamayapti — ish navbatda kutadi",
+  render: "Video tayyorlash hozircha ishlamayapti — klip saqlanib turadi",
 };
 
 export function JobItem({ job, online, onRetried }: { job: JobRow; online?: Record<string, number>; onRetried?: (j: JobRow) => void }) {
@@ -48,7 +45,7 @@ export function JobItem({ job, online, onRetried }: { job: JobRow; online?: Reco
       </div>
       {(job.status === "running" || job.status === "queued") && <Progress value={job.status === "queued" ? 2 : job.progress} className="mt-2.5" />}
       {job.progress_message && job.status === "running" && <div className="mt-1.5 text-xs text-muted">{t(job.progress_message)}</div>}
-      {waitingForWorker && <div className="mt-1.5 text-xs text-warn">{t(NEEDS_TEXT[cap])}</div>}
+      {waitingForWorker && <div className={cn("mt-1.5 text-xs", cap === "render" ? "text-warn" : "text-muted")}>{t(NEEDS_TEXT[cap] ?? "Tez orada boshlanadi")}</div>}
       {job.status === "failed" && (
         <div className="mt-2 flex items-start justify-between gap-3">
           <p className="text-xs leading-relaxed text-danger/90">{t(job.error ?? "")}</p>

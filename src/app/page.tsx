@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, Check, Cpu, FileSearch, Film, KeyRound, ListChecks, Lock, Scissors, Server, ShieldCheck, Wrench } from "lucide-react";
+import { ArrowRight, Crosshair, FileSearch, Film, KeyRound, ListChecks, Lock, Scissors, Server, ShieldCheck, Smartphone } from "lucide-react";
 import { Logo, SteamSignInButton } from "@/components/brand";
 import { HeroVisual } from "@/components/landing/hero-visual";
 import { Reveal } from "@/components/landing/reveal";
@@ -10,36 +10,18 @@ import { LangSwitch, ThemeToggle } from "@/components/prefs";
 import { getT } from "@/lib/i18n/server";
 
 const STEPS = [
-  { icon: KeyRound, title: "Steam ulash", text: "Steam OpenID orqali xavfsiz kirish. Parol faqat Steam saytida kiritiladi." },
-  { icon: ListChecks, title: "Match topish", text: "Valve match history API (share code) orqali matchlaringiz ro'yxati." },
-  { icon: FileSearch, title: "Demo tahlili", text: "Demo fayl serverda parse qilinadi: raundlar, killlar, qurol, headshot." },
-  { icon: Scissors, title: "Kill klipi", text: "Bitta yoki barcha killlarni tanlang — oldingi va keyingi soniyalar bilan." },
-  { icon: Film, title: "Yuklab olish", text: "CS2 + HLAE orqali haqiqiy MP4 render. Bitta fayl yoki ZIP arxiv." },
+  { icon: KeyRound, title: "Steam bilan kiring", text: "Bir bosishda Steam orqali kirasiz. Parolingiz faqat Steam saytida kiritiladi." },
+  { icon: ListChecks, title: "Matchlar o'zi chiqadi", text: "Bir marta 2 ta kod kiritasiz — yangi matchlaringiz avtomatik paydo bo'ladi." },
+  { icon: FileSearch, title: "Killlar ro'yxati", text: "Har bir matchdagi killlaringiz: raund, qurol, headshot." },
+  { icon: Scissors, title: "Eng zo'rlarini tanlang", text: "Bitta yoki barcha killlarni tanlang." },
+  { icon: Film, title: "Video qilib oling", text: "Tanlangan lavhalar MP4 video bo'lib yuklab olinadi." },
 ];
 
 const FEATURES = [
-  {
-    icon: ShieldCheck,
-    title: "Haqiqiy Steam OpenID",
-    text: "Steam javobi serverda check_authentication bilan qayta tekshiriladi, nonce takrorlanishi bloklanadi, session'lar bazada boshqariladi.",
-    span: "lg:col-span-2",
-  },
-  { icon: Lock, title: "Faqat sizning ma'lumotingiz", text: "Supabase Row Level Security: har bir so'rov sizning ID ingiz bilan cheklangan.", span: "" },
-  { icon: Cpu, title: "Og'ir ishlar — worker'da", text: "Demo tahlili, yuklash va render Vercel funksiyalarida emas, alohida job worker'da bajariladi.", span: "" },
-  {
-    icon: Film,
-    title: "Kill xronologiyasi",
-    text: "Har bir kill: raund, vaqt, killer, raqib, qurol, headshot, wallbang, noscope. Tanlang — clip navbatga tushadi va progress ko'rinadi.",
-    span: "lg:col-span-2",
-  },
-];
-
-const MATRIX = [
-  { what: "Steam akkaunt, avatar, nickname", how: "Avtomatik — Steam OpenID + Steam Web API", auto: true },
-  { what: "Match ro'yxati (share code'lar)", how: "Steam'dagi Game Authentication Code + oxirgi share code bir marta kiritiladi", auto: true },
-  { what: "Match sanasi, hisob, K/D, demo havolasi", how: "Valve Game Coordinator — alohida Steam bot akkaunt bilan worker", auto: false },
-  { what: "Demo tahlili va kill eventlar", how: "Avtomatik — siz yuklagan yoki Valve'dan olingan demo fayldan", auto: true },
-  { what: "MP4 video render", how: "Windows render worker: CS2 + HLAE + CS Demo Manager + FFmpeg", auto: false },
+  { icon: ShieldCheck, title: "Xavfsiz kirish", text: "Faqat rasmiy Steam orqali kirasiz. Parolingiz bizga kelmaydi.", span: "lg:col-span-2" },
+  { icon: Lock, title: "Faqat siz ko'rasiz", text: "Matchlaringiz va kliplaringizni boshqa hech kim ko'rmaydi.", span: "" },
+  { icon: Smartphone, title: "Telefonda ham qulay", text: "Saytni ilova qilib o'rnating — bir bosishda ochiladi.", span: "" },
+  { icon: Crosshair, title: "Har bir kill batafsil", text: "Raund, vaqt, raqib, qurol, headshot, wallbang, noscope — hammasi bir joyda.", span: "lg:col-span-2" },
 ];
 
 export default async function Landing({ searchParams }: PageProps<"/">) {
@@ -58,7 +40,6 @@ export default async function Landing({ searchParams }: PageProps<"/">) {
         <nav className="glass hidden items-center gap-1 rounded-2xl p-1 text-sm text-muted md:flex">
           <a href="#how" className="rounded-xl px-4 py-2 transition hover:bg-fg/5 hover:text-fg">{t("Qanday ishlaydi")}</a>
           <a href="#features" className="rounded-xl px-4 py-2 transition hover:bg-fg/5 hover:text-fg">{t("Imkoniyatlar")}</a>
-          <a href="#limits" className="rounded-xl px-4 py-2 transition hover:bg-fg/5 hover:text-fg">{t("Cheklovlar")}</a>
         </nav>
         <div className="flex items-center gap-2">
           <LangSwitch className="w-24" />
@@ -145,7 +126,7 @@ export default async function Landing({ searchParams }: PageProps<"/">) {
       <section id="features" className="relative z-10 mx-auto max-w-7xl scroll-mt-20 px-5 py-20 sm:px-8">
         <Reveal>
           <div className="label">{t("Imkoniyatlar")}</div>
-          <h2 className="mt-3 max-w-2xl text-3xl font-bold tracking-tight sm:text-4xl">{t("Prototip emas — ishlaydigan platforma")}</h2>
+          <h2 className="mt-3 max-w-2xl text-3xl font-bold tracking-tight sm:text-4xl">{t("Nima uchun ACE")}</h2>
         </Reveal>
         <div className="mt-12 grid gap-4 lg:grid-cols-3">
           {FEATURES.map((f, i) => (
@@ -159,38 +140,6 @@ export default async function Landing({ searchParams }: PageProps<"/">) {
             </Reveal>
           ))}
         </div>
-      </section>
-
-      {/* HONEST LIMITS */}
-      <section id="limits" className="relative z-10 mx-auto max-w-7xl scroll-mt-20 px-5 py-20 sm:px-8">
-        <Reveal>
-          <div className="label">{t("Halol cheklovlar")}</div>
-          <h2 className="mt-3 max-w-3xl text-3xl font-bold tracking-tight sm:text-4xl">{t("Valve nimani beradi, nimani bermaydi")}</h2>
-          <p className="mt-5 max-w-2xl text-muted">
-            {t("Steam Web API tayyor kill videolarini va barcha demo fayllarni bermaydi. Shuning uchun har bir funksiya qaysi manbaga tayanishini ochiq ko'rsatamiz — soxta match yoki soxta video yo'q.")}
-          </p>
-        </Reveal>
-        <Reveal delay={0.1}>
-          <div className="panel mt-10 overflow-hidden !rounded-3xl">
-            {MATRIX.map((r, i) => (
-              <div key={r.what} className={`grid gap-2 px-5 py-4 sm:grid-cols-[1fr_1.4fr_auto] sm:items-center sm:gap-6 sm:px-7 ${i % 2 ? "bg-fg/[0.02]" : ""}`}>
-                <div className="font-medium">{t(r.what)}</div>
-                <div className="text-sm text-muted">{t(r.how)}</div>
-                <div>
-                  {r.auto ? (
-                    <span className="inline-flex items-center gap-1.5 text-xs font-medium text-neon">
-                      <Check className="size-3.5" /> {t("Avtomatik")}
-                    </span>
-                  ) : (
-                    <span className="inline-flex items-center gap-1.5 text-xs font-medium text-warn">
-                      <Wrench className="size-3.5" /> {t("Qo'shimcha sozlash")}
-                    </span>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
-        </Reveal>
       </section>
 
       {/* CTA */}

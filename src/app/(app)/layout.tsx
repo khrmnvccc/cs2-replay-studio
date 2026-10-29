@@ -7,7 +7,7 @@ import { LangSwitch, ThemeToggle } from "@/components/prefs";
 import { SetupRequired } from "@/components/setup-required";
 import { getT } from "@/lib/i18n/server";
 import { envStatus } from "@/lib/server/env";
-import { getSession } from "@/lib/server/session";
+import { getSession, isOwner } from "@/lib/server/session";
 import { formatLongDate } from "@/lib/utils";
 
 export default async function AppLayout({ children }: LayoutProps<"/">) {
@@ -16,6 +16,7 @@ export default async function AppLayout({ children }: LayoutProps<"/">) {
   const user = await getSession();
   const { lang, t } = await getT();
   if (!user) redirect("/?auth_error=" + encodeURIComponent(t("Davom etish uchun Steam orqali kiring")));
+  const owner = isOwner(user);
 
   const logout = (
     <form action="/api/auth/logout" method="post">
@@ -30,7 +31,7 @@ export default async function AppLayout({ children }: LayoutProps<"/">) {
       <aside className="fixed inset-y-3 left-3 z-30 hidden w-64 flex-col rounded-3xl glass px-3 py-5 lg:flex">
         <Logo href="/dashboard" className="px-3" />
         <div className="mt-8 flex-1 overflow-y-auto">
-          <SideNav />
+          <SideNav owner={owner} />
         </div>
         <LangSwitch className="mb-3" />
         <div className="flex items-center gap-3 rounded-2xl border border-line bg-surface-2 p-2.5">
@@ -65,7 +66,7 @@ export default async function AppLayout({ children }: LayoutProps<"/">) {
           <div className="mx-auto max-w-7xl px-4 py-5 sm:px-6 lg:px-10 lg:py-6">{children}</div>
         </main>
       </div>
-      <BottomNav />
+      <BottomNav owner={owner} />
     </div>
   );
 }

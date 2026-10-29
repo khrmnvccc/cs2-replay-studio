@@ -86,6 +86,11 @@ export const getSession = cache(async (): Promise<SessionUser | null> => {
   };
 });
 
+/** Sayt egasimi (texnik sahifa va ogohlantirishlar faqat egaga). */
+export function isOwner(user: SessionUser): boolean {
+  return env().OWNER_STEAM_IDS.split(",").map((s) => s.trim()).includes(user.steamId64);
+}
+
 /** Sahifalar uchun: kirmagan bo'lsa bosh sahifaga qaytaradi (xato tashlamaydi). */
 export async function pageUser(): Promise<SessionUser> {
   const s = await getSession();

@@ -46,7 +46,7 @@ export function AddShareCodes({ gcOnline }: { gcOnline: boolean }) {
       />
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <p className="text-xs text-subtle">
-          {gcOnline ? t("Sana, hisob va demo Valve'dan avtomatik olinadi.") : t("Valve bilan bog'lanadigan bot worker hozir onlayn emas — match qo'shiladi, tafsilotlar bot ulanganda olinadi.")}
+          {gcOnline ? t("Sana, hisob va demo Valve'dan avtomatik olinadi.") : t("Matchlar qo'shildi. Ularning tafsilotlari birozdan keyin chiqadi.")}
         </p>
         <Button type="submit" variant="primary" disabled={busy || !text.trim()} className="w-full sm:w-auto">
           <Plus /> {t("Qo'shish")}

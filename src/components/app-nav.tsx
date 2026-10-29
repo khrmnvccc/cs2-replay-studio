@@ -26,12 +26,12 @@ const ALL = SECTIONS.flatMap((s) => s.items);
 
 const isActive = (path: string, href: string) => path === href || path.startsWith(`${href}/`);
 
-export function SideNav() {
+export function SideNav({ owner = false }: { owner?: boolean }) {
   const path = usePathname();
   const t = useT();
   return (
     <nav className="space-y-6">
-      {SECTIONS.map((sec) => (
+      {SECTIONS.map((sec) => ({ ...sec, items: sec.items.filter((i) => owner || i.href !== "/system") })).map((sec) => (
         <div key={sec.title}>
           <div className="label mb-2 px-3">{t(sec.title)}</div>
           <div className="flex flex-col gap-0.5">
@@ -58,12 +58,13 @@ export function SideNav() {
   );
 }
 
-export function BottomNav() {
+export function BottomNav({ owner = false }: { owner?: boolean }) {
   const path = usePathname();
   const t = useT();
+  const items = ALL.filter((i) => owner || i.href !== "/system");
   return (
-    <nav className="glass fixed inset-x-3 bottom-[max(0.75rem,env(safe-area-inset-bottom))] z-40 grid grid-cols-5 rounded-3xl p-1.5 lg:hidden">
-      {ALL.map(({ href, short, icon: Icon }) => {
+    <nav style={{ gridTemplateColumns: `repeat(${items.length}, minmax(0, 1fr))` }} className="glass fixed inset-x-3 bottom-[max(0.75rem,env(safe-area-inset-bottom))] z-40 grid rounded-3xl p-1.5 lg:hidden">
+      {items.map(({ href, short, icon: Icon }) => {
         const active = isActive(path, href);
         return (
           <Link key={href} href={href} className={cn("flex min-w-0 flex-col items-center gap-1 rounded-2xl py-2 text-[10.5px] font-medium transition", active ? "bg-neon/12 text-neon" : "text-muted")}>

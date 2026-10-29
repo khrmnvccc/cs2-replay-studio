@@ -1,7 +1,8 @@
 import { CheckCircle2, CircleDashed, XCircle } from "lucide-react";
 import { Card, Notice, SectionTitle } from "@/components/ui/primitives";
 import { onlineCapabilities } from "@/lib/server/data";
-import { pageUser } from "@/lib/server/session";
+import { redirect } from "next/navigation";
+import { isOwner, pageUser } from "@/lib/server/session";
 import { userDb } from "@/lib/server/supabase";
 import { getT } from "@/lib/i18n/server";
 
@@ -20,6 +21,7 @@ const ROWS = [
 
 export default async function SystemPage() {
   const user = await pageUser();
+  if (!isOwner(user)) redirect("/dashboard");
   const { t } = await getT();
   const db = await userDb(user.userId);
   const online = await onlineCapabilities(db);

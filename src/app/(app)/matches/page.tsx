@@ -89,7 +89,7 @@ export default async function MatchesPage({ searchParams }: PageProps<"/matches"
         </div>
       </form>
       {(filters.from || filters.to) && (
-        <p className="-mt-5 text-xs text-subtle">{t("Eslatma: yuklangan demo fayllarda match sanasi yozilmaydi, shuning uchun sana filtri faqat sanasi ma'lum (Valve GC) matchlarga ishlaydi.")}</p>
+        <p className="-mt-5 text-xs text-subtle">{t("Eslatma: yuklangan demo fayllarda match sanasi yozilmaydi, shuning uchun sana filtri faqat sanasi ma'lum matchlarga ishlaydi.")}</p>
       )}
 
       {matches.length ? (

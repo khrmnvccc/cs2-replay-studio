@@ -123,7 +123,7 @@ export function DemoUpload({ matchId, maxMb, compact, online }: { matchId?: stri
               <div className="min-w-0 flex-1">
                 <div className="truncate text-sm font-medium">{phase.name}</div>
                 <div className="text-xs text-muted">
-                  {phase.kind === "uploading" ? `${formatBytes((phase.size * phase.pct) / 100)} / ${formatBytes(phase.size)}` : t("Fayl tekshirilmoqda (CS2 demo signaturasi)…")}
+                  {phase.kind === "uploading" ? `${formatBytes((phase.size * phase.pct) / 100)} / ${formatBytes(phase.size)}` : t("Fayl tekshirilmoqda…")}
                 </div>
               </div>
               {phase.kind === "uploading" && (

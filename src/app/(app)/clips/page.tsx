@@ -55,7 +55,7 @@ export default async function ClipsPage({ searchParams }: PageProps<"/clips">) {
             </Button>
           }
         >
-          {t("Tahlil qilingan match sahifasida kill xronologiyasidan killlarni tanlang — har biri uchun MP4 clip render navbatiga qo'yiladi.")}
+          {t("Match sahifasida kerakli killlarni tanlang, ular shu yerda klip bo'lib chiqadi.")}
         </EmptyState>
       )}
     </div>

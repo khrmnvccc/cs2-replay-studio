@@ -11,7 +11,7 @@ import { Badge, Card, EmptyState, Notice, SectionTitle, Stat } from "@/component
 import { getT } from "@/lib/i18n/server";
 import { dashboardStats, getSteamAccount, listActiveJobs, listClips, listMatches, onlineCapabilities } from "@/lib/server/data";
 import { env } from "@/lib/server/env";
-import { pageUser } from "@/lib/server/session";
+import { isOwner, pageUser } from "@/lib/server/session";
 import { userDb } from "@/lib/server/supabase";
 import { formatDate } from "@/lib/utils";
 
@@ -33,6 +33,7 @@ export default async function Dashboard() {
     onlineCapabilities(db),
   ]);
   const workerOnline = Boolean(online.parse);
+  const owner = isOwner(user);
 
   return (
     <div className="space-y-10">
@@ -84,7 +85,7 @@ export default async function Dashboard() {
         )}
       </section>
 
-      {!workerOnline && (
+      {owner && !workerOnline && (
         <Notice tone="warn" title={t("Fon xizmati (worker) onlayn emas")}>
           {t("Demo tahlili va ZIP yaratish worker'da bajariladi. Ishlar navbatda turadi va worker ishga tushishi bilan bajariladi.")}{" "}
           <Link href="/system" className="underline">
@@ -107,7 +108,7 @@ export default async function Dashboard() {
           <Stat
             label="K/D"
             value={stats.kd != null ? stats.kd.toFixed(2) : "—"}
-            sub={stats.kills ? t("{k} kill · {d} o'lim · {a} yordam", { k: stats.kills, d: stats.deaths, a: stats.assists }) : t("Statistika demo/GC dan olinadi")}
+            sub={stats.kills ? t("{k} kill · {d} o'lim · {a} yordam", { k: stats.kills, d: stats.deaths, a: stats.assists }) : t("Statistika tahlil qilingan matchlardan")}
           />
           <Stat label="Headshot" value={stats.hsPercent != null ? `${stats.hsPercent.toFixed(0)}%` : "—"} sub={stats.headshots ? t("{n} ta headshot", { n: stats.headshots }) : "—"} />
         </div>

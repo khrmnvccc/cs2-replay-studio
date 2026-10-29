@@ -86,7 +86,7 @@ export function ClipGallery({ clips, online, renderOnline }: { clips: Clip[]; on
     setBusy(c.id);
     try {
       await api(`/api/clips/${c.id}/retry`, { method: "POST" });
-      toast.success(t("Qayta render navbatga qo'yildi"));
+      toast.success(t("Video qayta tayyorlanadi"));
       router.refresh();
     } catch (e) {
       toastError(e);
@@ -108,8 +108,8 @@ export function ClipGallery({ clips, online, renderOnline }: { clips: Clip[]; on
     <div className="space-y-4">
       {!renderOnline && clips.some((c) => c.status === "queued") && (
         <div className="rounded-2xl border border-warn/25 bg-warn/[0.06] px-4 py-3 text-sm text-muted">
-          <span className="font-medium text-warn">{t("Render worker onlayn emas.")}</span>{" "}
-          {t("MP4 yaratish uchun Windows kompyuterda CS2 + HLAE + CS Demo Manager bilan render worker ishga tushirilishi kerak. Cliplar navbatda saqlanadi — soxta video yaratilmaydi.")}
+          <span className="font-medium text-warn">{t("Video tayyorlash hozircha ishlamayapti.")}</span>{" "}
+          {t("Kliplaringiz saqlanadi va video tayyorlash yoqilishi bilan avtomatik MP4 bo'ladi.")}
         </div>
       )}
 
