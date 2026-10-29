@@ -582,4 +582,19 @@ export const RU: Record<string, string> = {
   "{n} ta foydalanuvchi Telegram'ni ulagan": "Telegram подключили: {n}",
   "{n} ta o'qilmagan": "Непрочитанных: {n}",
   "Ochilmoqda…": "Открывается…",
+
+  // Rekordlar
+  "Eng ko'p o'ldirish": "Больше всего убийств",
+  "Eng ko'p HS": "Больше всего хедшотов",
+  "Eng yuqori HS%": "Лучший HS%",
+  "Eng yaxshi K/D": "Лучший K/D",
+  "Eng ko'p assist": "Больше всего ассистов",
+  "Eng ko'p birinchi o'ldirish": "Больше всего первых убийств",
+  "Bir raundda eng ko'p kill": "Больше всего убийств за раунд",
+  "Eng katta g'alaba": "Самая крупная победа",
+  "Eng kam o'lim": "Меньше всего смертей",
+  "Eng uzun o'yin": "Самый долгий матч",
+  "Hali o'rnatilmagan": "Ещё не установлен",
+  "{a} / {b} ta rekord o'rnatilgan": "Установлено рекордов: {a} / {b}",
+  "ADR, reyting va clutch rekordlari tez orada qo'shiladi.": "Рекорды ADR, рейтинга и клатчей появятся скоро.",
 };
