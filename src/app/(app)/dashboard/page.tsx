@@ -74,7 +74,7 @@ export default async function Dashboard() {
       </section>
 
       {!workerOnline && (
-        <Notice tone="warn" title="Background worker onlayn emas">
+        <Notice tone="warn" title="Fon xizmati (worker) onlayn emas">
           Demo tahlili, match tarixini yangilash va ZIP yaratish worker&apos;da bajariladi. Ishlar navbatda turadi va worker ishga tushishi bilan bajariladi.{" "}
           <Link href="/system" className="underline">Tizim holati</Link>
         </Notice>

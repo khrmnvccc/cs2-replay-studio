@@ -11,7 +11,7 @@ const STEPS = [
   { icon: KeyRound, title: "Steam ulash", text: "Steam OpenID orqali xavfsiz kirish. Parol faqat Steam saytida kiritiladi." },
   { icon: ListChecks, title: "Match topish", text: "Valve match history API (share code) orqali matchlaringiz ro'yxati." },
   { icon: FileSearch, title: "Demo tahlili", text: "Demo fayl serverda parse qilinadi: raundlar, killlar, qurol, headshot." },
-  { icon: Scissors, title: "Kill clip", text: "Bitta yoki barcha killlarni tanlang — oldingi va keyingi soniyalar bilan." },
+  { icon: Scissors, title: "Kill klipi", text: "Bitta yoki barcha killlarni tanlang — oldingi va keyingi soniyalar bilan." },
   { icon: Film, title: "Yuklab olish", text: "CS2 + HLAE orqali haqiqiy MP4 render. Bitta fayl yoki ZIP arxiv." },
 ];
 
