@@ -5,8 +5,7 @@ import { ClipGallery } from "@/components/clip-gallery";
 import { DemoPanel } from "@/components/demo-panel";
 import { DemoUpload } from "@/components/demo-upload";
 import { KillTimeline } from "@/components/kill-timeline";
-import { MapArt } from "@/components/map-art";
-import { MapBadge, ModeTag } from "@/components/match-card";
+import { CardWatermark, MapBadge, ModeTag, mapGradient } from "@/components/match-card";
 import { MatchView } from "@/components/match-view";
 import { Scoreboard } from "@/components/scoreboard";
 import { EmptyState, Notice, SectionTitle } from "@/components/ui/primitives";
@@ -158,15 +157,14 @@ export default async function MatchPage({ params }: PageProps<"/matches/[id]">) 
 
   return (
     <div className="space-y-6">
-      <section className="relative -mx-4 -mt-3 overflow-hidden bg-[#0d1119] text-white sm:mx-0 sm:mt-0 sm:rounded-[1.75rem]">
-        <MapArt map={m.map_name} label={false} className="absolute inset-0 opacity-70" />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/45 to-[#0d1119]" />
+      <section data-tour="match-hero" className="relative overflow-hidden rounded-[1.75rem] text-white shadow-[0_18px_40px_-22px_rgb(16_42_67/0.6)]" style={{ background: mapGradient(m.map_name) }}>
+        <CardWatermark className="-right-10 -top-8 size-64" />
         <div className="relative px-4 pb-6 pt-4 sm:px-6">
           <div className="flex items-center gap-3">
-            <Link href="/matches" className="grid size-11 place-items-center rounded-full bg-black/40 backdrop-blur" aria-label={t("Matchlar")}>
+            <Link href="/matches" className="grid size-11 place-items-center rounded-full bg-white/20" aria-label={t("Matchlar")}>
               <ArrowLeft className="size-5" />
             </Link>
-            <ModeTag m={m} className="px-2.5 py-1 text-xs" />
+            <ModeTag m={m} className="border-white/60 px-2.5 py-1 text-xs text-white" />
             <span className="text-[15px] font-semibold text-white/90">{m.played_at ? formatDate(m.played_at, false, lang) : m.source === "demo_upload" ? t("Yuklangan demo") : ""}</span>
           </div>
 
@@ -175,9 +173,9 @@ export default async function MatchPage({ params }: PageProps<"/matches/[id]">) 
               <div className="truncate text-base font-bold">{board.userStart ? t("Sizning jamoa") : t("1-jamoa")}</div>
             </div>
             <div className="font-display text-6xl font-bold tabular-nums sm:text-7xl">
-              <span className={result === "win" ? "text-neon" : result === "loss" ? "text-white/70" : ""}>{scoreA ?? "–"}</span>
+              <span>{scoreA ?? "–"}</span>
               <span className="mx-2 text-white/40">:</span>
-              <span className={result === "loss" ? "text-danger" : "text-white/70"}>{scoreB ?? "–"}</span>
+              <span className="text-white/70">{scoreB ?? "–"}</span>
             </div>
             <div>
               <div className="truncate text-base font-bold">{board.userStart ? t("Raqiblar") : t("2-jamoa")}</div>
@@ -196,7 +194,7 @@ export default async function MatchPage({ params }: PageProps<"/matches/[id]">) 
             {result && (
               <>
                 <span className="text-white/30">·</span>
-                <span className={cn("font-bold uppercase tracking-wider", result === "win" ? "text-neon" : result === "loss" ? "text-danger" : "text-warn")}>
+                <span className="rounded-full bg-white/20 px-2.5 py-0.5 font-bold uppercase tracking-wider">
                   {t(result === "win" ? "G'alaba" : result === "loss" ? "Mag'lubiyat" : "Durang")}
                 </span>
               </>

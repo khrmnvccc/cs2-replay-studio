@@ -125,7 +125,7 @@ export function ClipGallery({ clips, online, renderOnline }: { clips: Clip[]; on
       )}
 
       {ready.length > 0 && (
-        <div className="flex flex-wrap items-center gap-2">
+        <div data-tour="clips-zip" className="flex flex-wrap items-center gap-2">
           <Button variant="ghost" size="sm" onClick={() => setSelected(selected.size === ready.length ? new Set() : new Set(ready.map((c) => c.id)))}>
             <Check /> {selected.size === ready.length ? t("Tanlovni bekor qilish") : t("Tayyorlarini tanlash")}
           </Button>
@@ -138,7 +138,7 @@ export function ClipGallery({ clips, online, renderOnline }: { clips: Clip[]; on
         <JobItem key={j.id} job={j} online={online} />
       ))}
 
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+      <div data-tour="clips-list" className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
         {clips.map((c) => (
           <div key={c.id} className={cn("group panel overflow-hidden transition", selected.has(c.id) && "neon-ring")}>
             <div className="relative cursor-pointer" onClick={() => c.status === "ready" && setPreview(c)}>

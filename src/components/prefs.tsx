@@ -54,7 +54,7 @@ export function ThemeToggle({ className }: { className?: string }) {
     <button
       type="button"
       onClick={toggle}
-      className={cn("grid size-10 place-items-center rounded-xl border border-line bg-surface text-muted backdrop-blur-xl transition hover:text-fg", className)}
+      className={cn("grid size-10 place-items-center rounded-xl border border-line bg-surface text-muted transition hover:text-fg", className)}
       aria-label={t("Yorug' / tungi rejim")}
       title={t("Yorug' / tungi rejim")}
     >

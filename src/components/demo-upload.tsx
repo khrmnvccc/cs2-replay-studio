@@ -97,7 +97,7 @@ export function DemoUpload({ matchId, maxMb, compact, online }: { matchId?: stri
           if (f && !busy) void start(f);
         }}
         className={cn(
-          "relative overflow-hidden rounded-[1.25rem] border border-dashed backdrop-blur-xl transition-all duration-300",
+          "relative overflow-hidden rounded-[1.25rem] border border-dashed transition-all duration-300",
           compact ? "p-5" : "p-8 sm:p-10",
           drag ? "border-neon/70 bg-neon/[0.06]" : "border-line-strong bg-surface/60 hover:border-neon/40",
         )}

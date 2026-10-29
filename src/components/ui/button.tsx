@@ -11,7 +11,7 @@ const buttonVariants = cva(
       variant: {
         primary:
           "bg-neon text-on-neon hover:bg-neon-dim shadow-[0_8px_20px_-8px_color-mix(in_oklab,var(--color-neon)_70%,transparent)] active:translate-y-px",
-        secondary: "bg-surface text-fg border border-glass-edge shadow-glass backdrop-blur-xl hover:bg-surface-2",
+        secondary: "bg-surface text-fg border border-glass-edge shadow-glass hover:bg-surface-2",
         ghost: "text-muted hover:text-fg hover:bg-fg/5",
         outline: "border border-line-strong text-fg hover:border-neon/50 hover:text-neon",
         violet: "bg-violet/12 text-violet border border-violet/30 hover:bg-violet/20",

@@ -39,7 +39,7 @@ export default async function StatsPage() {
 
   return (
     <div className="space-y-8">
-      <section className="panel flex flex-col gap-5 p-5 sm:flex-row sm:items-center sm:p-6">
+      <section data-tour="stats-profile" className="panel flex flex-col gap-5 p-5 sm:flex-row sm:items-center sm:p-6">
         {steam.avatar_url ? (
           <Image src={steam.avatar_url} alt="" width={72} height={72} className="size-[72px] rounded-2xl" unoptimized />
         ) : (
@@ -76,7 +76,7 @@ export default async function StatsPage() {
 
       <section>
         <SectionTitle title={t("Sizning ko'rsatkichlaringiz")} />
-        <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+        <div data-tour="stats-grid" className="grid grid-cols-2 gap-3 lg:grid-cols-4">
           <Stat label={t("Matchlar")} value={stats.matches} sub={stats.matches ? t("{n} tasida to'liq statistika", { n: stats.matchesWithStats }) : t("Hali match yo'q")} />
           <Stat
             label={t("G'alaba")}
@@ -93,7 +93,7 @@ export default async function StatsPage() {
         </div>
       </section>
 
-      <section>
+      <section data-tour="stats-maps">
         <SectionTitle title={t("Xaritalar bo'yicha")} />
         {maps.length ? (
           <div className="panel divide-y divide-line overflow-hidden">

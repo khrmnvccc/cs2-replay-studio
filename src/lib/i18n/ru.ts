@@ -597,4 +597,5 @@ export const RU: Record<string, string> = {
   "Hali o'rnatilmagan": "Ещё не установлен",
   "{a} / {b} ta rekord o'rnatilgan": "Установлено рекордов: {a} / {b}",
   "ADR, reyting va clutch rekordlari tez orada qo'shiladi.": "Рекорды ADR, рейтинга и клатчей появятся скоро.",
+  "Darslik": "Обучение",
 };

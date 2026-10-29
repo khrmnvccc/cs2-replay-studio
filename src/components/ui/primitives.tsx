@@ -71,7 +71,7 @@ export function Progress({ value, className }: { value: number; className?: stri
 
 export function EmptyState({ icon, title, children, action }: { icon?: React.ReactNode; title: string; children?: React.ReactNode; action?: React.ReactNode }) {
   return (
-    <div className="flex flex-col items-center justify-center rounded-[1.25rem] border border-dashed border-line-strong bg-surface/60 px-6 py-12 text-center backdrop-blur-xl">
+    <div className="flex flex-col items-center justify-center rounded-[1.25rem] border border-dashed border-line-strong bg-surface/60 px-6 py-12 text-center">
       {icon && <div className="mb-4 grid size-12 place-items-center rounded-2xl border border-line bg-surface-2 text-muted [&_svg]:size-5">{icon}</div>}
       <h3 className="font-display text-lg font-semibold">{title}</h3>
       {children && <div className="mt-2 max-w-md text-sm leading-relaxed text-muted">{children}</div>}
@@ -90,7 +90,7 @@ export function Notice({ tone = "neutral", title, children, className }: { tone?
   };
   const titleTones = { neutral: "text-fg", warn: "text-warn", danger: "text-danger", neon: "text-neon", violet: "text-violet" };
   return (
-    <div className={cn("rounded-2xl border px-4 py-3 text-sm leading-relaxed text-muted backdrop-blur-xl", tones[tone], className)}>
+    <div className={cn("rounded-2xl border px-4 py-3 text-sm leading-relaxed text-muted", tones[tone], className)}>
       {title && <div className={cn("mb-0.5 font-medium", titleTones[tone])}>{title}</div>}
       {children}
     </div>

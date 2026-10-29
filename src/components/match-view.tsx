@@ -48,14 +48,14 @@ export function MatchView({ panels, initial = "board" }: { panels: Record<MatchT
   };
   return (
     <div className="space-y-6">
-      <div className="grid gap-3 lg:grid-cols-2">
+      <div data-tour="match-actions" className="grid gap-3 lg:grid-cols-2">
         <ActionCard icon={<Clapperboard />} title="Kompilyatsiya" text="Barcha killlaringiz bitta videoda" soon />
         <ActionCard icon={<Tv />} title="To'liq o'yinni yozish" text="Barcha raundlar · Sizning POV · Bitta video" soon />
         <ActionCard icon={<Scissors />} title="Montaj yaratish" text="Montajga qo'shmoqchi bo'lgan o'ldirishlarni belgilang." onClick={() => go("kills")} />
         <ActionCard icon={<Crosshair />} title="Raundni yozish" text="Sizning POV: spawndan o'limgacha" soon />
       </div>
 
-      <div id="match-tabs" className="scroll-mt-20">
+      <div id="match-tabs" data-tour="match-tabs" className="scroll-mt-20">
         <div className="no-scrollbar -mx-4 flex gap-1 overflow-x-auto border-b border-line px-4">
           {TABS.map(({ id, label, soon }) => (
             <button

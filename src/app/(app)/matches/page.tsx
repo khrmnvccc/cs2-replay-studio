@@ -73,28 +73,32 @@ export default async function MatchesPage({ searchParams }: PageProps<"/matches"
       <p className="text-[15px] text-muted">{t("{n} ta o'yin tahlil qilingan", { n: all.filter(hasDemo).length })}</p>
 
       <div className="grid grid-cols-2 gap-3">
-        <RefreshMatchesButton enabled={steam.history_enabled} initialJobs={jobs} showJobs={false} label="Sinxronlash" className="h-14 w-full rounded-2xl text-[15px]" />
-        <UploadButton maxMb={env().DEMO_MAX_MB} className="h-14 w-full rounded-2xl" />
+        <div data-tour="sync">
+          <RefreshMatchesButton enabled={steam.history_enabled} initialJobs={jobs} showJobs={false} label="Sinxronlash" className="h-14 w-full rounded-2xl text-[15px]" />
+        </div>
+        <div data-tour="upload">
+          <UploadButton maxMb={env().DEMO_MAX_MB} className="h-14 w-full rounded-2xl" />
+        </div>
       </div>
 
-      <div className="grid grid-cols-3 gap-1 rounded-[1.25rem] border border-line bg-surface-2 p-1">
+      <div data-tour="demo-tabs" className="grid grid-cols-3 gap-1 rounded-[1.25rem] bg-surface p-1 shadow-[0_6px_18px_-14px_rgb(16_42_67/0.35)]">
         {demoTabs.map(({ id, label, icon: Icon, n, tone }) => (
           <Link
             key={id}
             href={href({ demo: id === "all" ? undefined : id })}
             scroll={false}
-            className={cn("flex flex-col items-center gap-1 rounded-2xl py-2.5 text-sm font-semibold transition", demo === id ? "bg-surface text-fg shadow-sm ring-1 ring-line" : "text-muted")}
+            className={cn("flex flex-col items-center gap-1 rounded-2xl py-2.5 text-sm font-semibold transition", demo === id ? "bg-neon text-on-neon shadow-sm" : "text-muted")}
           >
             <span className="flex items-center gap-2">
-              <Icon className={cn("size-5", tone)} />
-              <span className={cn("grid min-w-6 place-items-center rounded-full px-1.5 text-xs", demo === id ? "bg-fg text-bg" : "bg-fg/10")}>{n}</span>
+              <Icon className={cn("size-5", demo !== id && tone)} />
+              <span className={cn("grid min-w-6 place-items-center rounded-full px-1.5 text-xs", demo === id ? "bg-white/25 text-white" : "bg-fg/10")}>{n}</span>
             </span>
             {t(label)}
           </Link>
         ))}
       </div>
 
-      <div className="no-scrollbar -mx-4 flex gap-2 overflow-x-auto px-4">
+      <div data-tour="modes" className="no-scrollbar -mx-4 flex gap-2 overflow-x-auto px-4">
         {MODES.map((id) => {
           const n = byDemo.filter((m) => modeOf(m) === id).length;
           const active = mode === id;
@@ -105,11 +109,11 @@ export default async function MatchesPage({ searchParams }: PageProps<"/matches"
               scroll={false}
               className={cn(
                 "flex shrink-0 items-center gap-2 rounded-full border px-4 py-2.5 text-[15px] font-semibold transition",
-                active ? "border-neon bg-neon/10 text-neon" : "border-line bg-surface-2 text-fg",
+                active ? "border-neon bg-neon text-on-neon" : "border-transparent bg-surface text-fg shadow-[0_4px_14px_-10px_rgb(16_42_67/0.4)]",
               )}
             >
               {t(MODE_LABEL[id])}
-              <span className="text-sm font-normal text-subtle">{n}</span>
+              <span className={cn("text-sm font-normal", active ? "text-white/75" : "text-subtle")}>{n}</span>
             </Link>
           );
         })}
@@ -120,7 +124,7 @@ export default async function MatchesPage({ searchParams }: PageProps<"/matches"
       </Suspense>
 
       {groups.length ? (
-        <div className="space-y-5 pt-1">
+        <div data-tour="match-list" className="space-y-5 pt-1">
           {groups.map((g) => {
             const w = g.items.filter((m) => m.result === "win").length;
             const l = g.items.filter((m) => m.result === "loss").length;

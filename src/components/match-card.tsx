@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { MapArt } from "@/components/map-art";
 import { makeT, type Lang } from "@/lib/i18n";
 import type { MatchRow } from "@/lib/types";
 import { mapMeta } from "@shared/maps";
@@ -24,7 +23,7 @@ export function ModeTag({ m, className }: { m: Pick<MatchRow, "game_mode">; clas
     <span
       className={cn(
         "inline-flex items-center rounded-md border px-1.5 py-px text-[10px] font-semibold uppercase tracking-wider",
-        mode === "premier" ? "border-fuchsia-400/60 text-fuchsia-300" : mode === "competitive" ? "border-amber-300/70 text-amber-200" : "border-white/40 text-white/80",
+        mode === "premier" ? "border-fuchsia-500/50 text-fuchsia-600" : mode === "competitive" ? "border-amber/60 text-[#b4570a]" : "border-line-strong text-muted",
         className,
       )}
     >
@@ -48,44 +47,68 @@ export function MapBadge({ map, className }: { map: string | null; className?: s
 }
 
 export function scoreTone(m: Pick<MatchRow, "result">) {
-  return m.result === "win" ? "text-neon" : m.result === "loss" ? "text-danger" : "text-white";
+  return m.result === "win" ? "text-neon" : m.result === "loss" ? "text-danger" : "text-fg";
 }
 
 export function kdTone(v: number | null) {
-  if (v == null) return "text-white/60";
-  return v >= 1.2 ? "text-violet-300" : v >= 1 ? "text-neon" : v >= 0.8 ? "text-amber-300" : "text-danger";
+  if (v == null) return "text-subtle";
+  return v >= 1.2 ? "text-violet-600" : v >= 1 ? "text-neon" : v >= 0.8 ? "text-[#b4570a]" : "text-danger";
 }
 
 const time = (iso: string) => new Intl.DateTimeFormat("ru-RU", { hour: "2-digit", minute: "2-digit", timeZone: "Asia/Tashkent" }).format(new Date(iso));
+
+/** Xarita rangidagi rangli karta foni (Laylak "reys" kartalari uslubida). */
+export function mapGradient(map: string | null) {
+  const h = mapMeta(map).hue;
+  return `linear-gradient(135deg, hsl(${h} 58% 47%) 0%, hsl(${(h + 12) % 360} 62% 33%) 100%)`;
+}
+
+export function CardWatermark({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 100 100" className={cn("pointer-events-none absolute opacity-[0.14]", className)} aria-hidden>
+      <path d="M50 4 96 38 78 96H22L4 38Z" fill="white" />
+      <circle cx="50" cy="52" r="16" fill="none" stroke="white" strokeWidth="5" />
+    </svg>
+  );
+}
 
 export function MatchCard({ m, lang = "uz" }: { m: MatchRow; lang?: Lang }) {
   const t = makeT(lang);
   const hasScore = m.score_own != null && m.score_enemy != null;
   const ratio = m.kills != null && m.deaths != null ? (m.deaths ? m.kills / m.deaths : m.kills) : null;
-  const when = m.played_at ?? m.created_at;
   return (
     <Link
       href={`/matches/${m.id}`}
-      className="group relative block overflow-hidden rounded-[1.5rem] bg-[#121722] text-white shadow-[0_14px_30px_-18px_rgb(0_0_0/0.6)] transition active:scale-[0.99]"
+      className="group relative block overflow-hidden rounded-[1.75rem] text-white shadow-[0_14px_30px_-18px_rgb(16_42_67/0.55)] transition active:scale-[0.99]"
+      style={{ background: mapGradient(m.map_name) }}
     >
-      <MapArt map={m.map_name} label={false} className="absolute inset-0 opacity-60 transition duration-500 group-hover:scale-[1.04]" />
-      <div className="absolute inset-0 bg-gradient-to-r from-[#0b0f17]/95 via-[#0b0f17]/70 to-[#0b0f17]/40" />
-      <span className={cn("absolute inset-y-0 left-0 w-1.5", m.result === "win" ? "bg-neon" : m.result === "loss" ? "bg-danger" : "bg-white/25")} />
-      <div className="relative flex items-center gap-3.5 p-4 pl-5">
-        <MapBadge map={m.map_name} className="size-14 text-base" />
+      <CardWatermark className="-right-6 -top-4 size-44 transition duration-500 group-hover:rotate-6" />
+      <div className="relative flex items-start gap-3 p-5 pb-3">
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2">
-            <span className="truncate text-lg font-bold">{mapMeta(m.map_name).name}</span>
-            <ModeTag m={m} />
+            <span className="truncate text-xl font-extrabold tracking-tight">{mapMeta(m.map_name).name}</span>
+            <ModeTag m={m} className="border-white/60 text-white" />
           </div>
-          <div className="mt-0.5 text-sm text-white/70">{m.played_at ? time(when) : m.source === "demo_upload" ? t("Yuklangan demo") : t("Sana aniqlanmoqda")}</div>
+          <div className="mt-0.5 text-[13px] font-semibold uppercase tracking-wider text-white/70">
+            {m.played_at ? time(m.played_at) : m.source === "demo_upload" ? t("Yuklangan demo") : t("Sana aniqlanmoqda")}
+          </div>
         </div>
-        <div className={cn("font-display text-3xl font-bold tabular-nums", scoreTone(m))}>{hasScore ? `${m.score_own} : ${m.score_enemy}` : "– : –"}</div>
+        {m.result && (
+          <span className="shrink-0 rounded-full bg-white/20 px-3 py-1 text-xs font-bold uppercase tracking-wider">
+            {t(m.result === "win" ? "G'alaba" : m.result === "loss" ? "Mag'lubiyat" : "Durang")}
+          </span>
+        )}
       </div>
-      <div className="relative mx-5 border-t border-white/10" />
-      <div className="relative flex items-center justify-between px-5 py-3 font-mono text-sm">
-        <span className="text-white/80">{m.kills != null ? `${m.kills} / ${m.deaths ?? 0} / ${m.assists ?? 0}` : t("Demo tahlil qilinmagan")}</span>
-        <span className={cn("font-semibold", kdTone(ratio))}>{ratio != null ? kd(m.kills, m.deaths) : ""}</span>
+      <div className="relative flex items-end justify-between px-5 pb-5">
+        <div>
+          <div className="text-[11px] font-bold uppercase tracking-wider text-white/65">{t("Hisob")}</div>
+          <div className="font-display text-4xl font-extrabold tabular-nums leading-none">{hasScore ? `${m.score_own} : ${m.score_enemy}` : "– : –"}</div>
+        </div>
+        <div className="text-right">
+          <div className="text-[11px] font-bold uppercase tracking-wider text-white/65">K / D / A</div>
+          <div className="font-mono text-lg font-semibold">{m.kills != null ? `${m.kills} / ${m.deaths ?? 0} / ${m.assists ?? 0}` : "—"}</div>
+          {ratio != null && <div className="text-xs font-semibold text-white/80">K/D {kd(m.kills, m.deaths)}</div>}
+        </div>
       </div>
     </Link>
   );

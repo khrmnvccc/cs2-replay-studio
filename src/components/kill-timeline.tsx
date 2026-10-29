@@ -56,7 +56,7 @@ export function KillTimeline({ kills, rounds, tickrate, existingClipKillIds, pre
   if (!kills.length) return null;
   return (
     <div className="space-y-4">
-      <div className="panel z-20 flex flex-wrap items-center gap-3 p-3 backdrop-blur-xl sm:sticky sm:top-16 lg:top-4">
+      <div className="panel z-20 flex flex-wrap items-center gap-3 p-3 sm:sticky sm:top-16 lg:top-4">
         <label className="flex items-center gap-2 text-sm">
           <input type="checkbox" checked={onlyMine} onChange={(e) => setOnlyMine(e.target.checked)} />
           {t("Faqat mening killlarim / o'limlarim")}

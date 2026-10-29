@@ -12,6 +12,7 @@ import {
   CheckCircle2,
   ChevronRight,
   CircleAlert,
+  CircleHelp,
   Clock,
   Download,
   Play,
@@ -33,6 +34,7 @@ import {
 import { ListGroup, Sheet } from "@/components/ui/sheet";
 import { LangSwitch } from "@/components/prefs";
 import { useT } from "@/components/i18n";
+import { TourProvider, useTour } from "@/components/tour";
 import { api, toastError } from "@/lib/client/api";
 import { cn } from "@/lib/utils";
 
@@ -47,10 +49,10 @@ const useChrome = () => {
 };
 
 const TABS = [
-  { href: "/matches", label: "Matchlar", icon: LayoutGrid },
-  { href: "/clips", label: "Kliplar", icon: PlaySquare },
-  { href: "#menu", label: "Menyu", icon: Menu },
-  { href: "/stats", label: "Statistika", icon: BarChart3 },
+  { href: "/matches", label: "Matchlar", icon: LayoutGrid, tour: "nav-matches" },
+  { href: "/clips", label: "Kliplar", icon: PlaySquare, tour: "nav-clips" },
+  { href: "#menu", label: "Menyu", icon: Menu, tour: "nav-menu" },
+  { href: "/stats", label: "Statistika", icon: BarChart3, tour: "nav-stats" },
 ] as const;
 
 const TITLES: [string, string, typeof LayoutGrid][] = [
@@ -72,7 +74,7 @@ export function AppChrome({ user, children }: { user: ChromeUser; children: Reac
   const [unread, setUnread] = useState(user.unread);
   return (
     <ChromeCtx.Provider value={{ user, unread, openMenu: () => setMenu(true), openBell: () => setBell(true) }}>
-      {children}
+      <TourProvider>{children}</TourProvider>
       <MenuSheet open={menu} onOpenChange={setMenu} user={user} />
       <BellSheet open={bell} onOpenChange={setBell} onRead={() => setUnread(0)} />
     </ChromeCtx.Provider>
@@ -95,10 +97,16 @@ export function PageTitle() {
 
 export function HeaderActions() {
   const { user, unread, openMenu, openBell } = useChrome();
+  const tour = useTour();
   const t = useT();
   return (
-    <div className="flex items-center gap-1 rounded-full border border-line bg-surface p-1">
-      <button onClick={openBell} className="relative grid size-10 place-items-center rounded-full text-muted transition hover:text-fg" aria-label={t("Bildirishnomalar")}>
+    <div className="flex items-center gap-1 rounded-full bg-surface p-1 shadow-[0_6px_18px_-12px_rgb(16_42_67/0.35)]">
+      {tour.available && (
+        <button data-tour="help" onClick={tour.start} className="grid size-10 place-items-center rounded-full text-muted transition hover:text-fg" aria-label={t("Darslik")} title={t("Darslik")}>
+          <CircleHelp className="size-5" />
+        </button>
+      )}
+      <button data-tour="bell" onClick={openBell} className="relative grid size-10 place-items-center rounded-full text-muted transition hover:text-fg" aria-label={t("Bildirishnomalar")}>
         <Bell className="size-5" />
         {unread > 0 && <span className="absolute right-2 top-2 size-2.5 rounded-full bg-danger ring-2 ring-surface" />}
       </button>
@@ -118,10 +126,10 @@ export function BottomNav() {
   const t = useT();
   const { openMenu } = useChrome();
   return (
-    <nav className="glass fixed inset-x-3 bottom-[max(0.75rem,env(safe-area-inset-bottom))] z-40 grid grid-cols-4 rounded-[1.75rem] p-1.5 lg:hidden">
-      {TABS.map(({ href, label, icon: Icon }) => {
+    <nav className="fixed inset-x-3 bottom-[max(0.75rem,env(safe-area-inset-bottom))] z-40 grid grid-cols-4 rounded-[1.75rem] bg-surface p-1.5 shadow-[0_12px_32px_-14px_rgb(16_42_67/0.35)] lg:hidden">
+      {TABS.map(({ href, label, icon: Icon, tour }) => {
         const active = href !== "#menu" && isActive(path, href);
-        const cls = cn("flex min-w-0 flex-col items-center gap-1 rounded-[1.25rem] py-2 text-[11px] font-medium transition", active ? "bg-neon/12 text-neon" : "text-muted");
+        const cls = cn("flex min-w-0 flex-col items-center gap-1 rounded-[1.25rem] py-2 text-[11px] font-bold transition", active ? "bg-neon text-on-neon" : "text-muted");
         const inner = (
           <>
             <Icon className="size-5" />
@@ -129,11 +137,11 @@ export function BottomNav() {
           </>
         );
         return href === "#menu" ? (
-          <button key={href} type="button" onClick={openMenu} className={cls}>
+          <button key={href} type="button" data-tour={tour} onClick={openMenu} className={cls}>
             {inner}
           </button>
         ) : (
-          <Link key={href} href={href} className={cls}>
+          <Link key={href} href={href} data-tour={tour} className={cls}>
             {inner}
           </Link>
         );
@@ -148,20 +156,21 @@ export function SideNav() {
   const { user, openMenu } = useChrome();
   const items = [
     ...TABS.filter((x) => x.href !== "#menu"),
-    { href: "/settings", label: "Sozlamalar", icon: Settings },
-    ...(user.owner ? [{ href: "/system", label: "Tizim holati", icon: Server }] : []),
+    { href: "/settings", label: "Sozlamalar", icon: Settings, tour: undefined },
+    ...(user.owner ? [{ href: "/system", label: "Tizim holati", icon: Server, tour: undefined }] : []),
   ];
   return (
     <nav className="flex flex-col gap-0.5">
-      {items.map(({ href, label, icon: Icon }) => {
+      {items.map(({ href, label, icon: Icon, tour }) => {
         const active = isActive(path, href);
         return (
           <Link
             key={href}
             href={href}
+            data-tour={tour}
             className={cn(
               "group flex items-center gap-3 rounded-xl px-3 py-2.5 text-[14px] font-medium transition-colors",
-              active ? "bg-neon/10 text-neon" : "text-muted hover:bg-fg/[0.04] hover:text-fg",
+              active ? "bg-neon text-on-neon shadow-sm" : "text-muted hover:bg-fg/[0.04] hover:text-fg",
             )}
           >
             <Icon className="size-[18px]" />
@@ -169,7 +178,7 @@ export function SideNav() {
           </Link>
         );
       })}
-      <button onClick={openMenu} className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-left text-[14px] font-medium text-muted transition-colors hover:bg-fg/[0.04] hover:text-fg">
+      <button data-tour="nav-menu" onClick={openMenu} className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-left text-[14px] font-medium text-muted transition-colors hover:bg-fg/[0.04] hover:text-fg">
         <Menu className="size-[18px]" />
         {t("Menyu")}
       </button>

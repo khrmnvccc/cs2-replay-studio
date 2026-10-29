@@ -243,6 +243,7 @@ export function AdminNotifications({ templates, bot, linkedCount, sent, sentCoun
             </div>
           ) : (
             <>
+              <div data-tour="admin-templates" className="space-y-6">
               {CATEGORIES.map(([cat, label], ci) => {
                 const items = list.filter((x) => x.category === cat);
                 if (!items.length) return null;
@@ -280,9 +281,10 @@ export function AdminNotifications({ templates, bot, linkedCount, sent, sentCoun
                   </section>
                 );
               })}
+              </div>
 
               {draft && (
-                <section id="tpl-editor" className="scroll-mt-24 space-y-5 border-t border-line pt-6">
+                <section id="tpl-editor" data-tour="admin-editor" className="scroll-mt-24 space-y-5 border-t border-line pt-6">
                   <div>
                     <h2 className="text-2xl font-bold tracking-tight">{draft.title_uz}</h2>
                     <span className="mt-2 inline-flex items-center gap-2 rounded-full border border-line bg-surface px-3 py-1.5 text-sm text-muted">

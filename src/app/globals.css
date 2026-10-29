@@ -2,33 +2,36 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
-/* Liquid glass mavzusi: yorug' (standart) va tungi rejim. Ranglar CSS o'zgaruvchilarida —
-   html.dark klassi ularni almashtiradi, shuning uchun komponentlar ikkala rejimda ishlaydi. */
+/* Laylak uslubi: och kulrang-ko'k fon, oq kartalar, to'q ko'k asosiy rang, to'q sariq urg'u.
+   html.dark klassi ranglarni tungi rejimga almashtiradi. */
 @theme {
-  --color-bg: #eef2f7;
-  --color-surface: rgb(255 255 255 / 0.72);
-  --color-surface-2: rgb(241 245 249 / 0.85);
-  --color-panel: rgb(255 255 255 / 0.8);
-  --color-glass: rgb(255 255 255 / 0.86);
-  --color-surface-3: #e2e8f0;
-  --color-line: rgb(15 23 42 / 0.08);
-  --color-line-strong: rgb(15 23 42 / 0.14);
-  --color-fg: #0f172a;
-  --color-muted: #64748b;
-  --color-subtle: #94a3b8;
-  --color-neon: #3b82f6;
-  --color-neon-dim: #2563eb;
+  --color-bg: #eef3f8;
+  --color-surface: #ffffff;
+  --color-surface-2: #f4f7fb;
+  --color-panel: #ffffff;
+  --color-glass: #ffffff;
+  --color-surface-3: #e3eaf2;
+  --color-line: #e3eaf2;
+  --color-line-strong: #cfdae6;
+  --color-fg: #102a43;
+  --color-muted: #5b7083;
+  --color-subtle: #8fa3b5;
+  --color-neon: #1d5c8d;
+  --color-neon-dim: #164a73;
   --color-on-neon: #ffffff;
+  --color-navy: #12263d;
+  --color-accent: #e8792b;
+  --color-amber: #f5a524;
   --color-violet: #6366f1;
-  --color-danger: #e11d48;
+  --color-danger: #e5484d;
   --color-warn: #d97706;
-  --color-ct: #2563eb;
-  --color-tside: #c2410c;
-  --color-glass-edge: rgb(255 255 255 / 0.75);
-  --shadow-glass: 0 1px 0 rgb(255 255 255 / 0.6) inset, 0 10px 30px -12px rgb(15 23 42 / 0.12);
+  --color-ct: #1d5c8d;
+  --color-tside: #e8792b;
+  --color-glass-edge: #e3eaf2;
+  --shadow-glass: 0 1px 2px rgb(16 42 67 / 0.04), 0 8px 24px -14px rgb(16 42 67 / 0.18);
 
-  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
-  --font-display: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-jakarta), var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-jakarta), var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-jetbrains), ui-monospace, monospace;
 
   --animate-fade-up: fade-up 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) both;
@@ -50,27 +53,30 @@
 }
 
 html.dark {
-  --color-bg: #0a0e16;
-  --color-surface: rgb(22 28 40 / 0.62);
-  --color-panel: rgb(22 28 40 / 0.78);
-  --color-glass: rgb(17 22 33 / 0.88);
-  --color-surface-2: rgb(30 38 52 / 0.7);
-  --color-surface-3: #273244;
-  --color-line: rgb(255 255 255 / 0.08);
-  --color-line-strong: rgb(255 255 255 / 0.15);
-  --color-fg: #e8edf5;
-  --color-muted: #94a3b8;
-  --color-subtle: #64748b;
-  --color-neon: #60a5fa;
-  --color-neon-dim: #3b82f6;
-  --color-on-neon: #06121f;
+  --color-bg: #0b1726;
+  --color-surface: #13243a;
+  --color-surface-2: #182c45;
+  --color-panel: #13243a;
+  --color-glass: #13243a;
+  --color-surface-3: #22395a;
+  --color-line: #1f3550;
+  --color-line-strong: #2b4566;
+  --color-fg: #e6eef6;
+  --color-muted: #9db0c3;
+  --color-subtle: #6f869c;
+  --color-neon: #4a9be0;
+  --color-neon-dim: #3a86c8;
+  --color-on-neon: #ffffff;
+  --color-navy: #0a1828;
+  --color-accent: #f08a3c;
+  --color-amber: #f5b13d;
   --color-violet: #818cf8;
-  --color-danger: #fb7185;
+  --color-danger: #f26b70;
   --color-warn: #fbbf24;
-  --color-ct: #60a5fa;
-  --color-tside: #fb923c;
-  --color-glass-edge: rgb(255 255 255 / 0.09);
-  --shadow-glass: 0 1px 0 rgb(255 255 255 / 0.06) inset, 0 16px 40px -18px rgb(0 0 0 / 0.7);
+  --color-ct: #4a9be0;
+  --color-tside: #f08a3c;
+  --color-glass-edge: #1f3550;
+  --shadow-glass: 0 10px 30px -18px rgb(0 0 0 / 0.7);
   color-scheme: dark;
 }
 
@@ -86,19 +92,6 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* Fon dog'lari alohida qatlamda: background-attachment: fixed telefonlarda aylantirishni sekinlashtiradi */
-body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  background:
-    radial-gradient(42rem 30rem at 8% -6%, rgb(56 189 248 / 0.18), transparent 70%),
-    radial-gradient(40rem 32rem at 100% 0%, rgb(59 130 246 / 0.16), transparent 70%),
-    radial-gradient(48rem 36rem at 60% 110%, rgb(139 92 246 / 0.12), transparent 70%);
-}
-
 ::selection {
   background: color-mix(in oklab, var(--color-neon) 35%, transparent);
   color: var(--color-fg);
@@ -107,17 +100,15 @@ body::before {
 @layer components {
   .glass {
     background: var(--color-glass);
-    backdrop-filter: blur(22px) saturate(180%);
-    -webkit-backdrop-filter: blur(22px) saturate(180%);
     border: 1px solid var(--color-glass-edge);
     box-shadow: var(--shadow-glass);
   }
-  /* Kartalarda blur yo'q (har biri telefonda alohida qayta chiziladi) — faqat menyu va sarlavhada */
+  /* Laylak uslubi: oq karta, yumshoq soya, katta radius */
   .panel {
     background: var(--color-panel);
     border: 1px solid var(--color-glass-edge);
     box-shadow: var(--shadow-glass);
-    border-radius: 1.25rem;
+    border-radius: 1.5rem;
   }
   .grid-bg {
     background-image:
@@ -127,7 +118,7 @@ body::before {
     mask-image: radial-gradient(ellipse at 50% 0%, black 30%, transparent 75%);
   }
   .text-gradient {
-    background: linear-gradient(100deg, var(--color-neon) 0%, #38bdf8 55%, var(--color-violet) 100%);
+    background: linear-gradient(100deg, var(--color-neon) 0%, var(--color-accent) 100%);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
@@ -137,9 +128,9 @@ body::before {
       0 8px 40px -12px color-mix(in oklab, var(--color-neon) 55%, transparent);
   }
   .label {
-    font-size: 0.6875rem;
-    font-weight: 600;
-    letter-spacing: 0.1em;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--color-subtle);
   }

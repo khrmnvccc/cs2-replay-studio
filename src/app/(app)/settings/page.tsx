@@ -49,7 +49,7 @@ export default async function SettingsPage() {
         </Card>
       </section>
 
-      <section id="history" className="scroll-mt-24">
+      <section id="history" data-tour="settings-history" className="scroll-mt-24">
         <SectionTitle
           eyebrow={t("Valve match tarixi API")}
           title={t("Match tarixi")}
