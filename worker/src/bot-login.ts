@@ -3,6 +3,7 @@
 import fs from "node:fs";
 import readline from "node:readline/promises";
 import { stdin, stdout } from "node:process";
+import { Writable } from "node:stream";
 import SteamUser from "steam-user";
 
 const ENV = ".env";
@@ -16,10 +17,22 @@ function setEnv(lines: string[], key: string, value: string): string[] {
 
 async function main() {
   if (!fs.existsSync(ENV)) throw new Error(".env topilmadi — avval worker'ni bir marta sozlang");
-  const rl = readline.createInterface({ input: stdin, output: stdout });
+  let muted = false;
+  const output = new Writable({
+    write(chunk, _enc, cb) {
+      if (!muted) stdout.write(chunk);
+      cb();
+    },
+  });
+  const rl = readline.createInterface({ input: stdin, output, terminal: stdin.isTTY });
   console.log("Bot Steam akkaunti (asosiy akkauntingiz EMAS). Parol saqlanmaydi.\n");
   const accountName = (await rl.question("Bot login: ")).trim();
-  const password = (await rl.question("Bot paroli: ")).trim();
+  // Parol ekranda ko'rinmasin (rasmga tushib qolmasligi uchun)
+  const asking = rl.question("Bot paroli (yozganingiz ko'rinmaydi, yozib Enter bosing): ");
+  muted = true;
+  const password = (await asking).trim();
+  muted = false;
+  stdout.write("\n");
 
   const client = new SteamUser();
   client.on("steamGuard", async (domain: string | null, callback: (code: string) => void) => {
