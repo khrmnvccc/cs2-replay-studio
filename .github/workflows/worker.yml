@@ -1,0 +1,41 @@
+# Bulutdagi worker: kompyuter yoqilmasa ham har ~10 daqiqada navbatdagi ishlarni bajaradi
+# (demo tahlili, GC orqali match ma'lumoti, Valve demo yuklash, ZIP). Ochiq repo uchun bepul.
+# Kerakli secretlar (Settings → Secrets and variables → Actions):
+#   SUPABASE_SERVICE_ROLE_KEY  — Supabase service_role kaliti
+#   STEAM_BOT_REFRESH_TOKEN    — bot-login.bat yozgan qiymat (worker/.env)
+name: Worker
+
+on:
+  schedule:
+    - cron: "*/10 * * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: worker
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: worker/package-lock.json
+      - name: Install
+        working-directory: worker
+        run: npm ci
+      - name: Run worker until the queue is empty
+        working-directory: worker
+        env:
+          SUPABASE_URL: https://cwwpekjrszklwfrhtein.supabase.co
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          STEAM_BOT_REFRESH_TOKEN: ${{ secrets.STEAM_BOT_REFRESH_TOKEN }}
+          WORKER_ID: cloud
+          WORKER_CAPABILITIES: ${{ secrets.STEAM_BOT_REFRESH_TOKEN != '' && 'parse,zip,sync,gc' || 'parse,zip,sync' }}
+          WORKER_EXIT_WHEN_IDLE: "true"
+          WORKER_MAX_MINUTES: "45"
+        run: npx tsx src/index.ts

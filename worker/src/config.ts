@@ -25,6 +25,10 @@ const schema = z.object({
   CSDM_PATH: z.string().default("csdm"),
   RENDER_COMMAND: z.string().optional(),
   RENDER_TIMEOUT_MINUTES: z.coerce.number().positive().default(20),
+  /** Bulutda vaqti-vaqti bilan ishga tushirish (GitHub Actions): navbat bo'shaganda chiqib ketadi */
+  WORKER_EXIT_WHEN_IDLE: z.stringbool().default(false),
+  /** Shu daqiqadan keyin yangi ish olmaydi (keyingi ishga tushirishga qoldiradi) */
+  WORKER_MAX_MINUTES: z.coerce.number().positive().optional(),
 });
 
 export type Config = z.infer<typeof schema> & { capabilities: Set<string> };

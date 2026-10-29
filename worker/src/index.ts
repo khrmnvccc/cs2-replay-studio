@@ -46,6 +46,7 @@ async function main() {
   process.on("SIGINT", shutdown);
   process.on("SIGTERM", shutdown);
   await Promise.all(loops);
+  if (config.WORKER_EXIT_WHEN_IDLE) console.log("[worker] navbat bo'sh — keyingi ishga tushirishgacha to'xtadi");
   process.exit(0);
 }
 

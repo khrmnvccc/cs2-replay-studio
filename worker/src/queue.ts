@@ -42,7 +42,7 @@ export class Queue {
       id: this.config.WORKER_ID,
       capabilities: [...this.config.capabilities],
       hostname: os.hostname(),
-      version: "1.0.0",
+      version: this.config.WORKER_EXIT_WHEN_IDLE ? "scheduled" : "1.0.0",
       last_seen_at: new Date().toISOString(),
     });
   }
@@ -52,7 +52,8 @@ export class Queue {
   }
 
   async runLoop(slot: number, types: JobType[]) {
-    while (!this.stopping) {
+    const deadline = this.config.WORKER_MAX_MINUTES ? Date.now() + this.config.WORKER_MAX_MINUTES * 60_000 : Infinity;
+    while (!this.stopping && Date.now() < deadline) {
       let job: Job | null = null;
       try {
         const { data, error } = await this.db.rpc("claim_job", { p_worker_id: `${this.config.WORKER_ID}#${slot}`, p_types: types });
@@ -62,6 +63,7 @@ export class Queue {
         console.error("[queue] claim xatosi:", (e as Error).message);
       }
       if (!job) {
+        if (this.config.WORKER_EXIT_WHEN_IDLE) return;
         await new Promise((r) => setTimeout(r, 3000));
         continue;
       }
