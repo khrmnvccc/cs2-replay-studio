@@ -1,13 +1,20 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { createContext, useContext, useState, type ReactNode } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import {
   BarChart3,
+  Archive,
   Bell,
+  BellRing,
+  CheckCircle2,
   ChevronRight,
-  Compass,
+  CircleAlert,
+  Clock,
+  Download,
+  Play,
   LayoutGrid,
   LogOut,
   Map as MapIcon,
@@ -26,11 +33,12 @@ import {
 import { ListGroup, Sheet } from "@/components/ui/sheet";
 import { LangSwitch } from "@/components/prefs";
 import { useT } from "@/components/i18n";
+import { api, toastError } from "@/lib/client/api";
 import { cn } from "@/lib/utils";
 
-export type ChromeUser = { name: string; avatarUrl: string | null; historyEnabled: boolean; owner: boolean };
+export type ChromeUser = { name: string; avatarUrl: string | null; historyEnabled: boolean; owner: boolean; unread: number; telegram: "linked" | "unlinked" | "unavailable" };
 
-type Ctx = { user: ChromeUser; openMenu: () => void; openBell: () => void };
+type Ctx = { user: ChromeUser; unread: number; openMenu: () => void; openBell: () => void };
 const ChromeCtx = createContext<Ctx | null>(null);
 const useChrome = () => {
   const c = useContext(ChromeCtx);
@@ -41,7 +49,6 @@ const useChrome = () => {
 const TABS = [
   { href: "/matches", label: "Matchlar", icon: LayoutGrid },
   { href: "/clips", label: "Kliplar", icon: PlaySquare },
-  { href: "/reels", label: "Reels", icon: Compass },
   { href: "#menu", label: "Menyu", icon: Menu },
   { href: "/stats", label: "Statistika", icon: BarChart3 },
 ] as const;
@@ -49,10 +56,10 @@ const TABS = [
 const TITLES: [string, string, typeof LayoutGrid][] = [
   ["/matches", "Matchlar", LayoutGrid],
   ["/clips", "Kliplar", PlaySquare],
-  ["/reels", "Reels", Compass],
   ["/stats", "Statistika", BarChart3],
   ["/settings", "Sozlamalar", Settings],
   ["/system", "Tizim holati", Server],
+  ["/admin/notifications", "Bildirishnomalar", BellRing],
 ];
 
 const isActive = (path: string, href: string) => path === href || path.startsWith(`${href}/`);
@@ -61,11 +68,12 @@ const isActive = (path: string, href: string) => path === href || path.startsWit
 export function AppChrome({ user, children }: { user: ChromeUser; children: ReactNode }) {
   const [menu, setMenu] = useState(false);
   const [bell, setBell] = useState(false);
+  const [unread, setUnread] = useState(user.unread);
   return (
-    <ChromeCtx.Provider value={{ user, openMenu: () => setMenu(true), openBell: () => setBell(true) }}>
+    <ChromeCtx.Provider value={{ user, unread, openMenu: () => setMenu(true), openBell: () => setBell(true) }}>
       {children}
       <MenuSheet open={menu} onOpenChange={setMenu} user={user} />
-      <BellSheet open={bell} onOpenChange={setBell} />
+      <BellSheet open={bell} onOpenChange={setBell} onRead={() => setUnread(0)} />
     </ChromeCtx.Provider>
   );
 }
@@ -85,12 +93,13 @@ export function PageTitle() {
 }
 
 export function HeaderActions() {
-  const { user, openMenu, openBell } = useChrome();
+  const { user, unread, openMenu, openBell } = useChrome();
   const t = useT();
   return (
     <div className="flex items-center gap-1 rounded-full border border-line bg-surface p-1">
-      <button onClick={openBell} className="grid size-10 place-items-center rounded-full text-muted transition hover:text-fg" aria-label={t("Bildirishnomalar")}>
+      <button onClick={openBell} className="relative grid size-10 place-items-center rounded-full text-muted transition hover:text-fg" aria-label={t("Bildirishnomalar")}>
         <Bell className="size-5" />
+        {unread > 0 && <span className="absolute right-2 top-2 size-2.5 rounded-full bg-danger ring-2 ring-surface" />}
       </button>
       <button onClick={openMenu} className="rounded-full ring-2 ring-transparent transition hover:ring-neon/40" aria-label={t("Profil")}>
         {user.avatarUrl ? (
@@ -108,7 +117,7 @@ export function BottomNav() {
   const t = useT();
   const { openMenu } = useChrome();
   return (
-    <nav className="glass fixed inset-x-3 bottom-[max(0.75rem,env(safe-area-inset-bottom))] z-40 grid grid-cols-5 rounded-[1.75rem] p-1.5 lg:hidden">
+    <nav className="glass fixed inset-x-3 bottom-[max(0.75rem,env(safe-area-inset-bottom))] z-40 grid grid-cols-4 rounded-[1.75rem] p-1.5 lg:hidden">
       {TABS.map(({ href, label, icon: Icon }) => {
         const active = href !== "#menu" && isActive(path, href);
         const cls = cn("flex min-w-0 flex-col items-center gap-1 rounded-[1.25rem] py-2 text-[11px] font-medium transition", active ? "bg-neon/12 text-neon" : "text-muted");
@@ -226,7 +235,7 @@ function MenuSheet({ open, onOpenChange, user }: { open: boolean; onOpenChange: 
             value={<span className={cn("text-sm", user.historyEnabled ? "text-neon" : "text-subtle")}>{t(user.historyEnabled ? "Ulangan" : "Ulanmagan")}</span>}
           />
           <Row icon={<FaceitGlyph />} label="Faceit" soon />
-          <Row icon={<Send />} label="Telegram" soon />
+          <TelegramRow state={user.telegram} />
         </ListGroup>
 
         <ListGroup label={t("O'yiningiz")}>
@@ -241,6 +250,7 @@ function MenuSheet({ open, onOpenChange, user }: { open: boolean; onOpenChange: 
         <ListGroup label={t("Ilova")}>
           <Row icon={<Settings />} label="Sozlamalar" href="/settings" />
           <Row icon={<Moon />} label="Tungi rejim" onClick={toggleTheme} />
+          {user.owner && <Row icon={<BellRing />} label="Bildirishnomalar boshqaruvi" href="/admin/notifications" />}
           {user.owner && <Row icon={<Server />} label="Tizim holati" href="/system" />}
         </ListGroup>
 
@@ -259,18 +269,143 @@ function MenuSheet({ open, onOpenChange, user }: { open: boolean; onOpenChange: 
   );
 }
 
-function BellSheet({ open, onOpenChange }: { open: boolean; onOpenChange: (o: boolean) => void }) {
+type Note = { id: string; template_key: string | null; icon: string; title: Record<string, string>; body: Record<string, string>; link: string | null; read_at: string | null; created_at: string };
+
+const NOTE_ICONS: Record<string, [typeof Bell, string]> = {
+  play: [Play, "bg-[#ff5a1f]"],
+  clock: [Clock, "bg-amber-500"],
+  download: [Download, "bg-neon"],
+  check: [CheckCircle2, "bg-emerald-500"],
+  alert: [CircleAlert, "bg-danger"],
+  archive: [Archive, "bg-violet"],
+  send: [Send, "bg-sky-500"],
+  bell: [Bell, "bg-slate-500"],
+};
+
+function ago(iso: string, t: ReturnType<typeof useT>) {
+  const m = Math.max(0, Math.round((Date.now() - new Date(iso).getTime()) / 60000));
+  if (m < 1) return t("hozir");
+  if (m < 60) return t("{n} daq", { n: m });
+  const h = Math.round(m / 60);
+  if (h < 24) return t("{n} soat", { n: h });
+  const d = Math.round(h / 24);
+  if (d < 14) return t("{n} kun", { n: d });
+  return t("{n} hafta", { n: Math.round(d / 7) });
+}
+
+function BellSheet({ open, onOpenChange, onRead }: { open: boolean; onOpenChange: (o: boolean) => void; onRead: () => void }) {
   const t = useT();
+  const lang = typeof document !== "undefined" && document.documentElement.lang === "ru" ? "ru" : "uz";
+  const router = useRouter();
+  const [items, setItems] = useState<Note[] | null>(null);
+  useEffect(() => {
+    if (!open) return;
+    let alive = true;
+    api<{ notifications: Note[] }>("/api/notifications")
+      .then((r) => alive && setItems(r.notifications))
+      .catch(() => alive && setItems([]));
+    return () => {
+      alive = false;
+    };
+  }, [open]);
+  const unread = items?.filter((n) => !n.read_at).length ?? 0;
+  const readAll = async () => {
+    try {
+      await api("/api/notifications/read", { method: "POST" });
+      setItems((xs) => xs?.map((n) => ({ ...n, read_at: n.read_at ?? new Date().toISOString() })) ?? null);
+      onRead();
+    } catch (e) {
+      toastError(e);
+    }
+  };
+  const openNote = (n: Note) => {
+    if (!n.link) return;
+    onOpenChange(false);
+    router.push(n.link);
+  };
   return (
     <Sheet open={open} onOpenChange={onOpenChange} title={t("Bildirishnomalar")} closeLabel={t("Yopish")}>
-      <div className="grid place-items-center px-6 py-14 text-center">
-        <span className="grid size-14 place-items-center rounded-2xl bg-neon/10 text-neon">
-          <Bell className="size-7" />
-        </span>
-        <p className="mt-4 font-semibold">{t("Tez orada")}</p>
-        <p className="mt-1 max-w-xs text-sm text-muted">{t("Yangi matchlar, tayyor kliplar va boshqa xabarlar shu yerda chiqadi.")}</p>
-      </div>
+      {items == null ? (
+        <div className="space-y-2 py-2">
+          {[0, 1, 2].map((i) => (
+            <div key={i} className="h-16 animate-pulse rounded-2xl bg-fg/[0.05]" />
+          ))}
+        </div>
+      ) : items.length === 0 ? (
+        <div className="grid place-items-center px-6 py-14 text-center">
+          <span className="grid size-14 place-items-center rounded-2xl bg-neon/10 text-neon">
+            <Bell className="size-7" />
+          </span>
+          <p className="mt-4 font-semibold">{t("Hozircha bildirishnoma yo'q")}</p>
+          <p className="mt-1 max-w-xs text-sm text-muted">{t("Yangi matchlar, tayyor kliplar va boshqa xabarlar shu yerda chiqadi.")}</p>
+        </div>
+      ) : (
+        <>
+          <div className="flex items-center justify-between px-1 pb-3 text-sm">
+            <span className="text-subtle">{unread ? t("{n} ta o'qilmagan", { n: unread }) : t("Hammasi o'qilgan")}</span>
+            <button onClick={readAll} disabled={!unread} className="font-semibold text-muted transition hover:text-fg disabled:opacity-50">
+              {t("Hammasini o'qilgan deb belgilash")}
+            </button>
+          </div>
+          <div className="-mx-4 divide-y divide-line border-t border-line">
+            {items.map((n) => {
+              const [Icon, bg] = NOTE_ICONS[n.icon] ?? NOTE_ICONS.bell;
+              return (
+                <button key={n.id} onClick={() => openNote(n)} className={cn("flex w-full items-start gap-3.5 px-5 py-4 text-left transition hover:bg-fg/[0.03]", !n.read_at && "bg-neon/[0.04]")}>
+                  <span className={cn("grid size-12 shrink-0 place-items-center rounded-2xl text-white", bg)}>
+                    <Icon className="size-6" />
+                  </span>
+                  <span className="min-w-0 flex-1">
+                    <span className="flex items-start justify-between gap-3">
+                      <span className="font-semibold leading-snug">{n.title[lang] || n.title.uz}</span>
+                      <span className="shrink-0 text-xs text-subtle">{ago(n.created_at, t)}</span>
+                    </span>
+                    {(n.body[lang] || n.body.uz) && <span className="mt-0.5 block text-sm leading-snug text-muted">{n.body[lang] || n.body.uz}</span>}
+                  </span>
+                  {!n.read_at && <span className="mt-2 size-2 shrink-0 rounded-full bg-neon" />}
+                </button>
+              );
+            })}
+          </div>
+        </>
+      )}
     </Sheet>
+  );
+}
+
+function TelegramRow({ state }: { state: ChromeUser["telegram"] }) {
+  const t = useT();
+  const router = useRouter();
+  const [busy, setBusy] = useState(false);
+  if (state === "unavailable") return <Row icon={<Send />} label="Telegram" soon />;
+  const link = async () => {
+    setBusy(true);
+    try {
+      const r = await api<{ url: string }>("/api/telegram/link", { method: "POST" });
+      window.location.href = r.url;
+    } catch (e) {
+      toastError(e);
+    } finally {
+      setBusy(false);
+    }
+  };
+  const unlink = async () => {
+    if (!confirm(t("Telegram'ni uzasizmi? Xabarlar kelmay qoladi."))) return;
+    try {
+      await api("/api/telegram/link", { method: "DELETE" });
+      toast.success(t("Telegram uzildi"));
+      router.refresh();
+    } catch (e) {
+      toastError(e);
+    }
+  };
+  return (
+    <Row
+      icon={<Send />}
+      label="Telegram"
+      onClick={busy ? undefined : state === "linked" ? unlink : link}
+      value={<span className={cn("text-sm", state === "linked" ? "text-neon" : "text-subtle")}>{t(state === "linked" ? "Ulangan" : busy ? "Ochilmoqda…" : "Ulash")}</span>}
+    />
   );
 }
 

@@ -6,6 +6,7 @@ import { SetupRequired } from "@/components/setup-required";
 import { getT } from "@/lib/i18n/server";
 import { envStatus } from "@/lib/server/env";
 import { getSession, isOwner } from "@/lib/server/session";
+import { adminDb, userDb } from "@/lib/server/supabase";
 
 export default async function AppLayout({ children }: LayoutProps<"/">) {
   const status = envStatus();
@@ -13,7 +14,20 @@ export default async function AppLayout({ children }: LayoutProps<"/">) {
   const user = await getSession();
   const { t } = await getT();
   if (!user) redirect("/?auth_error=" + encodeURIComponent(t("Davom etish uchun Steam orqali kiring")));
-  const chromeUser = { name: user.personaName, avatarUrl: user.avatarUrl, historyEnabled: user.historyEnabled, owner: isOwner(user) };
+  const db = await userDb(user.userId);
+  const [unread, tg, bot] = await Promise.all([
+    db.from("notifications").select("id", { count: "exact", head: true }).is("read_at", null),
+    db.from("telegram_accounts").select("user_id").maybeSingle(),
+    adminDb().from("app_config").select("key").eq("key", "telegram").maybeSingle(),
+  ]);
+  const chromeUser = {
+    name: user.personaName,
+    avatarUrl: user.avatarUrl,
+    historyEnabled: user.historyEnabled,
+    owner: isOwner(user),
+    unread: unread.count ?? 0,
+    telegram: tg.data ? ("linked" as const) : bot.data ? ("unlinked" as const) : ("unavailable" as const),
+  };
 
   return (
     <AppChrome user={chromeUser}>

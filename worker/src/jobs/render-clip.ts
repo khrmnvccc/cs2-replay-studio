@@ -1,5 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
+import { notify } from "../../../shared/notify";
 import type { FailureHook, JobHandler } from "../queue";
 import { must } from "../lib/db";
 import { PermanentError } from "../lib/errors";
@@ -47,6 +48,8 @@ export const renderClipJob: JobHandler = async ({ db, config, job, progress }) =
     .update({ status: "ready", storage_path: videoPath, thumbnail_path: thumbPath, size_bytes: size, duration_seconds: duration, error: null })
     .eq("id", clip.id);
   fs.rmSync(outDir, { recursive: true, force: true });
+  const { data: signed } = await db.storage.from("clips").createSignedUrl(videoPath, 3600);
+  await notify(db, job.user_id, "clip_ready", { title: clip.title }, { videoUrl: signed?.signedUrl ?? null });
   return { clipId: clip.id, size, duration };
 };
 

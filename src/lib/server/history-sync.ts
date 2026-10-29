@@ -6,6 +6,7 @@ import { enqueueJob, JOB_COLUMNS } from "./data";
 import { env } from "./env";
 import { adminDb } from "./supabase";
 import { wakeCloudWorker } from "./worker-wake";
+import { notifyUser } from "./notify";
 import type { JobRow } from "@/lib/types";
 
 /**
@@ -41,6 +42,7 @@ export async function startHistorySync(db: SupabaseClient, userId: string): Prom
       if (!(err instanceof HistorySyncError)) console.error("history sync", err);
       await admin.from("steam_accounts").update({ history_last_error: msg.slice(0, 300) }).eq("user_id", userId);
       await update({ status: "failed", error: msg, locked_by: null });
+      await notifyUser(userId, "history_error", { error: msg });
     }
   });
   return job as unknown as JobRow;

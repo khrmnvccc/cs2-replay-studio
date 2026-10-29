@@ -1,4 +1,5 @@
-import { NextResponse } from "next/server";
+import { after, NextResponse } from "next/server";
+import { sendClipToTelegram } from "@/lib/server/clip-telegram";
 import { authed, HttpError } from "@/lib/server/http";
 import { adminDb, userDb } from "@/lib/server/supabase";
 
@@ -17,5 +18,7 @@ export const GET = authed<{ params: Promise<{ id: string }> }>(async (req, ctx, 
     .storage.from("clips")
     .createSignedUrl(path, 3600, sp.get("inline") || sp.get("thumb") ? undefined : { download: fileName });
   if (error || !data) throw new HttpError(404, "Fayl topilmadi");
+  // Yuklab olinganda nusxasi Telegram'ga ham boradi (ulangan bo'lsa)
+  if (!sp.get("inline") && !sp.get("thumb")) after(() => sendClipToTelegram(user.userId, { title: clip.title, storage_path: path }));
   return NextResponse.redirect(data.signedUrl);
 }, { limit: 240 });

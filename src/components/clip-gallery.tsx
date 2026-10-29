@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Check, Download, FileArchive, FileDown, Pencil, Play, RotateCcw, Trash2 } from "lucide-react";
+import { Check, Download, FileArchive, FileDown, Pencil, Play, RotateCcw, Send, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { ClipThumb } from "@/components/clip-thumb";
 import { JobItem } from "@/components/job-list";
@@ -28,6 +28,17 @@ type Clip = ClipRow & { matches?: { map_name: string | null } | null };
 export function ClipGallery({ clips, online, renderOnline }: { clips: Clip[]; online?: Record<string, number>; renderOnline: boolean }) {
   const router = useRouter();
   const { lang, t } = useI18n();
+  const toTelegram = async (c: Clip) => {
+    setBusy(`tg:${c.id}`);
+    try {
+      await api(`/api/clips/${c.id}/telegram`, { method: "POST" });
+      toast.success(t("Klip Telegram'ga yuborildi"));
+    } catch (e) {
+      toastError(e);
+    } finally {
+      setBusy(null);
+    }
+  };
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [preview, setPreview] = useState<Clip | null>(null);
   const [editing, setEditing] = useState<string | null>(null);
@@ -186,6 +197,11 @@ export function ClipGallery({ clips, online, renderOnline }: { clips: Clip[]; on
                 ) : (
                   <Button size="sm" variant="primary" disabled title={t("Render tugagach faollashadi")}>
                     <Download /> {t("MP4 yuklab olish")}
+                  </Button>
+                )}
+                {c.status === "ready" && (
+                  <Button size="sm" variant="secondary" onClick={() => toTelegram(c)} loading={busy === `tg:${c.id}`}>
+                    <Send /> Telegram
                   </Button>
                 )}
                 <Button size="sm" variant="ghost" asChild>

@@ -1,5 +1,7 @@
 import fs from "node:fs";
 import { createHash } from "node:crypto";
+import { notify } from "../../../shared/notify";
+import { mapMeta } from "../../../shared/maps";
 import type { FailureHook, JobHandler } from "../queue";
 import { must } from "../lib/db";
 import { PermanentError } from "../lib/errors";
@@ -74,11 +76,18 @@ export const parseDemo: JobHandler = async ({ db, config, job, progress }) => {
     .update({ status: "parsed", match_id: matchId, header: a.header, tickrate: a.tickrate, sha256: sha, error: null })
     .eq("id", demo.id);
 
+  await notify(db, job.user_id, "demo_parsed", {
+    map: mapMeta(a.mapName).name,
+    score: matchFields.score_own != null ? `${matchFields.score_own} : ${matchFields.score_enemy}` : a.scoreCT != null ? `${a.scoreCT} : ${a.scoreT}` : null,
+    kills: a.user?.kills ?? null,
+    matchId,
+  }, { mapName: a.mapName });
   return { matchId, kills: a.kills.length, rounds: a.rounds.length, userKills: a.user?.kills ?? null, userInDemo: a.user != null };
 };
 
 export const parseDemoFailed: FailureHook = async ({ db, job }, error) => {
   await db.from("demo_files").update({ status: "failed", error }).eq("id", String(job.payload.demoFileId ?? ""));
+  await notify(db, job.user_id, "demo_failed", { error });
 };
 
 function fileSha256(p: string): Promise<string> {

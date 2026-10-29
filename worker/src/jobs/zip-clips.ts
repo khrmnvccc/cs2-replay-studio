@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import archiver from "archiver";
+import { notify } from "../../../shared/notify";
 import type { JobHandler } from "../queue";
 import { downloadToFile, uploadFile } from "../lib/storage";
 import { PermanentError } from "../lib/errors";
@@ -40,5 +41,6 @@ export const zipClips: JobHandler = async ({ db, config, job, progress }) => {
   await uploadFile(config, "exports", objectPath, zipPath, "application/zip");
   const size = fs.statSync(zipPath).size;
   fs.rmSync(dir, { recursive: true, force: true });
+  await notify(db, job.user_id, "zip_ready", { n: files.length });
   return { path: objectPath, count: files.length, size };
 };
