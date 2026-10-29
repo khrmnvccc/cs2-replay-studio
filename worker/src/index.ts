@@ -17,7 +17,7 @@ async function main() {
     config,
     {
       parse_demo: parseDemo,
-      sync_matches: syncMatches,
+      ...(config.STEAM_API_KEY && config.APP_ENCRYPTION_KEY ? { sync_matches: syncMatches } : {}),
       fetch_match_info: fetchMatchInfo,
       download_demo: downloadDemo,
       render_clip: renderClipJob,

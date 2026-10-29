@@ -8,7 +8,7 @@ export const metadata = { title: "Tizim holati" };
 
 const ROWS = [
   { cap: "parse", title: "Demo tahlili", desc: "Linux/Docker worker: WORKER_CAPABILITIES=parse" },
-  { cap: "sync", title: "Match tarixi + Valve demo yuklash", desc: "STEAM_API_KEY va APP_ENCRYPTION_KEY bilan worker: sync" },
+  { cap: "sync", title: "Valve demo yuklash", desc: "Worker: sync (match tarixini sayt o'zi Steam kaliti bilan oladi)" },
   { cap: "gc", title: "Valve Game Coordinator", desc: "Alohida Steam bot akkaunt (CS2 litsenziyali) bilan worker: gc" },
   { cap: "zip", title: "ZIP eksport", desc: "Har qanday worker: zip" },
   { cap: "render", title: "MP4 render", desc: "Windows + CS2 + HLAE + CS Demo Manager + FFmpeg: render" },

@@ -37,7 +37,7 @@ export function loadConfig(): Config {
   const c = parsed.data;
   const capabilities = new Set(c.WORKER_CAPABILITIES.split(",").map((s) => s.trim()).filter(Boolean));
   const problems: string[] = [];
-  if (capabilities.has("sync") && (!c.STEAM_API_KEY || !c.APP_ENCRYPTION_KEY)) problems.push("sync uchun STEAM_API_KEY va APP_ENCRYPTION_KEY kerak");
+  // Match tarixini odatda sayt o'zi sinxronlaydi; worker'da kalit bo'lmasa, "sync" faqat Valve demolarini yuklaydi.
   if (capabilities.has("gc") && !c.STEAM_BOT_REFRESH_TOKEN && !(c.STEAM_BOT_USERNAME && c.STEAM_BOT_PASSWORD))
     problems.push("gc uchun STEAM_BOT_REFRESH_TOKEN yoki STEAM_BOT_USERNAME + STEAM_BOT_PASSWORD kerak");
   if (capabilities.has("render")) {

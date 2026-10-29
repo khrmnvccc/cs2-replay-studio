@@ -2,7 +2,7 @@ import { z } from "zod";
 import { authed, HttpError, json, parseBody } from "@/lib/server/http";
 import { env } from "@/lib/server/env";
 import { adminDb, userDb } from "@/lib/server/supabase";
-import { enqueueJob } from "@/lib/server/data";
+import { startHistorySync } from "@/lib/server/history-sync";
 import { getNextMatchSharingCode } from "@/lib/steam/web-api";
 import { decodeShareCode, isValidShareCode } from "@shared/sharecode";
 import { AUTH_CODE_RE } from "@shared/steamid";
@@ -48,7 +48,7 @@ export const POST = authed(async (req, _ctx, user) => {
     },
     { onConflict: "user_id,share_code", ignoreDuplicates: true },
   );
-  const job = await enqueueJob(db, user.userId, "sync_matches", {});
+  const job = await startHistorySync(db, user.userId);
   return json({ ok: true, job });
 }, { limit: 10 });
 

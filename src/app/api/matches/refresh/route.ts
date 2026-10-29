@@ -1,8 +1,9 @@
 import { authed, HttpError, json } from "@/lib/server/http";
 import { userDb } from "@/lib/server/supabase";
-import { enqueueJob, getSteamAccount, JOB_COLUMNS } from "@/lib/server/data";
+import { getSteamAccount, JOB_COLUMNS } from "@/lib/server/data";
+import { startHistorySync } from "@/lib/server/history-sync";
 
-// "Refresh matches": Valve'dan yangi share code'larni so'rash uchun worker ishini navbatga qo'yadi.
+// "Refresh matches": Valve'dan yangi share code'larni so'raydi (saytning o'zida yoki worker orqali).
 export const POST = authed(async (_req, _ctx, user) => {
   const db = await userDb(user.userId);
   const steam = await getSteamAccount(db);
@@ -16,6 +17,6 @@ export const POST = authed(async (_req, _ctx, user) => {
     .in("status", ["queued", "running"])
     .limit(1);
   if (active?.length) return json({ ok: true, job: active[0], deduped: true });
-  const job = await enqueueJob(db, user.userId, "sync_matches", {});
+  const job = await startHistorySync(db, user.userId);
   return json({ ok: true, job });
 }, { limit: 6 });
