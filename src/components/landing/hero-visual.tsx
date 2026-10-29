@@ -30,8 +30,8 @@ export function HeroVisual() {
           <svg viewBox="0 0 320 180" className="absolute inset-0 h-full w-full">
             <defs>
               <radialGradient id="sweep" cx="0" cy="0" r="1">
-                <stop offset="0" stopColor="#22c55e" stopOpacity="0.35" />
-                <stop offset="1" stopColor="#22c55e" stopOpacity="0" />
+                <stop offset="0" stopColor="#3b82f6" stopOpacity="0.35" />
+                <stop offset="1" stopColor="#3b82f6" stopOpacity="0" />
               </radialGradient>
             </defs>
             {[28, 52, 76].map((r) => (
@@ -44,7 +44,7 @@ export function HeroVisual() {
               animate={{ rotate: 360 }}
               transition={{ duration: 6, repeat: Infinity, ease: "linear" }}
             />
-            <g stroke="#22c55e" strokeWidth="1.6" strokeLinecap="round">
+            <g stroke="#3b82f6" strokeWidth="1.6" strokeLinecap="round">
               <line x1="160" y1="74" x2="160" y2="84" />
               <line x1="160" y1="96" x2="160" y2="106" />
               <line x1="144" y1="90" x2="154" y2="90" />
@@ -61,7 +61,7 @@ export function HeroVisual() {
                 cx={x}
                 cy={y}
                 r="3.2"
-                fill={i % 2 ? "#818cf8" : "#22c55e"}
+                fill={i % 2 ? "#818cf8" : "#3b82f6"}
                 initial={{ opacity: 0, scale: 0 }}
                 animate={{ opacity: [0, 1, 0.5], scale: [0, 1.4, 1] }}
                 transition={{ delay: 0.6 + i * 0.5, duration: 1.2, repeat: Infinity, repeatDelay: 3 }}
