@@ -11,6 +11,8 @@ const schema = z.object({
   WORKER_CAPABILITIES: z.string().default("parse,sync,zip"),
   WORKER_CONCURRENCY: z.coerce.number().int().min(1).max(8).default(2),
   WORK_DIR: z.string().default(os.tmpdir() + "/cs2-replay-worker"),
+  /** Supabase Storage fayl limiti (Free plan: 50 MB). Kattaroq Valve demolari storage'ga yuklanmaydi. */
+  DEMO_STORAGE_MAX_MB: z.coerce.number().positive().default(50),
   FFMPEG_PATH: z.string().default("ffmpeg"),
   FFPROBE_PATH: z.string().default("ffprobe"),
   // Valve Game Coordinator (match tafsilotlari + demo URL) uchun alohida bot akkaunt

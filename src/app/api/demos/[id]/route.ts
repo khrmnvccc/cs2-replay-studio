@@ -1,5 +1,6 @@
 import { authed, HttpError, json } from "@/lib/server/http";
 import { adminDb, userDb } from "@/lib/server/supabase";
+import { isExternalDemoPath } from "@shared/demo-file";
 
 export const DELETE = authed<{ params: Promise<{ id: string }> }>(async (_req, ctx, user) => {
   const { id } = await ctx.params;
@@ -11,7 +12,7 @@ export const DELETE = authed<{ params: Promise<{ id: string }> }>(async (_req, c
   const clipFiles = (clips ?? []).flatMap((c) => [c.storage_path, c.thumbnail_path]).filter(Boolean) as string[];
   const admin = adminDb();
   if (clipFiles.length) await admin.storage.from("clips").remove(clipFiles);
-  await admin.storage.from("demos").remove([demo.storage_path]);
+  if (!isExternalDemoPath(demo.storage_path)) await admin.storage.from("demos").remove([demo.storage_path]);
   const { error } = await db.from("demo_files").delete().eq("id", id);
   if (error) throw new Error(error.message);
   return json({ ok: true });

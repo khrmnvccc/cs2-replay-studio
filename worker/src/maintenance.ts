@@ -1,3 +1,4 @@
+import { isExternalDemoPath } from "../../shared/demo-file";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
 // Har soatda: (1) o'lgan ishlarni qayta navbatga qo'yish, (2) saqlash muddati o'tgan
@@ -17,7 +18,8 @@ export async function maintenance(db: SupabaseClient) {
       .lt("created_at", cutoff)
       .limit(200);
     if (old?.length) {
-      await db.storage.from("demos").remove(old.map((d) => d.storage_path));
+      const stored = old.map((d) => d.storage_path as string).filter((p) => !isExternalDemoPath(p));
+      if (stored.length) await db.storage.from("demos").remove(stored);
       await db
         .from("demo_files")
         .update({ status: "expired", error: `Saqlash muddati (${days} kun) tugadi — fayl o'chirildi, tahlil natijalari saqlangan` })

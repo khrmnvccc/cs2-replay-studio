@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { checkDemoName, demoObjectPath, detectDemoMagic } from "@shared/demo-file";
+import { checkDemoName, demoObjectPath, detectDemoMagic, externalDemoUrl, isExternalDemoPath } from "@shared/demo-file";
 import { clipWindow, formatTickTime } from "@shared/clip";
 
 const MB = 1024 * 1024;
@@ -41,5 +41,17 @@ describe("clip oynasi", () => {
   });
   it("vaqt formati", () => {
     expect(formatTickTime(64 * 75)).toBe("1:15");
+  });
+});
+
+describe("tashqi (Valve) demo yo'li", () => {
+  const url = "http://replay183.valve.net/730/003744406583316381964_1405069546.dem.bz2";
+  it("Valve havolasi + #id ni taniydi va asl URL'ni qaytaradi", () => {
+    expect(isExternalDemoPath(`${url}#abc`)).toBe(true);
+    expect(externalDemoUrl(`${url}#abc`)).toBe(url);
+  });
+  it("storage yo'li va begona havolalar tashqi emas", () => {
+    expect(isExternalDemoPath("user-id/demo-id.dem.bz2")).toBe(false);
+    expect(isExternalDemoPath("https://evil.example.com/730/x.dem.bz2#a")).toBe(false);
   });
 });

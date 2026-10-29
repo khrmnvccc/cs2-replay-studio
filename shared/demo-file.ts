@@ -34,3 +34,16 @@ export function detectDemoMagic(head: Uint8Array): DemoCompression | "csgo" | nu
 export function demoObjectPath(userId: string, demoId: string, compression: DemoCompression): string {
   return `${userId}/${demoId}.dem${compression === "bz2" ? ".bz2" : ""}`;
 }
+
+/** Valve replay serveridagi demo havolasi (GC beradi). */
+export const VALVE_DEMO_URL_RE = /^https?:\/\/replay\d+\.valve\.net\/730\/[\w.]+\.dem\.bz2$/;
+
+/** Storage limitidan katta Valve demolari storage'ga yuklanmaydi: storage_path o'rnida Valve havolasi saqlanadi. */
+// Format: <valve url>#<demoId> (fragment storage_path'ni unikal qiladi)
+export function isExternalDemoPath(storagePath: string): boolean {
+  return VALVE_DEMO_URL_RE.test(storagePath.split("#")[0]);
+}
+
+export function externalDemoUrl(storagePath: string): string {
+  return storagePath.split("#")[0];
+}

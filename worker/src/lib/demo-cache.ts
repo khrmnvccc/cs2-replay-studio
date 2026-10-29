@@ -6,11 +6,17 @@ import { downloadToFile } from "./storage";
 import { pipeline } from "node:stream/promises";
 import bz2 from "unbzip2-stream";
 import { PermanentError } from "./errors";
+import { downloadUrl } from "./storage";
+import { externalDemoUrl, isExternalDemoPath } from "../../../shared/demo-file";
 
 interface DemoRow {
   id: string;
   storage_path: string;
   compression: "none" | "bz2";
+}
+
+export function demoCachePath(c: Config, demoId: string): string {
+  return path.join(c.WORK_DIR, "demos", `${demoId}.dem`);
 }
 
 /** Demo'ni lokal keshga yuklaydi (bz2 bo'lsa ochadi) va .dem yo'lini qaytaradi. */
@@ -20,7 +26,11 @@ export async function ensureLocalDemo(db: SupabaseClient, c: Config, demo: DemoR
   const dem = path.join(dir, `${demo.id}.dem`);
   if (fs.existsSync(dem)) return dem;
   const raw = demo.compression === "bz2" ? `${dem}.bz2` : dem;
-  await downloadToFile(db, "demos", demo.storage_path, raw);
+  if (!fs.existsSync(raw)) {
+    // Katta Valve demolari storage'da emas — to'g'ridan-to'g'ri Valve serveridan olinadi
+    if (isExternalDemoPath(demo.storage_path)) await downloadUrl(externalDemoUrl(demo.storage_path), raw);
+    else await downloadToFile(db, "demos", demo.storage_path, raw);
+  }
   await onProgress?.(80);
   if (demo.compression === "bz2") {
     // Sof JS bzip2 dekompressiya (Windows render worker'da ham ishlaydi)

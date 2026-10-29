@@ -4,6 +4,7 @@ import { MatchCard } from "@/components/match-card";
 import { RefreshMatchesButton } from "@/components/refresh-matches";
 import { Button } from "@/components/ui/button";
 import { EmptyState, Input, Select } from "@/components/ui/primitives";
+import { AddShareCodes } from "@/components/add-share-codes";
 import { getSteamAccount, listActiveJobs, listMatches, onlineCapabilities, type MatchFilters } from "@/lib/server/data";
 import { requireUser } from "@/lib/server/http";
 import { userDb } from "@/lib/server/supabase";
@@ -45,6 +46,8 @@ export default async function MatchesPage({ searchParams }: PageProps<"/matches"
         </div>
         <RefreshMatchesButton enabled={steam.history_enabled} initialJobs={jobs} online={online} />
       </div>
+
+      <AddShareCodes gcOnline={Boolean(online.gc)} />
 
       <form className="panel grid gap-3 p-4 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1fr_1fr_auto]" method="get">
         <div className="relative">
@@ -109,7 +112,7 @@ export default async function MatchesPage({ searchParams }: PageProps<"/matches"
             </div>
           }
         >
-          Steam Web API matchlarni faqat siz bergan <b className="text-fg">Game Authentication Code</b> va <b className="text-fg">share code</b> orqali ko&apos;rsatadi. Yoki demo fayl yuklang — match avtomatik yaratiladi.
+          Yuqoridagi maydonga CS2&apos;dan share code joylang yoki demo fayl yuklang — match avtomatik yaratiladi.
         </EmptyState>
       )}
     </div>
