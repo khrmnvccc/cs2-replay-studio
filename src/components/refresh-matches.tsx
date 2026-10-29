@@ -36,12 +36,12 @@ export function RefreshMatchesButton({ enabled, initialJobs = [], online, showJo
     }
   };
   return (
-    <div className="flex flex-col items-end gap-2">
+    <div className="flex flex-col items-stretch gap-2 sm:items-end">
       <Button variant="secondary" onClick={run} loading={loading} disabled={active.length > 0}>
-        {!loading && <RefreshCw className={active.length ? "animate-spin" : ""} />} Refresh matches
+        {!loading && <RefreshCw className={active.length ? "animate-spin" : ""} />} Matchlarni yangilash
       </Button>
       {showJobs && jobs.slice(0, 1).map((j) => (
-        <div key={j.id} className="w-72">
+        <div key={j.id} className="w-full sm:w-72">
           <JobItem job={j} online={online} />
         </div>
       ))}

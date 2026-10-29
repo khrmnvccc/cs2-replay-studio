@@ -42,7 +42,14 @@ export default async function AppLayout({ children }: LayoutProps<"/">) {
       </aside>
       <header className="sticky top-0 z-30 flex items-center justify-between border-b border-line bg-bg/80 px-4 py-3 backdrop-blur-xl lg:hidden">
         <Logo href="/dashboard" />
-        {user.avatarUrl && <Image src={user.avatarUrl} alt="" width={32} height={32} className="rounded-lg" unoptimized />}
+        <div className="flex items-center gap-2">
+          {user.avatarUrl && <Image src={user.avatarUrl} alt="" width={32} height={32} className="rounded-lg" unoptimized />}
+          <form action="/api/auth/logout" method="post">
+            <button className="grid size-9 place-items-center rounded-lg text-muted transition hover:bg-white/5 hover:text-danger" aria-label="Chiqish" title="Chiqish">
+              <LogOut className="size-4" />
+            </button>
+          </form>
+        </div>
       </header>
       <main className="relative pb-28 lg:pb-12 lg:pl-64">
         <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-10 lg:py-10">{children}</div>

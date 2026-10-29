@@ -26,7 +26,7 @@ const FEATURES = [
   { icon: Cpu, title: "Og'ir ishlar — worker'da", text: "Demo tahlili, yuklash va render Vercel funksiyalarida emas, alohida job worker'da bajariladi.", span: "" },
   {
     icon: Film,
-    title: "Kill timeline",
+    title: "Kill xronologiyasi",
     text: "Har bir kill: raund, vaqt, killer, raqib, qurol, headshot, wallbang, noscope. Tanlang — clip navbatga tushadi va progress ko'rinadi.",
     span: "lg:col-span-2",
   },
@@ -51,7 +51,7 @@ export default async function Landing({ searchParams }: PageProps<"/">) {
       <div className="grid-bg pointer-events-none absolute inset-x-0 top-0 h-[900px]" />
       <div className="pointer-events-none absolute -top-40 left-1/2 h-[640px] w-[1100px] -translate-x-1/2 bg-[radial-gradient(closest-side,rgba(143,107,255,0.16),transparent)]" />
 
-      <header className="relative z-10 mx-auto flex max-w-7xl items-center justify-between px-5 py-5 sm:px-8">
+      <header className="relative z-10 mx-auto flex max-w-7xl items-center justify-between gap-3 px-5 py-5 sm:px-8">
         <Logo />
         <nav className="hidden items-center gap-8 text-sm text-muted md:flex">
           <a href="#how" className="transition hover:text-fg">Qanday ishlaydi</a>
@@ -61,7 +61,7 @@ export default async function Landing({ searchParams }: PageProps<"/">) {
         {user ? (
           <Button asChild variant="secondary" size="md">
             <Link href="/dashboard">
-              Dashboard <ArrowRight />
+              Bosh sahifa <ArrowRight />
             </Link>
           </Button>
         ) : (
@@ -83,7 +83,7 @@ export default async function Landing({ searchParams }: PageProps<"/">) {
           <div className="inline-flex items-center gap-2 rounded-full border border-line-strong bg-white/[0.03] px-3 py-1 text-xs text-muted">
             <span className="size-1.5 rounded-full bg-neon" /> Counter-Strike 2 · Source 2 demo
           </div>
-          <h1 className="mt-6 font-display text-[3.4rem] font-bold uppercase leading-[0.9] tracking-tight sm:text-7xl xl:text-[5.6rem]">
+          <h1 className="mt-6 font-display text-[2.9rem] min-[400px]:text-[3.4rem] font-bold uppercase leading-[0.9] tracking-tight sm:text-7xl xl:text-[5.6rem]">
             Har bir kill —
             <br />
             <span className="text-gradient">tayyor lavha.</span>
@@ -91,15 +91,15 @@ export default async function Landing({ searchParams }: PageProps<"/">) {
           <p className="mt-6 max-w-xl text-lg leading-relaxed text-muted">
             Steam akkauntingizni ulang, CS2 matchlaringizni ko&apos;ring, demo fayldan barcha kill lavhalarini toping va ularni MP4 qilib yuklab oling.
           </p>
-          <div className="mt-9 flex flex-wrap items-center gap-3">
+          <div className="mt-9 flex flex-col items-stretch gap-3 sm:flex-row sm:flex-wrap sm:items-center [&>*]:justify-center">
             {user ? (
               <Button asChild variant="primary" size="lg">
                 <Link href="/dashboard">
-                  Dashboard&apos;ga o&apos;tish <ArrowRight />
+                  Bosh sahifaga o&apos;tish <ArrowRight />
                 </Link>
               </Button>
             ) : (
-              <SteamSignInButton label="Connect Steam" />
+              <SteamSignInButton label="Steam orqali kirish" />
             )}
             <Button asChild variant="ghost" size="lg">
               <a href="#how">Qanday ishlaydi</a>
@@ -194,7 +194,7 @@ export default async function Landing({ searchParams }: PageProps<"/">) {
             <Server className="mx-auto size-8 text-neon" />
             <h2 className="mx-auto mt-5 max-w-2xl font-display text-4xl font-bold uppercase leading-none sm:text-5xl">Birinchi demo&apos;ingizni tahlil qiling</h2>
             <p className="mx-auto mt-4 max-w-lg text-muted">Steam bilan kiring, demo faylni yuklang va bir necha soniyada barcha killlaringiz ro&apos;yxatini oling.</p>
-            <div className="mt-8 flex justify-center">{user ? <Button asChild variant="primary" size="lg"><Link href="/dashboard">Dashboard</Link></Button> : <SteamSignInButton />}</div>
+            <div className="mt-8 flex justify-center">{user ? <Button asChild variant="primary" size="lg"><Link href="/dashboard">Bosh sahifa</Link></Button> : <SteamSignInButton />}</div>
           </div>
         </Reveal>
       </section>

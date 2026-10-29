@@ -106,7 +106,7 @@ export function ClipGallery({ clips, online, renderOnline }: { clips: Clip[]; on
     <div className="space-y-4">
       {!renderOnline && clips.some((c) => c.status === "queued") && (
         <div className="rounded-xl border border-warn/25 bg-warn/[0.06] px-4 py-3 text-sm text-muted">
-          <span className="font-medium text-warn">Render worker onlayn emas.</span> MP4 yaratish uchun Windows kompyuterda CS2 + HLAE + CS Demo Manager bilan render worker ishga tushirilishi kerak (README → &quot;Render worker&quot;). Cliplar navbatda saqlanadi — soxta video yaratilmaydi.
+          <span className="font-medium text-warn">Render worker onlayn emas.</span> MP4 yaratish uchun Windows kompyuterda CS2 + HLAE + CS Demo Manager bilan render worker ishga tushirilishi kerak (README → &quot;Render worker&quot; bo&apos;limi). Cliplar navbatda saqlanadi — soxta video yaratilmaydi.
         </div>
       )}
 
@@ -172,22 +172,22 @@ export function ClipGallery({ clips, online, renderOnline }: { clips: Clip[]; on
               {c.status === "failed" && c.error && <p className="line-clamp-3 text-xs text-danger/90">{c.error}</p>}
               <div className="flex flex-wrap gap-1.5">
                 <Button size="sm" variant="secondary" disabled={c.status !== "ready"} onClick={() => setPreview(c)}>
-                  <Play /> Preview
+                  <Play /> Ko&apos;rish
                 </Button>
                 {c.status === "ready" ? (
                   <Button size="sm" variant="primary" asChild>
                     <a href={`/api/clips/${c.id}/download`}>
-                      <Download /> Download MP4
+                      <Download /> MP4 yuklab olish
                     </a>
                   </Button>
                 ) : (
                   <Button size="sm" variant="primary" disabled title="Render tugagach faollashadi">
-                    <Download /> Download MP4
+                    <Download /> MP4 yuklab olish
                   </Button>
                 )}
                 <Button size="sm" variant="ghost" asChild>
                   <a href={`/api/demos/${c.demo_file_id}/download`}>
-                    <FileDown /> Download demo
+                    <FileDown /> Demoni yuklab olish
                   </a>
                 </Button>
                 {c.status === "failed" && (
@@ -211,7 +211,7 @@ export function ClipGallery({ clips, online, renderOnline }: { clips: Clip[]; on
             <div className="flex justify-end gap-2">
               <Button variant="primary" size="sm" asChild>
                 <a href={`/api/clips/${preview.id}/download`}>
-                  <Download /> Download MP4
+                  <Download /> MP4 yuklab olish
                 </a>
               </Button>
             </div>

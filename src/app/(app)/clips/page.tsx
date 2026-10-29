@@ -7,7 +7,7 @@ import { listClips, onlineCapabilities } from "@/lib/server/data";
 import { requireUser } from "@/lib/server/http";
 import { userDb } from "@/lib/server/supabase";
 
-export const metadata = { title: "My Clips" };
+export const metadata = { title: "Kliplarim" };
 
 export default async function ClipsPage({ searchParams }: PageProps<"/clips">) {
   const sp = await searchParams;
@@ -22,13 +22,13 @@ export default async function ClipsPage({ searchParams }: PageProps<"/clips">) {
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <div className="label">Kill kliplar</div>
-          <h1 className="mt-1 font-display text-5xl font-bold uppercase leading-none">My Clips</h1>
+          <h1 className="mt-1 font-display text-5xl font-bold uppercase leading-none">Kliplarim</h1>
           <p className="mt-2 text-sm text-muted">
             {clips.length} ta clip · {ready} tasi MP4 tayyor
           </p>
         </div>
-        <form method="get" className="flex items-center gap-2">
-          <Select name="sort" defaultValue={sort} aria-label="Saralash" className="w-52">
+        <form method="get" className="flex w-full items-center gap-2 sm:w-auto">
+          <Select name="sort" defaultValue={sort} aria-label="Saralash" className="min-w-0 flex-1 sm:w-52 sm:flex-none">
             <option value="new">Avval yangilari</option>
             <option value="old">Avval eskilari</option>
             <option value="name">Nomi bo&apos;yicha</option>
@@ -50,7 +50,7 @@ export default async function ClipsPage({ searchParams }: PageProps<"/clips">) {
             </Button>
           }
         >
-          Tahlil qilingan match sahifasida kill timeline&apos;dan killlarni tanlang — har biri uchun MP4 clip render navbatiga qo&apos;yiladi.
+          Tahlil qilingan match sahifasida kill xronologiyasidan killlarni tanlang — har biri uchun MP4 clip render navbatiga qo&apos;yiladi.
         </EmptyState>
       )}
     </div>

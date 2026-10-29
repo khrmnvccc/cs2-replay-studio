@@ -54,19 +54,19 @@ export function KillTimeline({ kills, rounds, tickrate, existingClipKillIds, pre
   if (!kills.length) return null;
   return (
     <div className="space-y-4">
-      <div className="panel sticky top-16 z-20 flex flex-wrap items-center gap-3 p-3 backdrop-blur-xl lg:top-4">
+      <div className="panel z-20 flex flex-wrap items-center gap-3 p-3 backdrop-blur-xl sm:sticky sm:top-16 lg:top-4">
         <label className="flex items-center gap-2 text-sm">
           <input type="checkbox" checked={onlyMine} onChange={(e) => setOnlyMine(e.target.checked)} />
           Faqat mening killlarim / o&apos;limlarim
         </label>
         <div className="flex items-center gap-2 text-xs text-muted">
           <span>Oldin</span>
-          <input type="number" min={0} max={30} value={preS} onChange={(e) => setPre(Number(e.target.value))} className="h-8 w-14 rounded-lg border border-line-strong bg-surface-2 px-2 font-mono text-fg" aria-label="Kill'dan oldin (soniya)" />
+          <input type="number" min={0} max={30} value={preS} onChange={(e) => setPre(Number(e.target.value))} className="h-8 w-14 rounded-lg border border-line-strong bg-surface-2 px-2 font-mono text-base text-fg sm:text-xs" aria-label="Kill'dan oldin (soniya)" />
           <span>s · Keyin</span>
-          <input type="number" min={0} max={30} value={postS} onChange={(e) => setPost(Number(e.target.value))} className="h-8 w-14 rounded-lg border border-line-strong bg-surface-2 px-2 font-mono text-fg" aria-label="Kill'dan keyin (soniya)" />
+          <input type="number" min={0} max={30} value={postS} onChange={(e) => setPost(Number(e.target.value))} className="h-8 w-14 rounded-lg border border-line-strong bg-surface-2 px-2 font-mono text-base text-fg sm:text-xs" aria-label="Kill'dan keyin (soniya)" />
           <span>s</span>
         </div>
-        <div className="ml-auto flex flex-wrap gap-2">
+        <div className="flex w-full flex-wrap gap-2 sm:ml-auto sm:w-auto [&>*]:flex-1 sm:[&>*]:flex-none">
           <Button size="sm" variant="secondary" disabled={!myKills.length || busy} onClick={() => create(myKills.map((k) => k.id))}>
             <Layers /> Barcha killlarim ({myKills.length})
           </Button>
@@ -104,7 +104,7 @@ export function KillTimeline({ kills, rounds, tickrate, existingClipKillIds, pre
                         {k.seconds_into_round != null ? formatTickTime(k.seconds_into_round * tickrate, tickrate) : formatTickTime(k.tick, tickrate)}
                       </span>
                       <div className="flex min-w-0 flex-1 flex-wrap items-center gap-x-2 gap-y-1 text-sm">
-                        <span className={cn("truncate font-medium", k.killer_side === "CT" ? "text-ct" : k.killer_side === "T" ? "text-tside" : "", mine && "underline decoration-neon/60 underline-offset-4")}>{k.killer_name ?? "World"}</span>
+                        <span className={cn("truncate font-medium", k.killer_side === "CT" ? "text-ct" : k.killer_side === "T" ? "text-tside" : "", mine && "underline decoration-neon/60 underline-offset-4")}>{k.killer_name ?? "Dunyo"}</span>
                         <span className="inline-flex items-center gap-1 rounded-md bg-white/[0.04] px-1.5 py-0.5 font-mono text-[11px] text-fg/80">
                           {weaponName(k.weapon)}
                           {k.headshot && <Crosshair className="size-3 text-neon" aria-label="Headshot" />}

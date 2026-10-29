@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   description: "Steam akkauntingizni ulang, CS2 matchlaringizni ko'ring, demo'dan kill lavhalarini toping va MP4 qilib yuklab oling.",
 };
 
-export const viewport: Viewport = { themeColor: "#07080a" };
+export const viewport: Viewport = { themeColor: "#07080a", width: "device-width", initialScale: 1, viewportFit: "cover" };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
@@ -21,7 +21,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         {children}
         <Toaster
           theme="dark"
-          position="bottom-right"
+          position="top-center"
           toastOptions={{ style: { background: "#13161a", border: "1px solid rgb(255 255 255 / 0.1)", color: "#eceef1" } }}
         />
       </body>

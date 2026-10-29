@@ -9,7 +9,7 @@ import { requireUser } from "@/lib/server/http";
 import { adminDb, userDb } from "@/lib/server/supabase";
 import { formatDate } from "@/lib/utils";
 
-export const metadata = { title: "Settings" };
+export const metadata = { title: "Sozlamalar" };
 
 export default async function SettingsPage() {
   const user = await requireUser();
@@ -24,7 +24,7 @@ export default async function SettingsPage() {
     <div className="space-y-10">
       <div>
         <div className="label">Hisob</div>
-        <h1 className="mt-1 font-display text-5xl font-bold uppercase leading-none">Settings</h1>
+        <h1 className="mt-1 font-display text-5xl font-bold uppercase leading-none">Sozlamalar</h1>
       </div>
 
       <section>
@@ -48,7 +48,7 @@ export default async function SettingsPage() {
 
       <section id="history" className="scroll-mt-24">
         <SectionTitle
-          eyebrow="Valve match history API"
+          eyebrow="Valve match tarixi API"
           title="Match tarixi"
           action={steam.history_enabled ? <Badge tone="neon">Ulangan</Badge> : <Badge tone="warn">Ulanmagan</Badge>}
         />
@@ -68,7 +68,7 @@ export default async function SettingsPage() {
       </section>
 
       <section>
-        <SectionTitle eyebrow="Render va saqlash" title="Sozlamalar" />
+        <SectionTitle eyebrow="Render va saqlash" title="Video va saqlash" />
         <Card className="p-5">
           <PreferencesForm initial={settings} />
         </Card>
@@ -78,7 +78,7 @@ export default async function SettingsPage() {
         <SectionTitle eyebrow="Xavfsizlik" title="Sessiyalar" />
         <Card className="divide-y divide-line">
           {(sessions.data ?? []).map((s) => (
-            <div key={s.id} className="flex items-center gap-3 p-4 text-sm">
+            <div key={s.id} className="flex flex-wrap items-center gap-3 p-4 text-sm">
               <MonitorSmartphone className="size-4 text-subtle" />
               <div className="min-w-0 flex-1">
                 <div className="truncate">{s.user_agent ?? "Noma'lum qurilma"}</div>

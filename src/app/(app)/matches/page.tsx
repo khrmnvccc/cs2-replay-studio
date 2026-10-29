@@ -9,7 +9,7 @@ import { requireUser } from "@/lib/server/http";
 import { userDb } from "@/lib/server/supabase";
 import { mapMeta } from "@shared/maps";
 
-export const metadata = { title: "Matches" };
+export const metadata = { title: "Matchlar" };
 
 const one = (v: string | string[] | undefined) => (typeof v === "string" && v ? v : undefined);
 
@@ -40,7 +40,7 @@ export default async function MatchesPage({ searchParams }: PageProps<"/matches"
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <div className="label">Match tarixi</div>
-          <h1 className="mt-1 font-display text-5xl font-bold uppercase leading-none">Matches</h1>
+          <h1 className="mt-1 font-display text-5xl font-bold uppercase leading-none">Matchlar</h1>
           <p className="mt-2 text-sm text-muted">{all.length} ta match · Valve share code va siz yuklagan demolardan</p>
         </div>
         <RefreshMatchesButton enabled={steam.history_enabled} initialJobs={jobs} online={online} />

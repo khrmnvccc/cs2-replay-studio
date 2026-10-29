@@ -14,7 +14,7 @@ import { requireUser } from "@/lib/server/http";
 import { userDb } from "@/lib/server/supabase";
 import { formatDate } from "@/lib/utils";
 
-export const metadata = { title: "Dashboard" };
+export const metadata = { title: "Bosh sahifa" };
 
 export default async function Dashboard() {
   const user = await requireUser();
@@ -57,18 +57,18 @@ export default async function Dashboard() {
               {steam.history_last_synced_at && <span>Oxirgi yangilanish: {formatDate(steam.history_last_synced_at)}</span>}
             </div>
           </div>
-          <div className="flex flex-wrap gap-2 sm:flex-col sm:items-end">
+          <div className="flex flex-col gap-2 sm:items-end [&>*]:w-full sm:[&>*]:w-auto">
             <RefreshMatchesButton enabled={steam.history_enabled} initialJobs={jobs} online={online} />
             <Button asChild variant="primary">
               <a href="#upload">
-                <FileSearch /> Analyze demo
+                <FileSearch /> Demoni tahlil qilish
               </a>
             </Button>
           </div>
         </div>
         {steam.history_last_error && (
           <Notice tone="danger" className="mt-5" title="Match tarixini yangilab bo'lmadi">
-            {steam.history_last_error}. <Link className="underline" href="/settings#history">Settings</Link> bo&apos;limida qayta ulang.
+            {steam.history_last_error}. <Link className="underline" href="/settings#history">Sozlamalar</Link> bo&apos;limida qayta ulang.
           </Notice>
         )}
       </section>
@@ -86,7 +86,7 @@ export default async function Dashboard() {
         <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
           <Stat label="Matchlar" value={stats.matches} sub={stats.matches ? `${stats.matchesWithStats} tasida to'liq statistika` : "Hali match yo'q"} />
           <Stat label="G'alaba" value={stats.decided ? `${Math.round((stats.wins / stats.decided) * 100)}%` : "—"} sub={stats.decided ? `${stats.wins} / ${stats.decided} match` : "Natijali match yo'q"} accent />
-          <Stat label="K/D" value={stats.kd != null ? stats.kd.toFixed(2) : "—"} sub={stats.kills ? `${stats.kills} kill · ${stats.deaths} death · ${stats.assists} assist` : "Statistika demo/GC dan olinadi"} />
+          <Stat label="K/D" value={stats.kd != null ? stats.kd.toFixed(2) : "—"} sub={stats.kills ? `${stats.kills} kill · ${stats.deaths} o'lim · ${stats.assists} yordam` : "Statistika demo/GC dan olinadi"} />
           <Stat label="Headshot" value={stats.hsPercent != null ? `${stats.hsPercent.toFixed(0)}%` : "—"} sub={stats.headshots ? `${stats.headshots} ta headshot` : "—"} />
         </div>
       </section>
@@ -142,7 +142,7 @@ export default async function Dashboard() {
       <section>
         <SectionTitle
           eyebrow="Oxirgi kill kliplar"
-          title="Clips"
+          title="Kliplar"
           action={
             <Button asChild variant="ghost" size="sm">
               <Link href="/clips">
@@ -165,7 +165,7 @@ export default async function Dashboard() {
           </div>
         ) : (
           <EmptyState icon={<Clapperboard />} title="Clip yo'q">
-            Match sahifasida kill timeline&apos;dan bitta yoki bir nechta killni tanlab clip yarating.
+            Match sahifasida kill xronologiyasidan bitta yoki bir nechta killni tanlab clip yarating.
           </EmptyState>
         )}
       </section>

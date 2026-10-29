@@ -40,11 +40,11 @@ export default async function SystemPage() {
             return (
               <div key={r.cap} className="flex items-center gap-4 p-4">
                 {n > 0 ? <CheckCircle2 className="size-5 text-neon" /> : r.cap === "render" || r.cap === "gc" ? <CircleDashed className="size-5 text-warn" /> : <XCircle className="size-5 text-danger" />}
-                <div className="flex-1">
+                <div className="min-w-0 flex-1">
                   <div className="font-medium">{r.title}</div>
-                  <div className="text-xs text-muted">{r.desc}</div>
+                  <div className="break-words text-xs text-muted">{r.desc}</div>
                 </div>
-                <span className="font-mono text-xs text-muted">{n > 0 ? `${n} ta onlayn` : "offline"}</span>
+                <span className="font-mono text-xs text-muted">{n > 0 ? `${n} ta onlayn` : "oflayn"}</span>
               </div>
             );
           })}

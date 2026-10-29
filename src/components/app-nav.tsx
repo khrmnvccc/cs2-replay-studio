@@ -5,11 +5,11 @@ import { Clapperboard, Gauge, ListVideo, Server, Settings } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const NAV = [
-  { href: "/dashboard", label: "Dashboard", icon: Gauge },
-  { href: "/matches", label: "Matches", icon: ListVideo },
-  { href: "/clips", label: "My Clips", icon: Clapperboard },
-  { href: "/settings", label: "Settings", icon: Settings },
-  { href: "/system", label: "Tizim holati", icon: Server },
+  { href: "/dashboard", label: "Bosh sahifa", short: "Asosiy", icon: Gauge },
+  { href: "/matches", label: "Matchlar", short: "Matchlar", icon: ListVideo },
+  { href: "/clips", label: "Kliplarim", short: "Kliplar", icon: Clapperboard },
+  { href: "/settings", label: "Sozlamalar", short: "Sozlama", icon: Settings },
+  { href: "/system", label: "Tizim holati", short: "Tizim", icon: Server },
 ];
 
 export function SideNav() {
@@ -40,13 +40,13 @@ export function SideNav() {
 export function BottomNav() {
   const path = usePathname();
   return (
-    <nav className="glass fixed inset-x-3 bottom-3 z-40 grid grid-cols-5 rounded-2xl p-1.5 lg:hidden">
-      {NAV.map(({ href, label, icon: Icon }) => {
+    <nav className="glass fixed inset-x-3 bottom-[max(0.75rem,env(safe-area-inset-bottom))] z-40 grid grid-cols-5 rounded-2xl p-1.5 lg:hidden">
+      {NAV.map(({ href, short, icon: Icon }) => {
         const active = path === href || path.startsWith(`${href}/`);
         return (
-          <Link key={href} href={href} className={cn("flex flex-col items-center gap-1 rounded-xl py-2 text-[10px] font-medium", active ? "bg-white/[0.07] text-neon" : "text-muted")}>
+          <Link key={href} href={href} className={cn("flex min-w-0 flex-col items-center gap-1 rounded-xl py-2 text-[10.5px] font-medium", active ? "bg-white/[0.07] text-neon" : "text-muted")}>
             <Icon className="size-[18px]" />
-            <span className="truncate">{label.split(" ").at(-1)}</span>
+            <span className="max-w-full truncate px-0.5">{short}</span>
           </Link>
         );
       })}

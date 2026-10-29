@@ -44,9 +44,9 @@ export default async function MatchPage({ params }: PageProps<"/matches/[id]">) 
   const myKills = kills.filter((k) => k.is_user_kill);
 
   const statItems = [
-    ["Kills", m.kills],
-    ["Deaths", m.deaths],
-    ["Assists", m.assists],
+    ["Killlar", m.kills],
+    ["O'limlar", m.deaths],
+    ["Yordamlar", m.assists],
     ["K/D", m.kills != null ? kd(m.kills, m.deaths) : null],
     ["Headshot", m.headshots != null ? `${m.headshots}${m.kills ? ` (${Math.round((m.headshots / m.kills) * 100)}%)` : ""}` : null],
     ["Davomiylik", m.duration_seconds != null ? formatDuration(m.duration_seconds) : null],
@@ -55,7 +55,7 @@ export default async function MatchPage({ params }: PageProps<"/matches/[id]">) 
   return (
     <div className="space-y-10">
       <Link href="/matches" className="inline-flex items-center gap-1.5 text-sm text-muted hover:text-fg">
-        <ArrowLeft className="size-4" /> Matches
+        <ArrowLeft className="size-4" /> Matchlar
       </Link>
 
       <section className="relative overflow-hidden rounded-3xl border border-line">
@@ -75,11 +75,11 @@ export default async function MatchPage({ params }: PageProps<"/matches/[id]">) 
               </div>
             )}
           </div>
-          <div className="grid grid-cols-3 gap-2 sm:grid-cols-6">
+          <div className="grid grid-cols-2 gap-2 min-[400px]:grid-cols-3 sm:grid-cols-6">
             {statItems.map(([l, v]) => (
               <div key={l} className="rounded-xl border border-line bg-surface-2/60 px-3 py-2.5">
                 <div className="label">{l}</div>
-                <div className="mt-1 font-display text-2xl font-semibold tabular-nums">{v ?? "—"}</div>
+                <div className="mt-1 truncate font-display text-2xl font-semibold tabular-nums">{v ?? "—"}</div>
               </div>
             ))}
           </div>
@@ -111,7 +111,7 @@ export default async function MatchPage({ params }: PageProps<"/matches/[id]">) 
                     <div
                       key={r.round_number}
                       title={`R${r.round_number}: ${r.winner ?? "?"} — ${r.reason ?? ""}`}
-                      className={`relative flex h-14 w-10 flex-col items-center justify-end rounded-lg border pb-1 ${r.winner === "CT" ? "border-ct/30 bg-ct/10" : r.winner === "T" ? "border-tside/30 bg-tside/10" : "border-line bg-surface"}`}
+                      className={`relative flex h-12 w-9 flex-col sm:h-14 sm:w-10 items-center justify-end rounded-lg border pb-1 ${r.winner === "CT" ? "border-ct/30 bg-ct/10" : r.winner === "T" ? "border-tside/30 bg-tside/10" : "border-line bg-surface"}`}
                     >
                       {n > 0 && <span className="absolute top-1 font-mono text-[10px] font-semibold text-neon">{n}K</span>}
                       <span className="font-mono text-[11px] text-muted">{r.round_number}</span>
@@ -125,7 +125,7 @@ export default async function MatchPage({ params }: PageProps<"/matches/[id]">) 
           </section>
 
           <section>
-            <SectionTitle eyebrow="Kill eventlar" title={kills.length ? `Timeline · ${myKills.length} ta sizning kill` : "Timeline"} />
+            <SectionTitle eyebrow="Kill eventlar" title={kills.length ? `Xronologiya · ${myKills.length} ta sizning kill` : "Xronologiya"} />
             {kills.length ? (
               <KillTimeline
                 kills={kills}
@@ -150,7 +150,7 @@ export default async function MatchPage({ params }: PageProps<"/matches/[id]">) 
               <ClipGallery clips={clips.map((c) => ({ ...c, matches: { map_name: m.map_name } }))} online={online} renderOnline={Boolean(online.render)} />
             ) : (
               <EmptyState icon={<Clapperboard />} title="Clip yaratilmagan">
-                Timeline&apos;dan killni tanlang va &quot;Clip yaratish&quot; tugmasini bosing.
+                Xronologiyadan killni tanlang va &quot;Clip yaratish&quot; tugmasini bosing.
               </EmptyState>
             )}
           </section>
@@ -170,7 +170,7 @@ export default async function MatchPage({ params }: PageProps<"/matches/[id]">) 
             )}
           </Card>
           <Notice tone="violet" title="Clip qanday yaratiladi">
-            Kill tick&apos;idan {settings.clip_pre_seconds} s oldin va {settings.clip_post_seconds} s keyin olinadi (Settings&apos;da o&apos;zgartiriladi). MP4 render Windows render worker&apos;da CS2 + HLAE orqali bajariladi.
+            Kill tick&apos;idan {settings.clip_pre_seconds} s oldin va {settings.clip_post_seconds} s keyin olinadi (Sozlamalarda o&apos;zgartiriladi). MP4 render Windows render worker&apos;da CS2 + HLAE orqali bajariladi.
           </Notice>
         </aside>
       </div>

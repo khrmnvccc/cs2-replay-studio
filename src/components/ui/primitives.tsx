@@ -7,8 +7,8 @@ export function Card({ className, ...p }: React.HTMLAttributes<HTMLDivElement>) 
 
 export function SectionTitle({ eyebrow, title, action, className }: { eyebrow?: string; title: React.ReactNode; action?: React.ReactNode; className?: string }) {
   return (
-    <div className={cn("mb-4 flex items-end justify-between gap-4", className)}>
-      <div>
+    <div className={cn("mb-4 flex flex-wrap items-end justify-between gap-x-4 gap-y-2", className)}>
+      <div className="min-w-0">
         {eyebrow && <div className="label mb-1.5">{eyebrow}</div>}
         <h2 className="font-display text-2xl font-semibold uppercase tracking-wide text-fg">{title}</h2>
       </div>
@@ -37,7 +37,7 @@ export function Badge({ tone = "neutral", className, ...p }: React.HTMLAttribute
 }
 
 export const inputClass =
-  "h-10 w-full rounded-xl border border-line-strong bg-surface-2 px-3 text-sm text-fg placeholder:text-subtle outline-none transition focus:border-neon/50 focus:ring-2 focus:ring-neon/15";
+  "h-10 w-full rounded-xl border border-line-strong bg-surface-2 px-3 text-base text-fg sm:text-sm placeholder:text-subtle outline-none transition focus:border-neon/50 focus:ring-2 focus:ring-neon/15";
 
 export function Input({ className, ...p }: React.InputHTMLAttributes<HTMLInputElement>) {
   return <input className={cn(inputClass, className)} {...p} />;

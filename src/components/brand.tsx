@@ -19,7 +19,7 @@ export function Logo({ className, href = "/" }: { className?: string; href?: str
   );
 }
 
-export function SteamSignInButton({ className, label = "Sign in through Steam" }: { className?: string; label?: string }) {
+export function SteamSignInButton({ className, label = "Steam orqali kirish" }: { className?: string; label?: string }) {
   // Oddiy <a>: OpenID redirect server tomonda boshlanadi (/api/auth/steam/login)
   return (
     <a

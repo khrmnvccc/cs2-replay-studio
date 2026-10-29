@@ -55,7 +55,7 @@ export function DemoPanel({ match, demos, jobs: initial, online }: { match: Matc
             {d.status !== "expired" && (
               <Button size="sm" variant="secondary" asChild>
                 <a href={`/api/demos/${d.id}/download`}>
-                  <FileDown /> Download demo
+                  <FileDown /> Demoni yuklab olish
                 </a>
               </Button>
             )}

@@ -43,10 +43,10 @@ export const WEAPON_NAMES: Record<string, string> = {
   cz75a: "CZ75-Auto", revolver: "R8", galilar: "Galil AR", famas: "FAMAS", sg556: "SG 553", aug: "AUG", ssg08: "SSG 08",
   mac10: "MAC-10", mp9: "MP9", mp7: "MP7", mp5sd: "MP5-SD", ump45: "UMP-45", p90: "P90", bizon: "PP-Bizon",
   nova: "Nova", xm1014: "XM1014", mag7: "MAG-7", sawedoff: "Sawed-Off", m249: "M249", negev: "Negev",
-  hegrenade: "HE Grenade", inferno: "Molotov", molotov: "Molotov", incgrenade: "Incendiary", knife: "Knife", taser: "Zeus x27",
-  world: "World", planted_c4: "C4",
+  hegrenade: "HE granata", inferno: "Molotov", molotov: "Molotov", incgrenade: "Incendiary", knife: "Pichoq", taser: "Zeus x27",
+  world: "Dunyo", planted_c4: "C4",
 };
 export function weaponName(w: string): string {
-  if (w.startsWith("knife") || w === "bayonet") return "Knife";
+  if (w.startsWith("knife") || w === "bayonet") return "Pichoq";
   return WEAPON_NAMES[w] ?? w;
 }

@@ -11,7 +11,7 @@ export function Dialog({ open, onOpenChange, title, children, className }: { ope
         <D.Overlay className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm data-[state=open]:animate-fade-up" />
         <D.Content
           className={cn(
-            "fixed left-1/2 top-1/2 z-50 w-[calc(100vw-2rem)] max-w-3xl -translate-x-1/2 -translate-y-1/2 rounded-2xl border border-line-strong bg-surface p-4 shadow-2xl outline-none sm:p-5",
+            "fixed left-1/2 top-1/2 z-50 max-h-[calc(100dvh-2rem)] w-[calc(100vw-2rem)] max-w-3xl overflow-y-auto -translate-x-1/2 -translate-y-1/2 rounded-2xl border border-line-strong bg-surface p-4 shadow-2xl outline-none sm:p-5",
             className,
           )}
         >

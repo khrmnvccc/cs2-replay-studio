@@ -17,7 +17,7 @@ export function HeroVisual() {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <span className="size-2 rounded-full bg-neon animate-pulse-soft" />
-            <span className="label !text-muted">demo timeline</span>
+            <span className="label !text-muted">demo xronologiyasi</span>
           </div>
           <span className="label">illustratsiya</span>
         </div>
