@@ -17,7 +17,21 @@ function Winget-Install($id, $name) {
 }
 
 if (-not (Have node)) { Winget-Install "OpenJS.NodeJS.LTS" "Node.js" }
-if (-not (Have ffmpeg)) { Winget-Install "Gyan.FFmpeg" "FFmpeg" }
+# FFmpeg: winget bo'lsa u orqali, bo'lmasa portativ versiya worker\tools\ffmpeg ga yuklanadi
+$localFfmpeg = Get-ChildItem -Path "tools\ffmpeg" -Recurse -Filter ffmpeg.exe -ErrorAction SilentlyContinue | Select-Object -First 1
+if (-not (Have ffmpeg) -and -not $localFfmpeg) {
+  if (Have winget) {
+    Winget-Install "Gyan.FFmpeg" "FFmpeg"
+  } else {
+    Write-Host "==> FFmpeg yuklanmoqda (portativ)..." -ForegroundColor Cyan
+    New-Item -ItemType Directory -Force -Path "tools" | Out-Null
+    Invoke-WebRequest -Uri "https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.zip" -OutFile "tools\ffmpeg.zip"
+    Expand-Archive -Path "tools\ffmpeg.zip" -DestinationPath "tools\ffmpeg" -Force
+    Remove-Item "tools\ffmpeg.zip"
+    $localFfmpeg = Get-ChildItem -Path "tools\ffmpeg" -Recurse -Filter ffmpeg.exe | Select-Object -First 1
+  }
+}
+if ($localFfmpeg) { $env:Path = $localFfmpeg.DirectoryName + ";" + $env:Path }
 if (-not (Have node)) { throw "Node.js o'rnatildi, lekin topilmadi. Oynani yopib, skriptni qayta ishga tushiring." }
 
 # CS Demo Manager (MP4 render uchun) - bo'lsa render ham yoqiladi
