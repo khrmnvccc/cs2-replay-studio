@@ -12,6 +12,7 @@ import { api, toastError } from "@/lib/client/api";
 import { useJobs } from "@/lib/client/use-jobs";
 import type { JobRow } from "@/lib/types";
 import { cn, formatBytes } from "@/lib/utils";
+import { useT } from "@/components/i18n";
 
 interface UploadInit {
   demoId: string;
@@ -30,19 +31,20 @@ export function DemoUpload({ matchId, maxMb, compact, online }: { matchId?: stri
   const inputRef = useRef<HTMLInputElement>(null);
   const uploadRef = useRef<Upload | null>(null);
   const router = useRouter();
+  const t = useT();
   const { jobs, track } = useJobs([], {
     onDone: (j) => {
       if (j.status === "succeeded") {
-        toast.success("Demo tahlil qilindi", {
-          action: j.result?.matchId ? { label: "Ochish", onClick: () => router.push(`/matches/${j.result!.matchId}`) } : undefined,
+        toast.success(t("Demo tahlil qilindi"), {
+          action: j.result?.matchId ? { label: t("Ochish"), onClick: () => router.push(`/matches/${j.result!.matchId}`) } : undefined,
         });
-      } else toast.error(j.error ?? "Demo tahlilida xato");
+      } else toast.error(t(j.error ?? "Demo tahlilida xato"));
     },
   });
 
   async function start(file: File) {
     const check = checkDemoName(file.name, file.size, maxMb * 1024 * 1024);
-    if (!check.ok) return toast.error(check.error);
+    if (!check.ok) return toast.error(t(check.error ?? ""));
     try {
       setPhase({ kind: "uploading", name: file.name, pct: 0, size: file.size });
       const init = await api<UploadInit>("/api/demos/upload", { method: "POST", json: { name: file.name, size: file.size, matchId } });
@@ -55,7 +57,7 @@ export function DemoUpload({ matchId, maxMb, compact, online }: { matchId?: stri
           removeFingerprintOnSuccess: true,
           chunkSize: 6 * 1024 * 1024, // Supabase talabi: 6 MB
           metadata: { bucketName: init.bucket, objectName: init.objectName, contentType: check.compression === "bz2" ? "application/x-bzip2" : "application/octet-stream", cacheControl: "3600" },
-          onError: (e) => reject(new Error(`Yuklashda xato: ${e.message.split("\n")[0]}`)),
+          onError: (e) => reject(new Error(`${t("Yuklashda xato")}: ${e.message.split("\n")[0]}`)),
           onProgress: (sent, total) => setPhase({ kind: "uploading", name: file.name, pct: (sent / total) * 100, size: file.size }),
           onSuccess: () => resolve(),
         });
@@ -68,7 +70,7 @@ export function DemoUpload({ matchId, maxMb, compact, online }: { matchId?: stri
       setPhase({ kind: "verifying", name: file.name });
       const done = await api<{ job: JobRow }>(`/api/demos/${init.demoId}/complete`, { method: "POST" });
       track(done.job);
-      toast.success("Demo yuklandi — tahlil navbatga qo'yildi");
+      toast.success(t("Demo yuklandi — tahlil navbatga qo'yildi"));
       router.refresh();
     } catch (e) {
       toastError(e);
@@ -95,9 +97,9 @@ export function DemoUpload({ matchId, maxMb, compact, online }: { matchId?: stri
           if (f && !busy) void start(f);
         }}
         className={cn(
-          "relative overflow-hidden rounded-2xl border border-dashed transition-all duration-300",
+          "relative overflow-hidden rounded-[1.25rem] border border-dashed backdrop-blur-xl transition-all duration-300",
           compact ? "p-5" : "p-8 sm:p-10",
-          drag ? "border-neon/70 bg-neon/[0.06]" : "border-line-strong bg-surface-2/40 hover:border-white/25",
+          drag ? "border-neon/70 bg-neon/[0.06]" : "border-line-strong bg-surface/60 hover:border-neon/40",
         )}
       >
         {phase.kind === "idle" ? (
@@ -106,13 +108,13 @@ export function DemoUpload({ matchId, maxMb, compact, online }: { matchId?: stri
               <UploadCloud className="size-6" />
             </div>
             <div className={cn(compact ? "flex-1" : "")}>
-              <div className="font-display text-xl font-semibold uppercase tracking-wide">Demo faylni shu yerga tashlang</div>
+              <div className="text-lg font-semibold">{t("Demo faylni shu yerga tashlang")}</div>
               <p className="mt-1 text-sm text-muted">
-                <span className="font-mono text-fg/80">.dem</span> yoki <span className="font-mono text-fg/80">.dem.bz2</span> · maksimal {maxMb >= 1024 ? `${(maxMb / 1024).toFixed(1)} GB` : `${maxMb} MB`} · uzilib qolsa davom ettiriladi
+                <span className="font-mono text-fg/80">.dem</span> {t("yoki")} <span className="font-mono text-fg/80">.dem.bz2</span> · {t("maksimal")} {maxMb >= 1024 ? `${(maxMb / 1024).toFixed(1)} GB` : `${maxMb} MB`} · {t("uzilib qolsa davom ettiriladi")}
               </p>
             </div>
             <Button variant="primary" onClick={() => inputRef.current?.click()}>
-              <FileUp /> Fayl tanlash
+              <FileUp /> {t("Fayl tanlash")}
             </Button>
           </div>
         ) : (
@@ -121,13 +123,13 @@ export function DemoUpload({ matchId, maxMb, compact, online }: { matchId?: stri
               <div className="min-w-0 flex-1">
                 <div className="truncate text-sm font-medium">{phase.name}</div>
                 <div className="text-xs text-muted">
-                  {phase.kind === "uploading" ? `${formatBytes((phase.size * phase.pct) / 100)} / ${formatBytes(phase.size)}` : "Fayl tekshirilmoqda (CS2 demo signaturasi)…"}
+                  {phase.kind === "uploading" ? `${formatBytes((phase.size * phase.pct) / 100)} / ${formatBytes(phase.size)}` : t("Fayl tekshirilmoqda (CS2 demo signaturasi)…")}
                 </div>
               </div>
               {phase.kind === "uploading" && (
                 <>
                   <span className="font-mono text-sm text-neon">{phase.pct.toFixed(0)}%</span>
-                  <Button size="icon" variant="ghost" aria-label="Bekor qilish" onClick={() => void uploadRef.current?.abort(true).then(() => setPhase({ kind: "idle" }))}>
+                  <Button size="icon" variant="ghost" aria-label={t("Bekor qilish")} onClick={() => void uploadRef.current?.abort(true).then(() => setPhase({ kind: "idle" }))}>
                     <X />
                   </Button>
                 </>

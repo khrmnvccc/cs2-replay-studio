@@ -6,13 +6,18 @@ import { EmptyState, Select } from "@/components/ui/primitives";
 import { listClips, onlineCapabilities } from "@/lib/server/data";
 import { requireUser } from "@/lib/server/http";
 import { userDb } from "@/lib/server/supabase";
+import { getT } from "@/lib/i18n/server";
 
-export const metadata = { title: "Kliplarim" };
+export async function generateMetadata() {
+  const { t } = await getT();
+  return { title: t("Kliplarim") };
+}
 
 export default async function ClipsPage({ searchParams }: PageProps<"/clips">) {
   const sp = await searchParams;
   const sort = sp.sort === "old" || sp.sort === "name" ? sp.sort : "new";
   const user = await requireUser();
+  const { t } = await getT();
   const db = await userDb(user.userId);
   const [clips, online] = await Promise.all([listClips(db, sort), onlineCapabilities(db)]);
   const ready = clips.filter((c) => c.status === "ready").length;
@@ -21,20 +26,20 @@ export default async function ClipsPage({ searchParams }: PageProps<"/clips">) {
     <div className="space-y-8">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <div className="label">Kill kliplar</div>
-          <h1 className="mt-1 font-display text-5xl font-bold uppercase leading-none">Kliplarim</h1>
+          <div className="label">{t("Kill kliplar")}</div>
+          <h1 className="mt-1 text-3xl font-bold tracking-tight sm:text-4xl">{t("Kliplarim")}</h1>
           <p className="mt-2 text-sm text-muted">
-            {clips.length} ta clip · {ready} tasi MP4 tayyor
+            {t("{n} ta clip · {r} tasi MP4 tayyor", { n: clips.length, r: ready })}
           </p>
         </div>
         <form method="get" className="flex w-full items-center gap-2 sm:w-auto">
-          <Select name="sort" defaultValue={sort} aria-label="Saralash" className="min-w-0 flex-1 sm:w-52 sm:flex-none">
-            <option value="new">Avval yangilari</option>
-            <option value="old">Avval eskilari</option>
-            <option value="name">Nomi bo&apos;yicha</option>
+          <Select name="sort" defaultValue={sort} aria-label={t("Saralash")} className="min-w-0 flex-1 sm:w-52 sm:flex-none">
+            <option value="new">{t("Avval yangilari")}</option>
+            <option value="old">{t("Avval eskilari")}</option>
+            <option value="name">{t("Nomi bo'yicha")}</option>
           </Select>
           <Button type="submit" variant="secondary">
-            Saralash
+            {t("Saralash")}
           </Button>
         </form>
       </div>
@@ -43,14 +48,14 @@ export default async function ClipsPage({ searchParams }: PageProps<"/clips">) {
       ) : (
         <EmptyState
           icon={<Clapperboard />}
-          title="Hali clip yo'q"
+          title={t("Hali clip yo'q")}
           action={
             <Button asChild variant="primary">
-              <Link href="/matches">Matchni tanlash</Link>
+              <Link href="/matches">{t("Matchni tanlash")}</Link>
             </Button>
           }
         >
-          Tahlil qilingan match sahifasida kill xronologiyasidan killlarni tanlang — har biri uchun MP4 clip render navbatiga qo&apos;yiladi.
+          {t("Tahlil qilingan match sahifasida kill xronologiyasidan killlarni tanlang — har biri uchun MP4 clip render navbatiga qo'yiladi.")}
         </EmptyState>
       )}
     </div>

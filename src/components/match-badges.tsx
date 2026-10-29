@@ -1,25 +1,28 @@
 import { Badge } from "@/components/ui/primitives";
+import { makeT, type Lang } from "@/lib/i18n";
 import type { MatchRow } from "@/lib/types";
 
-export function ResultBadge({ result }: { result: MatchRow["result"] }) {
-  if (result === "win") return <Badge tone="neon">G&apos;alaba</Badge>;
-  if (result === "loss") return <Badge tone="danger">Mag&apos;lubiyat</Badge>;
-  if (result === "tie") return <Badge tone="warn">Durang</Badge>;
-  return <Badge>Natija noma&apos;lum</Badge>;
+export function ResultBadge({ result, lang = "uz" }: { result: MatchRow["result"]; lang?: Lang }) {
+  const t = makeT(lang);
+  if (result === "win") return <Badge tone="neon">{t("G'alaba")}</Badge>;
+  if (result === "loss") return <Badge tone="danger">{t("Mag'lubiyat")}</Badge>;
+  if (result === "tie") return <Badge tone="warn">{t("Durang")}</Badge>;
+  return <Badge>{t("Natija noma'lum")}</Badge>;
 }
 
-export function DemoBadge({ a }: { a: MatchRow["demo_availability"] }) {
+export function DemoBadge({ a, lang = "uz" }: { a: MatchRow["demo_availability"]; lang?: Lang }) {
+  const t = makeT(lang);
   switch (a) {
     case "uploaded":
-      return <Badge tone="violet">Demo tahlil qilingan</Badge>;
+      return <Badge tone="violet">{t("Demo tahlil qilingan")}</Badge>;
     case "available":
-      return <Badge tone="neon">Demo Valve serverida</Badge>;
+      return <Badge tone="neon">{t("Demo Valve serverida")}</Badge>;
     case "expired":
-      return <Badge tone="warn">Valve demo muddati o&apos;tgan</Badge>;
+      return <Badge tone="warn">{t("Valve demo muddati o'tgan")}</Badge>;
     case "missing":
-      return <Badge>Demo yo&apos;q</Badge>;
+      return <Badge>{t("Demo yo'q")}</Badge>;
     default:
-      return <Badge>Demo holati noma&apos;lum</Badge>;
+      return <Badge>{t("Demo holati noma'lum")}</Badge>;
   }
 }
 

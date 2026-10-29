@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Crosshair, Hash, Timer } from "lucide-react";
 import { MapArt } from "@/components/map-art";
 import { DemoBadge, ResultBadge, SideBadge } from "@/components/match-badges";
+import { makeT, type Lang } from "@/lib/i18n";
 import type { MatchRow } from "@/lib/types";
 import { cn, formatDate, formatDuration, kd } from "@/lib/utils";
 
@@ -27,16 +28,17 @@ export function MatchScore({ m, className }: { m: MatchRow; className?: string }
   return <span className={cn("font-display font-bold text-subtle", className)}>– : –</span>;
 }
 
-export function MatchCard({ m }: { m: MatchRow }) {
+export function MatchCard({ m, lang = "uz" }: { m: MatchRow; lang?: Lang }) {
+  const t = makeT(lang);
   const hasStats = m.kills != null;
   return (
     <Link
       href={`/matches/${m.id}`}
-      className="group relative flex flex-col overflow-hidden rounded-2xl border border-line bg-surface transition duration-300 hover:-translate-y-0.5 hover:border-white/15 hover:shadow-[0_20px_60px_-30px_rgba(0,0,0,0.9)]"
+      className="panel group relative flex flex-col overflow-hidden transition duration-300 hover:-translate-y-0.5 hover:shadow-[0_24px_50px_-24px_rgb(15_23_42/0.35)]"
     >
       <MapArt map={m.map_name} className="h-28 transition duration-500 group-hover:scale-[1.03]" />
       <div className="absolute right-3 top-3 flex gap-1.5">
-        <ResultBadge result={m.result} />
+        <ResultBadge result={m.result} lang={lang} />
       </div>
       <div className="flex flex-1 flex-col gap-3 p-4">
         <div className="flex items-center justify-between">
@@ -50,18 +52,18 @@ export function MatchCard({ m }: { m: MatchRow }) {
             ["A", m.assists],
             ["K/D", hasStats ? kd(m.kills, m.deaths) : null],
           ].map(([l, v]) => (
-            <div key={String(l)} className="rounded-lg bg-white/[0.03] py-1.5">
+            <div key={String(l)} className="rounded-xl bg-fg/[0.04] py-1.5">
               <div className="font-mono text-[10px] text-subtle">{l}</div>
               <div className="font-mono text-sm tabular-nums">{v ?? "—"}</div>
             </div>
           ))}
         </div>
         <div className="mt-auto flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted">
-          <span>{m.played_at ? formatDate(m.played_at) : m.source === "demo_upload" ? `Yuklangan: ${formatDate(m.created_at, false)}` : "Sana: GC kutilmoqda"}</span>
+          <span>{m.played_at ? formatDate(m.played_at, true, lang) : m.source === "demo_upload" ? `${t("Yuklangan")}: ${formatDate(m.created_at, false, lang)}` : t("Sana: GC kutilmoqda")}</span>
           {m.duration_seconds != null && (
             <span className="inline-flex items-center gap-1">
               <Timer className="size-3" />
-              {formatDuration(m.duration_seconds)}
+              {formatDuration(m.duration_seconds, lang)}
             </span>
           )}
           {m.headshots != null && (
@@ -72,7 +74,7 @@ export function MatchCard({ m }: { m: MatchRow }) {
           )}
         </div>
         <div className="flex items-center justify-between gap-2 border-t border-line pt-3">
-          <DemoBadge a={m.demo_availability} />
+          <DemoBadge a={m.demo_availability} lang={lang} />
           {m.valve_match_id && (
             <span className="inline-flex items-center gap-1 truncate font-mono text-[10px] text-subtle" title={m.valve_match_id}>
               <Hash className="size-3" />

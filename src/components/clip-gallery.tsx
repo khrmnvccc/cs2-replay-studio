@@ -12,6 +12,7 @@ import { api, toastError } from "@/lib/client/api";
 import { useJobs } from "@/lib/client/use-jobs";
 import type { ClipRow, JobRow } from "@/lib/types";
 import { cn, formatBytes, formatDate } from "@/lib/utils";
+import { useI18n } from "@/components/i18n";
 
 function downloadFile(href: string) {
   const a = document.createElement("a");
@@ -26,6 +27,7 @@ type Clip = ClipRow & { matches?: { map_name: string | null } | null };
 
 export function ClipGallery({ clips, online, renderOnline }: { clips: Clip[]; online?: Record<string, number>; renderOnline: boolean }) {
   const router = useRouter();
+  const { lang, t } = useI18n();
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [preview, setPreview] = useState<Clip | null>(null);
   const [editing, setEditing] = useState<string | null>(null);
@@ -34,9 +36,9 @@ export function ClipGallery({ clips, online, renderOnline }: { clips: Clip[]; on
   const { jobs: zipJobs, track } = useJobs([], {
     onDone: (j) => {
       if (j.status === "succeeded") {
-        toast.success("ZIP tayyor", { action: { label: "Yuklab olish", onClick: () => downloadFile(`/api/exports/${j.id}`) } });
+        toast.success(t("ZIP tayyor"), { action: { label: t("Yuklab olish"), onClick: () => downloadFile(`/api/exports/${j.id}`) } });
         downloadFile(`/api/exports/${j.id}`);
-      } else toast.error(j.error ?? "ZIP yaratilmadi");
+      } else toast.error(t(j.error ?? "ZIP yaratilmadi"));
     },
   });
 
@@ -61,18 +63,18 @@ export function ClipGallery({ clips, online, renderOnline }: { clips: Clip[]; on
     try {
       await api(`/api/clips/${id}`, { method: "PATCH", json: { title } });
       setEditing(null);
-      toast.success("Nom saqlandi");
+      toast.success(t("Nom saqlandi"));
       router.refresh();
     } catch (e) {
       toastError(e);
     }
   };
   const remove = async (c: Clip) => {
-    if (!confirm(`"${c.title}" o'chirilsinmi? MP4 fayl ham o'chadi.`)) return;
+    if (!confirm(t("\"{title}\" o'chirilsinmi? MP4 fayl ham o'chadi.", { title: c.title }))) return;
     setBusy(c.id);
     try {
       await api(`/api/clips/${c.id}`, { method: "DELETE" });
-      toast.success("Clip o'chirildi");
+      toast.success(t("Clip o'chirildi"));
       router.refresh();
     } catch (e) {
       toastError(e);
@@ -84,7 +86,7 @@ export function ClipGallery({ clips, online, renderOnline }: { clips: Clip[]; on
     setBusy(c.id);
     try {
       await api(`/api/clips/${c.id}/retry`, { method: "POST" });
-      toast.success("Qayta render navbatga qo'yildi");
+      toast.success(t("Qayta render navbatga qo'yildi"));
       router.refresh();
     } catch (e) {
       toastError(e);
@@ -96,7 +98,7 @@ export function ClipGallery({ clips, online, renderOnline }: { clips: Clip[]; on
     try {
       const r = await api<{ job: JobRow; included: number }>("/api/clips/zip", { method: "POST", json: { clipIds: [...selected] } });
       track(r.job);
-      toast.success(`${r.included} ta clip ZIP qilinmoqda`);
+      toast.success(t("{n} ta clip ZIP qilinmoqda", { n: r.included }));
     } catch (e) {
       toastError(e);
     }
@@ -105,18 +107,19 @@ export function ClipGallery({ clips, online, renderOnline }: { clips: Clip[]; on
   return (
     <div className="space-y-4">
       {!renderOnline && clips.some((c) => c.status === "queued") && (
-        <div className="rounded-xl border border-warn/25 bg-warn/[0.06] px-4 py-3 text-sm text-muted">
-          <span className="font-medium text-warn">Render worker onlayn emas.</span> MP4 yaratish uchun Windows kompyuterda CS2 + HLAE + CS Demo Manager bilan render worker ishga tushirilishi kerak (README → &quot;Render worker&quot; bo&apos;limi). Cliplar navbatda saqlanadi — soxta video yaratilmaydi.
+        <div className="rounded-2xl border border-warn/25 bg-warn/[0.06] px-4 py-3 text-sm text-muted">
+          <span className="font-medium text-warn">{t("Render worker onlayn emas.")}</span>{" "}
+          {t("MP4 yaratish uchun Windows kompyuterda CS2 + HLAE + CS Demo Manager bilan render worker ishga tushirilishi kerak. Cliplar navbatda saqlanadi — soxta video yaratilmaydi.")}
         </div>
       )}
 
       {ready.length > 0 && (
         <div className="flex flex-wrap items-center gap-2">
           <Button variant="ghost" size="sm" onClick={() => setSelected(selected.size === ready.length ? new Set() : new Set(ready.map((c) => c.id)))}>
-            <Check /> {selected.size === ready.length ? "Tanlovni bekor qilish" : "Tayyorlarini tanlash"}
+            <Check /> {selected.size === ready.length ? t("Tanlovni bekor qilish") : t("Tayyorlarini tanlash")}
           </Button>
           <Button variant="violet" size="sm" disabled={!selected.size} onClick={zip}>
-            <FileArchive /> ZIP yuklab olish ({selected.size})
+            <FileArchive /> {t("ZIP yuklab olish")} ({selected.size})
           </Button>
         </div>
       )}
@@ -128,10 +131,10 @@ export function ClipGallery({ clips, online, renderOnline }: { clips: Clip[]; on
         {clips.map((c) => (
           <div key={c.id} className={cn("group panel overflow-hidden transition", selected.has(c.id) && "neon-ring")}>
             <div className="relative cursor-pointer" onClick={() => c.status === "ready" && setPreview(c)}>
-              <ClipThumb clip={c} />
+              <ClipThumb clip={c} lang={lang} />
               {c.status === "ready" && (
-                <label className="absolute left-2 top-2 grid size-7 cursor-pointer place-items-center rounded-lg bg-black/60 backdrop-blur" onClick={(e) => e.stopPropagation()}>
-                  <input type="checkbox" checked={selected.has(c.id)} onChange={() => toggle(c.id)} aria-label="Tanlash" />
+                <label className="absolute left-2 top-2 grid size-7 cursor-pointer place-items-center rounded-lg bg-surface/80 backdrop-blur" onClick={(e) => e.stopPropagation()}>
+                  <input type="checkbox" checked={selected.has(c.id)} onChange={() => toggle(c.id)} aria-label={t("Tanlash")} />
                 </label>
               )}
             </div>
@@ -146,7 +149,7 @@ export function ClipGallery({ clips, online, renderOnline }: { clips: Clip[]; on
                 >
                   <Input value={title} onChange={(e) => setTitle(e.target.value)} maxLength={120} autoFocus className="h-9" />
                   <Button size="sm" variant="primary" type="submit" className="h-9">
-                    Saqlash
+                    {t("Saqlash")}
                   </Button>
                 </form>
               ) : (
@@ -154,12 +157,12 @@ export function ClipGallery({ clips, online, renderOnline }: { clips: Clip[]; on
                   <div className="min-w-0 flex-1">
                     <div className="line-clamp-2 text-sm font-medium leading-snug">{c.title}</div>
                     <div className="mt-1 text-xs text-muted">
-                      {formatDate(c.created_at)} · {c.resolution} · {c.fps} fps {c.size_bytes ? `· ${formatBytes(c.size_bytes)}` : ""}
+                      {formatDate(c.created_at, true, lang)} · {c.resolution} · {c.fps} fps {c.size_bytes ? `· ${formatBytes(c.size_bytes)}` : ""}
                     </div>
                   </div>
                   <button
-                    className="grid size-7 shrink-0 place-items-center rounded-lg text-subtle hover:bg-white/5 hover:text-fg"
-                    aria-label="Nomini o'zgartirish"
+                    className="grid size-7 shrink-0 place-items-center rounded-lg text-subtle hover:bg-fg/5 hover:text-fg"
+                    aria-label={t("Nomini o'zgartirish")}
                     onClick={() => {
                       setEditing(c.id);
                       setTitle(c.title);
@@ -169,33 +172,33 @@ export function ClipGallery({ clips, online, renderOnline }: { clips: Clip[]; on
                   </button>
                 </div>
               )}
-              {c.status === "failed" && c.error && <p className="line-clamp-3 text-xs text-danger/90">{c.error}</p>}
+              {c.status === "failed" && c.error && <p className="line-clamp-3 text-xs text-danger/90">{t(c.error)}</p>}
               <div className="flex flex-wrap gap-1.5">
                 <Button size="sm" variant="secondary" disabled={c.status !== "ready"} onClick={() => setPreview(c)}>
-                  <Play /> Ko&apos;rish
+                  <Play /> {t("Ko'rish")}
                 </Button>
                 {c.status === "ready" ? (
                   <Button size="sm" variant="primary" asChild>
                     <a href={`/api/clips/${c.id}/download`}>
-                      <Download /> MP4 yuklab olish
+                      <Download /> {t("MP4 yuklab olish")}
                     </a>
                   </Button>
                 ) : (
-                  <Button size="sm" variant="primary" disabled title="Render tugagach faollashadi">
-                    <Download /> MP4 yuklab olish
+                  <Button size="sm" variant="primary" disabled title={t("Render tugagach faollashadi")}>
+                    <Download /> {t("MP4 yuklab olish")}
                   </Button>
                 )}
                 <Button size="sm" variant="ghost" asChild>
                   <a href={`/api/demos/${c.demo_file_id}/download`}>
-                    <FileDown /> Demoni yuklab olish
+                    <FileDown /> {t("Demoni yuklab olish")}
                   </a>
                 </Button>
                 {c.status === "failed" && (
                   <Button size="sm" variant="outline" onClick={() => retry(c)} loading={busy === c.id}>
-                    <RotateCcw /> Qayta render
+                    <RotateCcw /> {t("Qayta render")}
                   </Button>
                 )}
-                <Button size="sm" variant="ghost" className="ml-auto text-subtle hover:text-danger" onClick={() => remove(c)} loading={busy === c.id} aria-label="O'chirish">
+                <Button size="sm" variant="ghost" className="ml-auto text-subtle hover:text-danger" onClick={() => remove(c)} loading={busy === c.id} aria-label={t("O'chirish")}>
                   <Trash2 />
                 </Button>
               </div>
@@ -204,14 +207,14 @@ export function ClipGallery({ clips, online, renderOnline }: { clips: Clip[]; on
         ))}
       </div>
 
-      <Dialog open={!!preview} onOpenChange={(o) => !o && setPreview(null)} title={preview?.title ?? ""}>
+      <Dialog open={!!preview} onOpenChange={(o) => !o && setPreview(null)} title={preview?.title ?? ""} closeLabel={t("Yopish")}>
         {preview && (
           <div className="space-y-3">
             <video src={`/api/clips/${preview.id}/download?inline=1`} controls autoPlay playsInline className="aspect-video w-full rounded-xl bg-black" />
             <div className="flex justify-end gap-2">
               <Button variant="primary" size="sm" asChild>
                 <a href={`/api/clips/${preview.id}/download`}>
-                  <Download /> MP4 yuklab olish
+                  <Download /> {t("MP4 yuklab olish")}
                 </a>
               </Button>
             </div>

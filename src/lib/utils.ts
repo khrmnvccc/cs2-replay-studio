@@ -17,19 +17,52 @@ export function formatBytes(n: number | null | undefined): string {
   return `${v.toFixed(v >= 10 || i === 0 ? 0 : 1)} ${u[i]}`;
 }
 
-export function formatDuration(sec: number | null | undefined): string {
+type Lang = "uz" | "ru";
+
+export function formatDuration(sec: number | null | undefined, lang: Lang = "uz"): string {
   if (sec == null) return "—";
   const m = Math.floor(sec / 60);
   const s = Math.round(sec % 60);
-  return m >= 60 ? `${Math.floor(m / 60)} soat ${m % 60} daq` : `${m}:${String(s).padStart(2, "0")}`;
+  if (m >= 60) return lang === "ru" ? `${Math.floor(m / 60)} ч ${m % 60} мин` : `${Math.floor(m / 60)} soat ${m % 60} daq`;
+  return `${m}:${String(s).padStart(2, "0")}`;
 }
 
-const MONTHS = ["yan", "fev", "mar", "apr", "may", "iyn", "iyl", "avg", "sen", "okt", "noy", "dek"];
-export function formatDate(iso: string | null | undefined, withTime = true): string {
+// Sanalar Toshkent vaqtida (server UTC'da ishlaydi, foydalanuvchilar asosan O'zbekistonda).
+const TZ = "Asia/Tashkent";
+const MONTHS: Record<Lang, string[]> = {
+  uz: ["yan", "fev", "mar", "apr", "may", "iyn", "iyl", "avg", "sen", "okt", "noy", "dek"],
+  ru: ["янв", "фев", "мар", "апр", "мая", "июн", "июл", "авг", "сен", "окт", "ноя", "дек"],
+};
+const MONTHS_LONG: Record<Lang, string[]> = {
+  uz: ["yanvar", "fevral", "mart", "aprel", "may", "iyun", "iyul", "avgust", "sentabr", "oktabr", "noyabr", "dekabr"],
+  ru: ["января", "февраля", "марта", "апреля", "мая", "июня", "июля", "августа", "сентября", "октября", "ноября", "декабря"],
+};
+const WEEKDAYS: Record<Lang, string[]> = {
+  uz: ["Yakshanba", "Dushanba", "Seshanba", "Chorshanba", "Payshanba", "Juma", "Shanba"],
+  ru: ["Воскресенье", "Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота"],
+};
+
+function parts(d: Date) {
+  const p = Object.fromEntries(
+    new Intl.DateTimeFormat("en-US", { timeZone: TZ, year: "numeric", month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit", weekday: "short", hourCycle: "h23" })
+      .formatToParts(d)
+      .map((x) => [x.type, x.value]),
+  );
+  const wd = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].indexOf(p.weekday);
+  return { y: p.year, m: Number(p.month) - 1, d: Number(p.day), hh: p.hour, mm: p.minute, wd };
+}
+
+export function formatDate(iso: string | null | undefined, withTime = true, lang: Lang = "uz"): string {
   if (!iso) return "—";
-  const d = new Date(iso);
-  const date = `${d.getDate()} ${MONTHS[d.getMonth()]} ${d.getFullYear()}`;
-  return withTime ? `${date}, ${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}` : date;
+  const p = parts(new Date(iso));
+  const date = `${p.d} ${MONTHS[lang][p.m]} ${p.y}`;
+  return withTime ? `${date}, ${p.hh}:${p.mm}` : date;
+}
+
+/** "Payshanba, 29-oktabr, 2026" / "Четверг, 29 октября 2026" */
+export function formatLongDate(d: Date, lang: Lang = "uz"): string {
+  const p = parts(d);
+  return lang === "ru" ? `${WEEKDAYS.ru[p.wd]}, ${p.d} ${MONTHS_LONG.ru[p.m]} ${p.y}` : `${WEEKDAYS.uz[p.wd]}, ${p.d}-${MONTHS_LONG.uz[p.m]}, ${p.y}`;
 }
 
 export function kd(k: number | null, d: number | null): string {
@@ -46,7 +79,8 @@ export const WEAPON_NAMES: Record<string, string> = {
   hegrenade: "HE granata", inferno: "Molotov", molotov: "Molotov", incgrenade: "Incendiary", knife: "Pichoq", taser: "Zeus x27",
   world: "Dunyo", planted_c4: "C4",
 };
-export function weaponName(w: string): string {
-  if (w.startsWith("knife") || w === "bayonet") return "Pichoq";
-  return WEAPON_NAMES[w] ?? w;
+const WEAPON_RU: Record<string, string> = { Pichoq: "Нож", "HE granata": "HE-граната", Dunyo: "Мир" };
+export function weaponName(w: string, lang: Lang = "uz"): string {
+  const n = w.startsWith("knife") || w === "bayonet" ? "Pichoq" : (WEAPON_NAMES[w] ?? w);
+  return lang === "ru" ? (WEAPON_RU[n] ?? n) : n;
 }

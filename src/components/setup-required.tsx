@@ -1,22 +1,22 @@
 import { Logo } from "@/components/brand";
+import { getT } from "@/lib/i18n/server";
 
-export function SetupRequired({ missing }: { missing: string[] }) {
+export async function SetupRequired({ missing }: { missing: string[] }) {
+  const { t } = await getT();
   return (
     <main className="mx-auto flex min-h-screen max-w-2xl flex-col justify-center px-6 py-16">
       <Logo />
-      <h1 className="mt-10 font-display text-4xl font-bold uppercase">Server hali sozlanmagan</h1>
-      <p className="mt-3 text-muted">
-        Quyidagi muhit o&apos;zgaruvchilari yo&apos;q yoki noto&apos;g&apos;ri. Sayt egasi ularni{" "}
-        <span className="font-mono text-fg">Vercel → Settings → Environment Variables</span> ga qo&apos;shib, qayta deploy
-        qilishi kerak (lokalda: <span className="font-mono text-fg">.env.local</span>, README → &quot;Lokal ishga tushirish&quot;).
-      </p>
-      <ul className="mt-6 space-y-2">
-        {missing.map((m) => (
-          <li key={m} className="rounded-lg border border-danger/25 bg-danger/[0.06] px-3 py-2 font-mono text-sm text-danger">
-            {m}
-          </li>
-        ))}
-      </ul>
+      <div className="panel mt-10 p-6">
+        <h1 className="text-2xl font-bold tracking-tight">{t("Server hali sozlanmagan")}</h1>
+        <p className="mt-3 text-muted">{t("Quyidagi muhit o'zgaruvchilari yo'q yoki noto'g'ri. Sayt egasi ularni Vercel → Settings → Environment Variables ga qo'shib, qayta deploy qilishi kerak.")}</p>
+        <ul className="mt-6 space-y-2">
+          {missing.map((m) => (
+            <li key={m} className="rounded-xl border border-danger/25 bg-danger/[0.06] px-3 py-2 font-mono text-sm text-danger">
+              {m}
+            </li>
+          ))}
+        </ul>
+      </div>
     </main>
   );
 }

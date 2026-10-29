@@ -2,18 +2,19 @@ import Link from "next/link";
 import { LogIn } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-export function Logo({ className, href = "/" }: { className?: string; href?: string }) {
+export function Logo({ className, href = "/", sub = "CS2 match studio" }: { className?: string; href?: string; sub?: string }) {
   return (
-    <Link href={href} className={cn("group inline-flex items-center gap-2.5", className)}>
-      <span className="relative grid size-8 place-items-center rounded-lg border border-neon/30 bg-neon/10">
-        <svg viewBox="0 0 24 24" className="size-[18px] text-neon" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+    <Link href={href} className={cn("group inline-flex items-center gap-3", className)}>
+      <span className="relative grid size-10 place-items-center rounded-2xl bg-gradient-to-br from-neon to-[#0ea5e9] text-white shadow-[0_8px_20px_-8px_rgb(22_163_74/0.6)]">
+        <svg viewBox="0 0 24 24" className="size-5" fill="none" stroke="currentColor" strokeWidth="2.2" aria-hidden>
           <circle cx="12" cy="12" r="7" />
           <path d="M12 2v5M12 17v5M2 12h5M17 12h5" strokeLinecap="round" />
-          <circle cx="12" cy="12" r="1.4" fill="currentColor" stroke="none" />
+          <circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none" />
         </svg>
       </span>
-      <span className="font-display text-[17px] font-bold uppercase leading-none tracking-[0.08em]">
-        Replay<span className="text-neon">Studio</span>
+      <span className="leading-tight">
+        <span className="block text-[15px] font-semibold tracking-tight text-fg">Replay Studio</span>
+        <span className="block text-[10.5px] font-medium uppercase tracking-[0.14em] text-subtle">{sub}</span>
       </span>
     </Link>
   );
@@ -25,8 +26,8 @@ export function SteamSignInButton({ className, label = "Steam orqali kirish" }: 
     <a
       href="/api/auth/steam/login"
       className={cn(
-        "group relative inline-flex h-12 items-center gap-3 overflow-hidden rounded-xl bg-neon px-5 text-[15px] font-semibold text-black transition-all duration-200",
-        "shadow-[0_0_0_1px_rgba(180,255,46,0.45),0_14px_44px_-12px_rgba(180,255,46,0.7)] hover:bg-[#c6ff5c] hover:shadow-[0_0_0_1px_rgba(180,255,46,0.7),0_18px_54px_-12px_rgba(180,255,46,0.85)] active:translate-y-px",
+        "group relative inline-flex h-12 items-center gap-3 overflow-hidden rounded-2xl bg-neon px-6 text-[15px] font-semibold text-on-neon transition-all duration-200",
+        "shadow-[0_12px_30px_-10px_color-mix(in_oklab,var(--color-neon)_75%,transparent)] hover:bg-neon-dim active:translate-y-px",
         className,
       )}
     >

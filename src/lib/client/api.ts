@@ -1,5 +1,6 @@
 "use client";
 import { toast } from "sonner";
+import { tc } from "@/components/i18n";
 
 export class ApiError extends Error {
   constructor(message: string, public status: number) {
@@ -18,13 +19,13 @@ export async function api<T = Record<string, unknown>>(url: string, init: Reques
       body: json !== undefined ? JSON.stringify(json) : rest.body,
     });
   } catch {
-    throw new ApiError("Tarmoq xatosi — internet aloqasini tekshiring", 0);
+    throw new ApiError(tc("Tarmoq xatosi — internet aloqasini tekshiring"), 0);
   }
   const data = await res.json().catch(() => ({}));
-  if (!res.ok) throw new ApiError((data as { error?: string }).error ?? `Xato (${res.status})`, res.status);
+  if (!res.ok) throw new ApiError(tc((data as { error?: string }).error ?? `Xato (${res.status})`), res.status);
   return data as T;
 }
 
 export function toastError(e: unknown) {
-  toast.error(e instanceof Error ? e.message : "Noma'lum xato");
+  toast.error(e instanceof Error ? e.message : tc("Noma'lum xato"));
 }

@@ -5,22 +5,22 @@ import * as React from "react";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "relative inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-xl font-medium transition-all duration-200 outline-none focus-visible:ring-2 focus-visible:ring-neon/70 focus-visible:ring-offset-2 focus-visible:ring-offset-bg disabled:pointer-events-none disabled:opacity-45 [&_svg]:size-4 [&_svg]:shrink-0",
+  "relative inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-xl font-medium transition-all duration-200 outline-none focus-visible:ring-2 focus-visible:ring-ct/50 focus-visible:ring-offset-2 focus-visible:ring-offset-bg disabled:pointer-events-none disabled:opacity-45 [&_svg]:size-4 [&_svg]:shrink-0",
   {
     variants: {
       variant: {
         primary:
-          "bg-neon text-black hover:bg-[#c6ff5c] shadow-[0_0_0_1px_rgba(180,255,46,0.4),0_10px_30px_-10px_rgba(180,255,46,0.6)] hover:shadow-[0_0_0_1px_rgba(180,255,46,0.6),0_14px_40px_-10px_rgba(180,255,46,0.75)] active:translate-y-px",
-        secondary: "bg-surface-3 text-fg border border-line-strong hover:bg-[#21262c] hover:border-white/20",
-        ghost: "text-muted hover:text-fg hover:bg-white/5",
+          "bg-neon text-on-neon hover:bg-neon-dim shadow-[0_8px_20px_-8px_color-mix(in_oklab,var(--color-neon)_70%,transparent)] active:translate-y-px",
+        secondary: "bg-surface text-fg border border-glass-edge shadow-glass backdrop-blur-xl hover:bg-surface-2",
+        ghost: "text-muted hover:text-fg hover:bg-fg/5",
         outline: "border border-line-strong text-fg hover:border-neon/50 hover:text-neon",
-        violet: "bg-violet/15 text-[#c4b5ff] border border-violet/30 hover:bg-violet/25",
+        violet: "bg-violet/12 text-violet border border-violet/30 hover:bg-violet/20",
         danger: "bg-danger/10 text-danger border border-danger/25 hover:bg-danger/20",
       },
       size: {
         sm: "h-8 px-3 text-xs",
         md: "h-10 px-4 text-sm",
-        lg: "h-12 px-6 text-[15px]",
+        lg: "h-12 px-6 text-[15px] rounded-2xl",
         icon: "size-9",
       },
     },

@@ -1,13 +1,15 @@
 "use client";
 import { motion } from "motion/react";
+import { useT } from "@/components/i18n";
 
 // Illyustratsiya: demo timeline'ining abstrakt ko'rinishi (haqiqiy ma'lumot emas).
 const ROUNDS = [3, 1, 2, 0, 4, 1, 2, 3, 0, 1, 5, 2];
 
 export function HeroVisual() {
+  const t = useT();
   return (
     <div className="relative mx-auto w-full max-w-xl" aria-hidden>
-      <div className="absolute -inset-10 rounded-[3rem] bg-[radial-gradient(closest-side,rgba(180,255,46,0.14),transparent)] blur-2xl" />
+      <div className="absolute -inset-10 rounded-[3rem] bg-[radial-gradient(closest-side,rgb(34_197_94/0.18),transparent)] blur-2xl" />
       <motion.div
         initial={{ opacity: 0, y: 24, rotateX: 8 }}
         animate={{ opacity: 1, y: 0, rotateX: 0 }}
@@ -17,19 +19,19 @@ export function HeroVisual() {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <span className="size-2 rounded-full bg-neon animate-pulse-soft" />
-            <span className="label !text-muted">demo xronologiyasi</span>
+            <span className="label !text-muted">{t("demo xronologiyasi")}</span>
           </div>
-          <span className="label">illustratsiya</span>
+          <span className="label">{t("illustratsiya")}</span>
         </div>
 
         {/* Crosshair + radar */}
-        <div className="relative mt-5 aspect-[16/9] overflow-hidden rounded-2xl border border-line bg-[radial-gradient(80%_80%_at_50%_50%,#141a12,#0a0c0e)]">
+        <div className="relative mt-5 aspect-[16/9] overflow-hidden rounded-2xl border border-line bg-[radial-gradient(80%_80%_at_50%_50%,#10241a,#0b1220)]">
           <div className="grid-bg absolute inset-0 opacity-70" />
           <svg viewBox="0 0 320 180" className="absolute inset-0 h-full w-full">
             <defs>
               <radialGradient id="sweep" cx="0" cy="0" r="1">
-                <stop offset="0" stopColor="#b4ff2e" stopOpacity="0.35" />
-                <stop offset="1" stopColor="#b4ff2e" stopOpacity="0" />
+                <stop offset="0" stopColor="#22c55e" stopOpacity="0.35" />
+                <stop offset="1" stopColor="#22c55e" stopOpacity="0" />
               </radialGradient>
             </defs>
             {[28, 52, 76].map((r) => (
@@ -42,7 +44,7 @@ export function HeroVisual() {
               animate={{ rotate: 360 }}
               transition={{ duration: 6, repeat: Infinity, ease: "linear" }}
             />
-            <g stroke="#b4ff2e" strokeWidth="1.6" strokeLinecap="round">
+            <g stroke="#22c55e" strokeWidth="1.6" strokeLinecap="round">
               <line x1="160" y1="74" x2="160" y2="84" />
               <line x1="160" y1="96" x2="160" y2="106" />
               <line x1="144" y1="90" x2="154" y2="90" />
@@ -59,7 +61,7 @@ export function HeroVisual() {
                 cx={x}
                 cy={y}
                 r="3.2"
-                fill={i % 2 ? "#8f6bff" : "#b4ff2e"}
+                fill={i % 2 ? "#818cf8" : "#22c55e"}
                 initial={{ opacity: 0, scale: 0 }}
                 animate={{ opacity: [0, 1, 0.5], scale: [0, 1.4, 1] }}
                 transition={{ delay: 0.6 + i * 0.5, duration: 1.2, repeat: Infinity, repeatDelay: 3 }}
@@ -85,7 +87,7 @@ export function HeroVisual() {
               transition={{ delay: 0.3 + i * 0.05 }}
             >
               {Array.from({ length: k }).map((_, j) => (
-                <span key={j} className="h-1.5 rounded-sm bg-neon/80 shadow-[0_0_8px_rgba(180,255,46,0.6)]" />
+                <span key={j} className="h-1.5 rounded-sm bg-neon/80 shadow-[0_0_8px_rgb(34_197_94/0.5)]" />
               ))}
               <span className={`h-6 rounded-md ${i % 3 === 1 ? "bg-tside/25" : "bg-ct/20"}`} />
             </motion.div>
@@ -93,7 +95,7 @@ export function HeroVisual() {
         </div>
         <div className="mt-2 flex justify-between font-mono text-[10px] text-subtle">
           <span>R1</span>
-          <span>raundlar · kill markerlari</span>
+          <span>{t("raundlar · kill markerlari")}</span>
           <span>R12</span>
         </div>
       </motion.div>

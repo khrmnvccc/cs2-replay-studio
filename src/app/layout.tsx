@@ -1,28 +1,43 @@
 import type { Metadata, Viewport } from "next";
-import { Barlow_Condensed, Inter, JetBrains_Mono } from "next/font/google";
+import { Inter, JetBrains_Mono } from "next/font/google";
 import { Toaster } from "sonner";
+import { I18nProvider } from "@/components/i18n";
+import { getLang, getTheme } from "@/lib/i18n/server";
+import { translate } from "@/lib/i18n";
 import "./globals.css";
 
 const inter = Inter({ variable: "--font-inter", subsets: ["latin", "cyrillic"] });
-const barlow = Barlow_Condensed({ variable: "--font-barlow", subsets: ["latin"], weight: ["500", "600", "700"] });
 const mono = JetBrains_Mono({ variable: "--font-jetbrains", subsets: ["latin"] });
 
-export const metadata: Metadata = {
-  title: { default: "CS2 Match Replay Studio", template: "%s · Replay Studio" },
-  description: "Steam akkauntingizni ulang, CS2 matchlaringizni ko'ring, demo'dan kill lavhalarini toping va MP4 qilib yuklab oling.",
+export async function generateMetadata(): Promise<Metadata> {
+  const lang = await getLang();
+  return {
+    title: { default: "CS2 Match Replay Studio", template: "%s · Replay Studio" },
+    description: translate(lang, "Steam akkauntingizni ulang, CS2 matchlaringizni ko'ring, demo'dan kill lavhalarini toping va MP4 qilib yuklab oling."),
+  };
+}
+
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#eef2f7" },
+    { media: "(prefers-color-scheme: dark)", color: "#0a0e16" },
+  ],
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
 };
 
-export const viewport: Viewport = { themeColor: "#07080a", width: "device-width", initialScale: 1, viewportFit: "cover" };
-
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default async function RootLayout({ children }: LayoutProps<"/">) {
+  const [lang, theme] = await Promise.all([getLang(), getTheme()]);
   return (
-    <html lang="uz" className={`${inter.variable} ${barlow.variable} ${mono.variable} h-full`}>
+    <html lang={lang} className={`${inter.variable} ${mono.variable} h-full ${theme === "dark" ? "dark" : ""}`}>
       <body className="min-h-full">
-        {children}
+        <I18nProvider lang={lang}>{children}</I18nProvider>
         <Toaster
-          theme="dark"
           position="top-center"
-          toastOptions={{ style: { background: "#13161a", border: "1px solid rgb(255 255 255 / 0.1)", color: "#eceef1" } }}
+          toastOptions={{
+            style: { background: "var(--color-surface)", backdropFilter: "blur(20px)", border: "1px solid var(--color-glass-edge)", color: "var(--color-fg)" },
+          }}
         />
       </body>
     </html>
