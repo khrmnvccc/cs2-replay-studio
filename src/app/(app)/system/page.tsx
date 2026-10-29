@@ -21,15 +21,13 @@ const ROWS = [
 
 export default async function SystemPage() {
   const user = await pageUser();
-  if (!isOwner(user)) redirect("/dashboard");
+  if (!isOwner(user)) redirect("/matches");
   const { t } = await getT();
   const db = await userDb(user.userId);
   const online = await onlineCapabilities(db);
   return (
     <div className="space-y-8">
       <div>
-        <div className="label">{t("Infratuzilma")}</div>
-        <h1 className="mt-1 text-3xl font-bold tracking-tight sm:text-4xl">{t("Tizim holati")}</h1>
         <p className="mt-2 max-w-2xl text-sm text-muted">{t("Har bir funksiya qaysi komponentga tayanishi va hozir u onlayn ekanligi. Bulutdagi worker har ~10 daqiqada ishga tushadi.")}</p>
       </div>
       <section>

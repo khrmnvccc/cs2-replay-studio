@@ -10,7 +10,7 @@ import type { JobRow } from "@/lib/types";
 import { useState } from "react";
 import { useT } from "@/components/i18n";
 
-export function RefreshMatchesButton({ enabled, initialJobs = [], online, showJobs = true }: { enabled: boolean; initialJobs?: JobRow[]; online?: Record<string, number>; showJobs?: boolean }) {
+export function RefreshMatchesButton({ enabled, initialJobs = [], online, showJobs = true, label, className }: { enabled: boolean; initialJobs?: JobRow[]; online?: Record<string, number>; showJobs?: boolean; label?: string; className?: string }) {
   const [loading, setLoading] = useState(false);
   const t = useT();
   const { jobs, active, track } = useJobs(initialJobs.filter((j) => j.type === "sync_matches"), {
@@ -18,9 +18,9 @@ export function RefreshMatchesButton({ enabled, initialJobs = [], online, showJo
   });
   if (!enabled) {
     return (
-      <Button asChild variant="secondary">
+      <Button asChild variant="secondary" className={className}>
         <Link href="/settings#history">
-          <RefreshCw /> {t("Match tarixini ulash")}
+          <RefreshCw /> {t(label ? "Ulash" : "Match tarixini ulash")}
         </Link>
       </Button>
     );
@@ -39,8 +39,8 @@ export function RefreshMatchesButton({ enabled, initialJobs = [], online, showJo
   };
   return (
     <div className="flex flex-col items-stretch gap-2 sm:items-end">
-      <Button variant="secondary" onClick={run} loading={loading} disabled={active.length > 0}>
-        {!loading && <RefreshCw className={active.length ? "animate-spin" : ""} />} {t("Matchlarni yangilash")}
+      <Button variant="secondary" onClick={run} loading={loading} disabled={active.length > 0} className={className}>
+        {!loading && <RefreshCw className={active.length ? "animate-spin" : ""} />} {t(label ?? "Matchlarni yangilash")}
       </Button>
       {showJobs && jobs.slice(0, 1).map((j) => (
         <div key={j.id} className="w-full sm:w-72">

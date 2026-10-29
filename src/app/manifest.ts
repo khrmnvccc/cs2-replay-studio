@@ -7,7 +7,7 @@ export default function manifest(): MetadataRoute.Manifest {
     short_name: "ACE",
     description: "CS2 matchlaringiz, kill lavhalari va kliplar",
     id: "/",
-    start_url: "/dashboard",
+    start_url: "/matches",
     scope: "/",
     display: "standalone",
     orientation: "portrait",

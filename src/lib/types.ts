@@ -68,6 +68,7 @@ export interface KillEventRow {
   victim_steam_id64: string | null;
   victim_name: string | null;
   victim_side: string | null;
+  assister_steam_id64?: string | null;
   assister_name: string | null;
   weapon: string;
   headshot: boolean;

@@ -46,7 +46,7 @@ export default async function Landing({ searchParams }: PageProps<"/">) {
           <ThemeToggle />
           {user ? (
             <Button asChild variant="secondary" size="md" className="hidden sm:inline-flex">
-              <Link href="/dashboard">
+              <Link href="/matches">
                 {t("Bosh sahifa")} <ArrowRight />
               </Link>
             </Button>
@@ -81,7 +81,7 @@ export default async function Landing({ searchParams }: PageProps<"/">) {
           <div className="mt-9 flex flex-col items-stretch gap-3 sm:flex-row sm:flex-wrap sm:items-center [&>*]:justify-center">
             {user ? (
               <Button asChild variant="primary" size="lg">
-                <Link href="/dashboard">
+                <Link href="/matches">
                   {t("Bosh sahifaga o'tish")} <ArrowRight />
                 </Link>
               </Button>
@@ -154,7 +154,7 @@ export default async function Landing({ searchParams }: PageProps<"/">) {
             <div className="relative mt-8 flex justify-center">
               {user ? (
                 <Button asChild variant="primary" size="lg">
-                  <Link href="/dashboard">{t("Bosh sahifa")}</Link>
+                  <Link href="/matches">{t("Bosh sahifa")}</Link>
                 </Button>
               ) : (
                 <SteamSignInButton label={t("Steam orqali kirish")} />

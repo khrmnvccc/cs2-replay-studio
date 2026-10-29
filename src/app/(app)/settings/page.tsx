@@ -27,10 +27,6 @@ export default async function SettingsPage() {
 
   return (
     <div className="space-y-10">
-      <div>
-        <div className="label">{t("Hisob")}</div>
-        <h1 className="mt-1 text-3xl font-bold tracking-tight sm:text-4xl">{t("Sozlamalar")}</h1>
-      </div>
 
       <section>
         <SectionTitle eyebrow="Steam" title={t("Steam profili")} />

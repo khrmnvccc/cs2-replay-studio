@@ -69,7 +69,7 @@ export async function GET(req: Request) {
   await db.from("openid_nonces").delete().lt("created_at", new Date(Date.now() - 864e5).toISOString());
 
   await createSession(userId, req.headers.get("user-agent"), clientIp(req));
-  const res = NextResponse.redirect(new URL("/dashboard", APP_URL));
+  const res = NextResponse.redirect(new URL("/matches", APP_URL));
   res.cookies.delete({ name: STATE_COOKIE, path: "/api/auth/steam" });
   return res;
 }

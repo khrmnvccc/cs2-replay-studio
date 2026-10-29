@@ -26,8 +26,6 @@ export default async function ClipsPage({ searchParams }: PageProps<"/clips">) {
     <div className="space-y-8">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <div className="label">{t("Kill kliplar")}</div>
-          <h1 className="mt-1 text-3xl font-bold tracking-tight sm:text-4xl">{t("Kliplarim")}</h1>
           <p className="mt-2 text-sm text-muted">
             {t("{n} ta clip · {r} tasi MP4 tayyor", { n: clips.length, r: ready })}
           </p>

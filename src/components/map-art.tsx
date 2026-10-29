@@ -2,7 +2,7 @@ import { mapMeta } from "@shared/maps";
 import { cn } from "@/lib/utils";
 
 /** Xarita "rasmi": rasmiy rasm bo'lmasa — xarita rangidagi topografik gradient. */
-export function MapArt({ map, className, size = "md" }: { map: string | null; className?: string; size?: "sm" | "md" | "lg" }) {
+export function MapArt({ map, className, size = "md", label = true }: { map: string | null; className?: string; size?: "sm" | "md" | "lg"; label?: boolean }) {
   const m = mapMeta(map);
   const h = m.hue;
   return (
@@ -29,10 +29,10 @@ export function MapArt({ map, className, size = "md" }: { map: string | null; cl
           ))}
         </svg>
       )}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
-      <div className={cn("absolute bottom-0 left-0 p-3 font-display font-bold uppercase leading-none tracking-wide text-white drop-shadow", size === "lg" ? "p-5 text-5xl sm:text-6xl" : size === "sm" ? "text-base" : "text-2xl")}>
+      {label && <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />}
+      {label && <div className={cn("absolute bottom-0 left-0 p-3 font-display font-bold uppercase leading-none tracking-wide text-white drop-shadow", size === "lg" ? "p-5 text-5xl sm:text-6xl" : size === "sm" ? "text-base" : "text-2xl")}>
         {m.name}
-      </div>
+      </div>}
     </div>
   );
 }

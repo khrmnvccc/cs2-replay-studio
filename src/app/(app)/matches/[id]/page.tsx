@@ -1,24 +1,38 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, Clapperboard, FileSearch } from "lucide-react";
+import { ArrowLeft, Clapperboard, FileSearch, History, Swords } from "lucide-react";
 import { ClipGallery } from "@/components/clip-gallery";
 import { DemoPanel } from "@/components/demo-panel";
 import { DemoUpload } from "@/components/demo-upload";
 import { KillTimeline } from "@/components/kill-timeline";
 import { MapArt } from "@/components/map-art";
-import { DemoBadge, ResultBadge, SideBadge } from "@/components/match-badges";
-import { MatchScore } from "@/components/match-card";
-import { Badge, Card, EmptyState, Notice, SectionTitle } from "@/components/ui/primitives";
+import { MapBadge, ModeTag } from "@/components/match-card";
+import { MatchView } from "@/components/match-view";
+import { Scoreboard } from "@/components/scoreboard";
+import { EmptyState, Notice, SectionTitle } from "@/components/ui/primitives";
 import { getMatch, getSettings, JOB_COLUMNS, onlineCapabilities } from "@/lib/server/data";
 import { env } from "@/lib/server/env";
 import { HttpError } from "@/lib/server/http";
-import { pageUser } from "@/lib/server/session";
+import { isOwner, pageUser } from "@/lib/server/session";
+import { steamAvatars } from "@/lib/server/steam-avatars";
 import { userDb } from "@/lib/server/supabase";
+import { buildScoreboard, roundCount, sideInRound, type Side } from "@/lib/scoreboard";
 import type { JobRow } from "@/lib/types";
-import { formatDate, formatDuration, kd } from "@/lib/utils";
+import { mapMeta } from "@shared/maps";
+import { cn, formatDate, formatDuration } from "@/lib/utils";
 import { getT } from "@/lib/i18n/server";
 
 export const metadata = { title: "Match" };
+
+function Soon({ icon, title, text }: { icon: React.ReactNode; title: string; text: string }) {
+  return (
+    <div className="panel grid place-items-center px-6 py-12 text-center">
+      <span className="grid size-14 place-items-center rounded-2xl bg-neon/10 text-neon [&_svg]:size-7">{icon}</span>
+      <p className="mt-4 font-semibold">{title}</p>
+      <p className="mt-1 max-w-sm text-sm text-muted">{text}</p>
+    </div>
+  );
+}
 
 export default async function MatchPage({ params }: PageProps<"/matches/[id]">) {
   const { id } = await params;
@@ -33,66 +47,161 @@ export default async function MatchPage({ params }: PageProps<"/matches/[id]">) 
     throw e;
   }
   const { match: m, rounds, kills, demos, clips } = data;
-  const [settings, online, jobsRes] = await Promise.all([
+  const board = buildScoreboard(kills, user.steamId64);
+  const [settings, online, jobsRes, avatars] = await Promise.all([
     getSettings(db),
     onlineCapabilities(db),
     db.from("processing_jobs").select(JOB_COLUMNS).in("status", ["queued", "running", "failed"]).order("created_at", { ascending: false }).limit(30),
+    steamAvatars(board.rows.map((r) => r.steamId ?? "")),
   ]);
+  const owner = isOwner(user);
   const demoIds = new Set(demos.map((d) => d.id));
   const relatedJobs = ((jobsRes.data ?? []) as JobRow[]).filter(
     (j) => (j.type === "parse_demo" && demoIds.has(String(j.payload.demoFileId))) || (j.type === "download_demo" && j.payload.matchId === m.id),
   );
   const parsed = demos.find((d) => d.status === "parsed");
   const tickrate = parsed?.tickrate ?? 64;
-  const myKills = kills.filter((k) => k.is_user_kill);
 
-  const statItems = [
-    [t("Killlar"), m.kills],
-    [t("O'limlar"), m.deaths],
-    [t("Yordamlar"), m.assists],
-    ["K/D", m.kills != null ? kd(m.kills, m.deaths) : null],
-    ["Headshot", m.headshots != null ? `${m.headshots}${m.kills ? ` (${Math.round((m.headshots / m.kills) * 100)}%)` : ""}` : null],
-    [t("Davomiylik"), m.duration_seconds != null ? formatDuration(m.duration_seconds, lang) : null],
-  ] as const;
+  // Jamoa hisobi: foydalanuvchi demoda bo'lsa — o'z/raqib, aks holda raund g'oliblaridan
+  const startA: Side = board.userStart ?? "CT";
+  const fromRounds = (team: "A" | "B") => rounds.filter((r) => r.winner && (r.winner === sideInRound(startA, r.round_number)) === (team === "A")).length;
+  const scoreA = m.score_own ?? (rounds.length ? fromRounds("A") : null);
+  const scoreB = m.score_enemy ?? (rounds.length ? fromRounds("B") : null);
+  const totalRounds = roundCount(rounds, scoreA, scoreB);
+  const result = m.result ?? (scoreA != null && scoreB != null ? (scoreA > scoreB ? "win" : scoreA < scoreB ? "loss" : "tie") : null);
+
+  const noDemoText =
+    m.source === "sharecode"
+      ? t("Bu match uchun demo hali tahlil qilinmagan. «Demo» bo'limidan demo faylni yuklang.")
+      : t("Demo tahlili tugashi bilan bu yerda ma'lumotlar paydo bo'ladi.");
+
+  const panels = {
+    board: kills.length ? (
+      <Scoreboard rows={board.rows} rounds={totalRounds} scoreA={scoreA} scoreB={scoreB} avatars={avatars} hasUser={Boolean(board.userStart)} t={t} />
+    ) : (
+      <EmptyState icon={<FileSearch />} title={t("Hisob jadvali yo'q")}>
+        {noDemoText}
+      </EmptyState>
+    ),
+    rounds: rounds.length ? (
+      <div className="panel p-4">
+        <div className="mb-3 flex items-center gap-4 text-xs text-muted">
+          <span className="inline-flex items-center gap-1.5">
+            <span className="size-2.5 rounded-sm bg-neon" /> {t("Yutilgan raund")}
+          </span>
+          <span className="inline-flex items-center gap-1.5">
+            <span className="size-2.5 rounded-sm bg-danger" /> {t("Boy berilgan raund")}
+          </span>
+        </div>
+        <div className="grid grid-cols-6 gap-1.5 sm:grid-cols-12">
+          {rounds.map((r) => {
+            const mine = kills.filter((k) => k.round_number === r.round_number && k.is_user_kill).length;
+            const won = r.winner ? r.winner === sideInRound(startA, r.round_number) : null;
+            return (
+              <div
+                key={r.round_number}
+                title={`R${r.round_number}: ${r.winner ?? "?"} — ${r.reason ?? ""}`}
+                className={cn(
+                  "relative flex h-14 flex-col items-center justify-end rounded-xl border pb-1.5",
+                  won === true ? "border-neon/30 bg-neon/10" : won === false ? "border-danger/30 bg-danger/10" : "border-line bg-surface-2",
+                )}
+              >
+                {mine > 0 && <span className="absolute top-1.5 font-mono text-[10px] font-bold text-neon">{mine}K</span>}
+                <span className="font-mono text-xs text-muted">{r.round_number}</span>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    ) : (
+      <EmptyState icon={<FileSearch />} title={t("Raundlar yo'q")}>
+        {noDemoText}
+      </EmptyState>
+    ),
+    kills: (
+      <div className="space-y-8">
+        {kills.length ? (
+          <KillTimeline
+            kills={kills}
+            rounds={rounds}
+            tickrate={tickrate}
+            existingClipKillIds={clips.map((c) => c.kill_event_id).filter(Boolean) as string[]}
+            pre={settings.clip_pre_seconds}
+            post={settings.clip_post_seconds}
+          />
+        ) : (
+          <EmptyState icon={<FileSearch />} title={t("Kill eventlar yo'q")}>
+            {noDemoText}
+          </EmptyState>
+        )}
+        <section>
+          <SectionTitle title={t("Shu matchdan kliplar")} />
+          {clips.length ? (
+            <ClipGallery clips={clips.map((c) => ({ ...c, matches: { map_name: m.map_name } }))} online={owner ? online : undefined} renderOnline={Boolean(online.render)} />
+          ) : (
+            <EmptyState icon={<Clapperboard />} title={t("Clip yaratilmagan")}>
+              {t("Yuqoridan killni tanlang va \"Clip yaratish\" tugmasini bosing.")}
+            </EmptyState>
+          )}
+        </section>
+      </div>
+    ),
+    replay: <Soon icon={<History />} title={t("Takror — tez orada")} text={t("Raundlarni xaritada 2D ko'rinishda qayta ko'rish.")} />,
+    clutch: <Soon icon={<Swords />} title={t("Klatchlar — tez orada")} text={t("1 ga 2, 1 ga 3 kabi vaziyatlaringiz va ularning natijasi.")} />,
+    demo: (
+      <div className="panel space-y-3 p-4">
+        <DemoPanel match={m} demos={demos} jobs={relatedJobs} online={owner ? online : {}} />
+        {!demos.some((d) => d.status !== "failed" && d.status !== "expired") && <DemoUpload matchId={m.id} maxMb={env().DEMO_MAX_MB} compact />}
+      </div>
+    ),
+  };
 
   return (
-    <div className="space-y-10">
-      <Link href="/matches" className="inline-flex items-center gap-1.5 text-sm text-muted hover:text-fg">
-        <ArrowLeft className="size-4" /> {t("Matchlar")}
-      </Link>
+    <div className="space-y-6">
+      <section className="relative -mx-4 -mt-3 overflow-hidden bg-[#0d1119] text-white sm:mx-0 sm:mt-0 sm:rounded-[1.75rem]">
+        <MapArt map={m.map_name} label={false} className="absolute inset-0 opacity-70" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/45 to-[#0d1119]" />
+        <div className="relative px-4 pb-6 pt-4 sm:px-6">
+          <div className="flex items-center gap-3">
+            <Link href="/matches" className="grid size-11 place-items-center rounded-full bg-black/40 backdrop-blur" aria-label={t("Matchlar")}>
+              <ArrowLeft className="size-5" />
+            </Link>
+            <ModeTag m={m} className="px-2.5 py-1 text-xs" />
+            <span className="text-[15px] font-semibold text-white/90">{m.played_at ? formatDate(m.played_at, false, lang) : m.source === "demo_upload" ? t("Yuklangan demo") : ""}</span>
+          </div>
 
-      <section className="panel relative overflow-hidden !rounded-3xl">
-        <MapArt map={m.map_name} size="lg" className="h-56 sm:h-64" />
-        <div className="absolute right-4 top-4 flex flex-wrap justify-end gap-1.5 sm:right-6 sm:top-6">
-          <ResultBadge result={m.result} lang={lang} />
-          <SideBadge side={m.user_side} />
-          <DemoBadge a={m.demo_availability} lang={lang} />
-        </div>
-        <div className="grid gap-6 p-5 sm:p-7 lg:grid-cols-[auto_1fr] lg:items-center">
-          <div>
-            <div className="label">{m.score_own != null ? t("Sizning jamoa : raqib") : "CT : T"}</div>
-            <MatchScore m={m} className="text-6xl sm:text-7xl" />
-            {m.score_ct != null && m.score_t != null && m.score_own != null && (
-              <div className="mt-1 font-mono text-xs text-subtle">
-                {t("Yakuniy tomonlar")}: <span className="text-ct">CT {m.score_ct}</span> · <span className="text-tside">T {m.score_t}</span>
-              </div>
+          <div className="mt-6 grid grid-cols-[1fr_auto_1fr] items-center gap-3">
+            <div className="text-right">
+              <div className="truncate text-base font-bold">{board.userStart ? t("Sizning jamoa") : t("1-jamoa")}</div>
+            </div>
+            <div className="font-display text-6xl font-bold tabular-nums sm:text-7xl">
+              <span className={result === "win" ? "text-neon" : result === "loss" ? "text-white/70" : ""}>{scoreA ?? "–"}</span>
+              <span className="mx-2 text-white/40">:</span>
+              <span className={result === "loss" ? "text-danger" : "text-white/70"}>{scoreB ?? "–"}</span>
+            </div>
+            <div>
+              <div className="truncate text-base font-bold">{board.userStart ? t("Raqiblar") : t("2-jamoa")}</div>
+            </div>
+          </div>
+
+          <div className="mt-4 flex items-center justify-center gap-2.5 text-sm text-white/75">
+            <MapBadge map={m.map_name} className="size-7 rounded-lg text-[10px]" />
+            <span>{mapMeta(m.map_name).name}</span>
+            {m.duration_seconds != null && (
+              <>
+                <span className="text-white/30">·</span>
+                <span>{formatDuration(m.duration_seconds, lang)}</span>
+              </>
+            )}
+            {result && (
+              <>
+                <span className="text-white/30">·</span>
+                <span className={cn("font-bold uppercase tracking-wider", result === "win" ? "text-neon" : result === "loss" ? "text-danger" : "text-warn")}>
+                  {t(result === "win" ? "G'alaba" : result === "loss" ? "Mag'lubiyat" : "Durang")}
+                </span>
+              </>
             )}
           </div>
-          <div className="grid grid-cols-2 gap-2 min-[400px]:grid-cols-3 sm:grid-cols-6">
-            {statItems.map(([l, v]) => (
-              <div key={l} className="rounded-xl border border-line bg-surface-2/60 px-3 py-2.5">
-                <div className="label">{l}</div>
-                <div className="mt-1 truncate text-xl font-bold tabular-nums">{v ?? "—"}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-        <div className="flex flex-wrap gap-x-6 gap-y-1 border-t border-line px-5 py-3 text-xs text-muted sm:px-7">
-          <span>{t("Sana")}: {m.played_at ? formatDate(m.played_at, true, lang) : t("noma'lum")}</span>
-          <span>{t("Rejim")}: {m.game_mode ?? t("noma'lum")}</span>
-          {m.valve_match_id && <span className="font-mono">Match ID: {m.valve_match_id}</span>}
-          {m.share_code && <span className="font-mono">{m.share_code}</span>}
-          <span>{t("Manba")}: {m.info_source === "demo" ? t("demo tahlili") : m.info_source === "gc" ? "Valve GC" : m.source === "sharecode" ? t("share code (tafsilot kutilmoqda)") : "demo"}</span>
         </div>
       </section>
 
@@ -102,81 +211,7 @@ export default async function MatchPage({ params }: PageProps<"/matches/[id]">) 
         </Notice>
       )}
 
-      <div className="grid gap-8 lg:grid-cols-[1fr_360px]">
-        <div className="min-w-0 space-y-10">
-          <section>
-            <SectionTitle eyebrow={t("Raundlar")} title={t("{n} raund", { n: rounds.length || "—" })} />
-            {rounds.length ? (
-              <div className="flex flex-wrap gap-1.5">
-                {rounds.map((r) => {
-                  const n = kills.filter((k) => k.round_number === r.round_number && k.is_user_kill).length;
-                  return (
-                    <div
-                      key={r.round_number}
-                      title={`R${r.round_number}: ${r.winner ?? "?"} — ${r.reason ?? ""}`}
-                      className={`relative flex h-12 w-9 flex-col sm:h-14 sm:w-10 items-center justify-end rounded-lg border pb-1 ${r.winner === "CT" ? "border-ct/30 bg-ct/10" : r.winner === "T" ? "border-tside/30 bg-tside/10" : "border-line bg-surface"}`}
-                    >
-                      {n > 0 && <span className="absolute top-1 font-mono text-[10px] font-semibold text-neon">{n}K</span>}
-                      <span className="font-mono text-[11px] text-muted">{r.round_number}</span>
-                    </div>
-                  );
-                })}
-              </div>
-            ) : (
-              <p className="text-sm text-muted">{t("Raundlar demo tahlilidan keyin ko'rinadi.")}</p>
-            )}
-          </section>
-
-          <section>
-            <SectionTitle eyebrow={t("Kill eventlar")} title={kills.length ? t("Xronologiya · {n} ta sizning kill", { n: myKills.length }) : t("Xronologiya")} />
-            {kills.length ? (
-              <KillTimeline
-                kills={kills}
-                rounds={rounds}
-                tickrate={tickrate}
-                existingClipKillIds={clips.map((c) => c.kill_event_id).filter(Boolean) as string[]}
-                pre={settings.clip_pre_seconds}
-                post={settings.clip_post_seconds}
-              />
-            ) : (
-              <EmptyState icon={<FileSearch />} title={t("Kill eventlar yo'q")}>
-                {m.source === "sharecode"
-                  ? t("Share code faqat matchni aniqlaydi. Killlarni ko'rish uchun shu matchning demo faylini yuklang (yoki Valve serverida bo'lsa — yuklab oling).")
-                  : t("Demo tahlili tugashi bilan bu yerda killlar paydo bo'ladi.")}
-              </EmptyState>
-            )}
-          </section>
-
-          <section>
-            <SectionTitle eyebrow={t("Shu matchdan")} title={t("Kliplar")} />
-            {clips.length ? (
-              <ClipGallery clips={clips.map((c) => ({ ...c, matches: { map_name: m.map_name } }))} online={online} renderOnline={Boolean(online.render)} />
-            ) : (
-              <EmptyState icon={<Clapperboard />} title={t("Clip yaratilmagan")}>
-                {t("Xronologiyadan killni tanlang va \"Clip yaratish\" tugmasini bosing.")}
-              </EmptyState>
-            )}
-          </section>
-        </div>
-
-        <aside className="space-y-4 lg:sticky lg:top-6 lg:self-start">
-          <Card className="p-4">
-            <div className="mb-3 flex items-center justify-between">
-              <h3 className="text-base font-semibold">{t("Demo tahlili holati")}</h3>
-              {parsed ? <Badge tone="neon">{t("tayyor")}</Badge> : <Badge>{t("kutilmoqda")}</Badge>}
-            </div>
-            <DemoPanel match={m} demos={demos} jobs={relatedJobs} online={online} />
-            {!demos.some((d) => d.status !== "failed" && d.status !== "expired") && (
-              <div className="mt-3">
-                <DemoUpload matchId={m.id} maxMb={env().DEMO_MAX_MB} compact online={online} />
-              </div>
-            )}
-          </Card>
-          <Notice tone="violet" title={t("Clip qanday yaratiladi")}>
-            {t("Kill tick'idan {pre} s oldin va {post} s keyin olinadi (Sozlamalarda o'zgartiriladi). MP4 render Windows render worker'da CS2 + HLAE orqali bajariladi.", { pre: settings.clip_pre_seconds, post: settings.clip_post_seconds })}
-          </Notice>
-        </aside>
-      </div>
+      <MatchView panels={panels} initial={kills.length ? "board" : "demo"} />
     </div>
   );
 }
