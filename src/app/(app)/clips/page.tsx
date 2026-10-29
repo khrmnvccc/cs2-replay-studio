@@ -4,7 +4,7 @@ import { ClipGallery } from "@/components/clip-gallery";
 import { Button } from "@/components/ui/button";
 import { EmptyState, Select } from "@/components/ui/primitives";
 import { listClips, onlineCapabilities } from "@/lib/server/data";
-import { requireUser } from "@/lib/server/http";
+import { pageUser } from "@/lib/server/session";
 import { userDb } from "@/lib/server/supabase";
 import { getT } from "@/lib/i18n/server";
 
@@ -16,7 +16,7 @@ export async function generateMetadata() {
 export default async function ClipsPage({ searchParams }: PageProps<"/clips">) {
   const sp = await searchParams;
   const sort = sp.sort === "old" || sp.sort === "name" ? sp.sort : "new";
-  const user = await requireUser();
+  const user = await pageUser();
   const { t } = await getT();
   const db = await userDb(user.userId);
   const [clips, online] = await Promise.all([listClips(db, sort), onlineCapabilities(db)]);

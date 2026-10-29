@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge, Card, Notice, SectionTitle } from "@/components/ui/primitives";
 import { getSettings, getSteamAccount } from "@/lib/server/data";
 import { env } from "@/lib/server/env";
-import { requireUser } from "@/lib/server/http";
+import { pageUser } from "@/lib/server/session";
 import { adminDb, userDb } from "@/lib/server/supabase";
 import { formatDate } from "@/lib/utils";
 import { getT } from "@/lib/i18n/server";
@@ -16,7 +16,7 @@ export async function generateMetadata() {
 }
 
 export default async function SettingsPage() {
-  const user = await requireUser();
+  const user = await pageUser();
   const { lang, t } = await getT();
   const db = await userDb(user.userId);
   const [steam, settings, sessions] = await Promise.all([

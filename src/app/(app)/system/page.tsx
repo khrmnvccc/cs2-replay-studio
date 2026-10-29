@@ -1,7 +1,7 @@
 import { CheckCircle2, CircleDashed, XCircle } from "lucide-react";
 import { Card, Notice, SectionTitle } from "@/components/ui/primitives";
 import { onlineCapabilities } from "@/lib/server/data";
-import { requireUser } from "@/lib/server/http";
+import { pageUser } from "@/lib/server/session";
 import { userDb } from "@/lib/server/supabase";
 import { getT } from "@/lib/i18n/server";
 
@@ -19,7 +19,7 @@ const ROWS = [
 ];
 
 export default async function SystemPage() {
-  const user = await requireUser();
+  const user = await pageUser();
   const { t } = await getT();
   const db = await userDb(user.userId);
   const online = await onlineCapabilities(db);

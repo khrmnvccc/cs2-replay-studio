@@ -1,4 +1,5 @@
 "use client";
+import { useOptimistic, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Moon, Sun } from "lucide-react";
 import { LANG_COOKIE, THEME_COOKIE, type Lang } from "@/lib/i18n";
@@ -12,21 +13,27 @@ const setCookie = (k: string, v: string) => {
 export function LangSwitch({ className }: { className?: string }) {
   const { lang } = useI18n();
   const router = useRouter();
+  const [pending, startTransition] = useTransition();
+  // Tugma darhol almashadi; matnlar server qayta chizgach yangilanadi
+  const [shown, setShown] = useOptimistic(lang);
   const pick = (l: Lang) => {
-    if (l === lang) return;
+    if (l === shown) return;
     setCookie(LANG_COOKIE, l);
     document.documentElement.setAttribute("lang", l);
-    router.refresh();
+    startTransition(() => {
+      setShown(l);
+      router.refresh();
+    });
   };
   return (
-    <div className={cn("grid grid-cols-2 gap-1 rounded-xl border border-line bg-surface-2 p-1", className)} role="group" aria-label="Til / Язык">
+    <div className={cn("grid grid-cols-2 gap-1 rounded-xl border border-line bg-surface-2 p-1 transition-opacity", pending && "opacity-70", className)} aria-busy={pending} role="group" aria-label="Til / Язык">
       {(["uz", "ru"] as const).map((l) => (
         <button
           key={l}
           type="button"
           onClick={() => pick(l)}
-          aria-pressed={lang === l}
-          className={cn("h-8 rounded-lg text-xs font-semibold transition", lang === l ? "bg-surface text-fg shadow-sm ring-1 ring-line" : "text-muted hover:text-fg")}
+          aria-pressed={shown === l}
+          className={cn("h-8 rounded-lg text-xs font-semibold transition", shown === l ? "bg-surface text-fg shadow-sm ring-1 ring-line" : "text-muted hover:text-fg")}
         >
           {l.toUpperCase()}
         </button>

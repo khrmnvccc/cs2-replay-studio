@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { EmptyState, Input, Select } from "@/components/ui/primitives";
 import { AddShareCodes } from "@/components/add-share-codes";
 import { getSteamAccount, listActiveJobs, listMatches, onlineCapabilities, type MatchFilters } from "@/lib/server/data";
-import { requireUser } from "@/lib/server/http";
+import { pageUser } from "@/lib/server/session";
 import { userDb } from "@/lib/server/supabase";
 import { mapMeta } from "@shared/maps";
 import { getT } from "@/lib/i18n/server";
@@ -28,7 +28,7 @@ export default async function MatchesPage({ searchParams }: PageProps<"/matches"
     to: one(sp.to)?.match(/^\d{4}-\d{2}-\d{2}$/)?.[0],
     q: one(sp.q),
   };
-  const user = await requireUser();
+  const user = await pageUser();
   const { lang, t } = await getT();
   const db = await userDb(user.userId);
   const [matches, all, steam, jobs, online] = await Promise.all([

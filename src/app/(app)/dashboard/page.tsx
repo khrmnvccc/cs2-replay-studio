@@ -11,7 +11,7 @@ import { Badge, Card, EmptyState, Notice, SectionTitle, Stat } from "@/component
 import { getT } from "@/lib/i18n/server";
 import { dashboardStats, getSteamAccount, listActiveJobs, listClips, listMatches, onlineCapabilities } from "@/lib/server/data";
 import { env } from "@/lib/server/env";
-import { requireUser } from "@/lib/server/http";
+import { pageUser } from "@/lib/server/session";
 import { userDb } from "@/lib/server/supabase";
 import { formatDate } from "@/lib/utils";
 
@@ -21,7 +21,7 @@ export async function generateMetadata() {
 }
 
 export default async function Dashboard() {
-  const user = await requireUser();
+  const user = await pageUser();
   const { lang, t } = await getT();
   const db = await userDb(user.userId);
   const [steam, stats, matches, clips, jobs, online] = await Promise.all([

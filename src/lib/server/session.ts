@@ -1,5 +1,6 @@
 import "server-only";
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 import { cache } from "react";
 import { SignJWT, jwtVerify } from "jose";
 import { env } from "./env";
@@ -65,17 +66,12 @@ export const getSession = cache(async (): Promise<SessionUser | null> => {
     return null;
   }
   const db = adminDb();
-  const { data: s } = await db
-    .from("sessions")
-    .select("id, user_id, expires_at, revoked_at, last_seen_at")
-    .eq("id", sid)
-    .maybeSingle();
+  // Ikkala so'rov parallel: uid allaqachon imzolangan tokendan ma'lum
+  const [{ data: s }, { data: steam }] = await Promise.all([
+    db.from("sessions").select("id, user_id, expires_at, revoked_at, last_seen_at").eq("id", sid).maybeSingle(),
+    db.from("steam_accounts").select("steam_id64, persona_name, avatar_url, profile_url").eq("user_id", uid).maybeSingle(),
+  ]);
   if (!s || s.user_id !== uid || s.revoked_at || new Date(s.expires_at) < new Date()) return null;
-  const { data: steam } = await db
-    .from("steam_accounts")
-    .select("steam_id64, persona_name, avatar_url, profile_url")
-    .eq("user_id", uid)
-    .maybeSingle();
   if (!steam) return null;
   if (Date.now() - new Date(s.last_seen_at).getTime() > 3600_000) {
     await db.from("sessions").update({ last_seen_at: new Date().toISOString() }).eq("id", sid);
@@ -89,6 +85,13 @@ export const getSession = cache(async (): Promise<SessionUser | null> => {
     profileUrl: steam.profile_url,
   };
 });
+
+/** Sahifalar uchun: kirmagan bo'lsa bosh sahifaga qaytaradi (xato tashlamaydi). */
+export async function pageUser(): Promise<SessionUser> {
+  const s = await getSession();
+  if (!s) redirect("/");
+  return s;
+}
 
 export async function destroySession(opts: { allDevices?: boolean } = {}) {
   const session = await getSession();

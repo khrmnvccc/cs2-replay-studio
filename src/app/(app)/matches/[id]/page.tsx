@@ -11,7 +11,8 @@ import { MatchScore } from "@/components/match-card";
 import { Badge, Card, EmptyState, Notice, SectionTitle } from "@/components/ui/primitives";
 import { getMatch, getSettings, JOB_COLUMNS, onlineCapabilities } from "@/lib/server/data";
 import { env } from "@/lib/server/env";
-import { HttpError, requireUser } from "@/lib/server/http";
+import { HttpError } from "@/lib/server/http";
+import { pageUser } from "@/lib/server/session";
 import { userDb } from "@/lib/server/supabase";
 import type { JobRow } from "@/lib/types";
 import { formatDate, formatDuration, kd } from "@/lib/utils";
@@ -21,7 +22,7 @@ export const metadata = { title: "Match" };
 
 export default async function MatchPage({ params }: PageProps<"/matches/[id]">) {
   const { id } = await params;
-  const user = await requireUser();
+  const user = await pageUser();
   const { lang, t } = await getT();
   const db = await userDb(user.userId);
   let data;
