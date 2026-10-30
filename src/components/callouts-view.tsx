@@ -100,8 +100,8 @@ export function CalloutsView({ initialMap }: { initialMap: CalloutMap }) {
       .map((z) => ({ z, a: (z.id.startsWith("Bombsite") ? 1e9 : 0) + z.p.reduce((s, pts) => s + polyArea(pts), 0) }))
       .sort((x, y) => y.a - x.a);
     for (const { z } of order) {
-      const w = z.name.length * 14 + 10;
-      const b: [number, number, number, number] = [z.l[0] - w / 2, z.l[1] - 17, z.l[0] + w / 2, z.l[1] + 17];
+      const w = Math.max(z.name.length * 14, z.alt.length * 11.5) + 10;
+      const b: [number, number, number, number] = [z.l[0] - w / 2, z.l[1] - 30, z.l[0] + w / 2, z.l[1] + 28];
       if (boxes.some((o) => b[0] < o[2] && b[2] > o[0] && b[1] < o[3] && b[3] > o[1])) continue;
       boxes.push(b);
       out.add(z.id);
@@ -138,7 +138,7 @@ export function CalloutsView({ initialMap }: { initialMap: CalloutMap }) {
         })}
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] lg:items-start">
+      <div className="grid grid-cols-[minmax(0,1fr)] gap-4 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] lg:items-start">
         {/* Radar */}
         <div ref={radar} className="scroll-mt-20 space-y-3 lg:sticky lg:top-20">
           <div data-tour="callouts-radar" className="overflow-hidden rounded-[1.75rem] bg-surface p-2 shadow-[0_10px_30px_-18px_rgb(16_42_67/0.45)] ring-1 ring-line">
@@ -174,13 +174,15 @@ export function CalloutsView({ initialMap }: { initialMap: CalloutMap }) {
                         .filter((z) => labelIds.has(z.id))
                         .map((z) => (
                           <text key={z.id} x={z.l[0]} y={z.l[1]} textAnchor="middle" dominantBaseline="middle" className="pointer-events-none select-none fill-white text-[25px] font-extrabold" style={{ paintOrder: "stroke", stroke: "rgb(8 16 28 / 0.85)", strokeWidth: 6 }}>
-                            {z.name}
+                            <tspan x={z.l[0]} dy="-0.45em">{z.name}</tspan>
+                            <tspan x={z.l[0]} dy="1.15em" className="fill-white/80 text-[20px] font-bold">{z.alt}</tspan>
                           </text>
                         ))}
                     {selected && (
                       <g className="pointer-events-none">
                         <text x={selected.l[0]} y={selected.l[1]} textAnchor="middle" dominantBaseline="middle" className="select-none fill-white text-[38px] font-black" style={{ paintOrder: "stroke", stroke: "rgb(8 16 28 / 0.9)", strokeWidth: 9 }}>
-                          {selected.name}
+                          <tspan x={selected.l[0]} dy="-0.4em">{selected.name}</tspan>
+                          <tspan x={selected.l[0]} dy="1.1em" className="fill-white/85 text-[28px] font-extrabold">{selected.alt}</tspan>
                         </text>
                       </g>
                     )}
