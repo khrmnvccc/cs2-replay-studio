@@ -1,8 +1,9 @@
 import Link from "next/link";
 import { Clapperboard } from "lucide-react";
 import { ClipGallery } from "@/components/clip-gallery";
+import { ClipSort } from "@/components/clip-sort";
 import { Button } from "@/components/ui/button";
-import { EmptyState, Select } from "@/components/ui/primitives";
+import { EmptyState } from "@/components/ui/primitives";
 import { listClips, onlineCapabilities } from "@/lib/server/data";
 import { pageUser } from "@/lib/server/session";
 import { userDb } from "@/lib/server/supabase";
@@ -30,16 +31,9 @@ export default async function ClipsPage({ searchParams }: PageProps<"/clips">) {
             {t("{n} ta clip · {r} tasi MP4 tayyor", { n: clips.length, r: ready })}
           </p>
         </div>
-        <form method="get" data-tour="clips-sort" className="flex w-full items-center gap-2 sm:w-auto">
-          <Select name="sort" defaultValue={sort} aria-label={t("Saralash")} className="min-w-0 flex-1 sm:w-52 sm:flex-none">
-            <option value="new">{t("Avval yangilari")}</option>
-            <option value="old">{t("Avval eskilari")}</option>
-            <option value="name">{t("Nomi bo'yicha")}</option>
-          </Select>
-          <Button type="submit" variant="secondary">
-            {t("Saralash")}
-          </Button>
-        </form>
+        <div data-tour="clips-sort" className="w-full sm:w-56">
+          <ClipSort value={sort} />
+        </div>
       </div>
       {clips.length ? (
         <ClipGallery clips={clips} online={online} renderOnline={Boolean(online.render)} />

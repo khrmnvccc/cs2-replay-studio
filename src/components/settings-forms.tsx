@@ -4,11 +4,14 @@ import { useRouter } from "next/navigation";
 import { Copy, ExternalLink, Link2, Save, Unlink } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { Field, Input, Select } from "@/components/ui/primitives";
+import { Field, Input } from "@/components/ui/primitives";
+import { Picker } from "@/components/ui/picker";
+import { Switch } from "@/components/ui/switch";
 import { api, toastError } from "@/lib/client/api";
 import type { UserSettings } from "@/lib/types";
 import { useT } from "@/components/i18n";
 import { cn } from "@/lib/utils";
+import { askConfirm } from "@/components/ui/confirm";
 
 export function HistoryForm({ enabled, lastShareCode }: { enabled: boolean; lastShareCode: string | null }) {
   const router = useRouter();
@@ -31,7 +34,7 @@ export function HistoryForm({ enabled, lastShareCode }: { enabled: boolean; last
     }
   };
   const disconnect = async () => {
-    if (!confirm(t("Match tarixini uzish? Saqlangan authentication code o'chiriladi."))) return;
+    if (!(await askConfirm(t("Match tarixini uzish? Saqlangan authentication code o'chiriladi."), { ok: t("Uzish") }))) return;
     try {
       await api("/api/match-history", { method: "DELETE" });
       toast.success(t("Uzildi"));
@@ -208,18 +211,28 @@ export function PreferencesForm({ initial }: { initial: UserSettings }) {
         <h3 className="mb-4 text-base font-semibold">{t("Video sifati")}</h3>
         <div className="grid gap-4 sm:grid-cols-2">
           <Field label={t("Ruxsat (resolution)")}>
-            <Select value={s.video_resolution} onChange={(e) => set("video_resolution", e.target.value as UserSettings["video_resolution"])}>
-              <option value="1280x720">1280 × 720 (720p)</option>
-              <option value="1920x1080">1920 × 1080 (1080p)</option>
-              <option value="2560x1440">2560 × 1440 (1440p)</option>
-            </Select>
+            <Picker<UserSettings["video_resolution"]>
+              value={s.video_resolution}
+              title={t("Ruxsat (resolution)")}
+              onChange={(v) => set("video_resolution", v)}
+              options={[
+                { value: "1280x720", label: "720p", hint: "1280 × 720" },
+                { value: "1920x1080", label: "1080p", hint: "1920 × 1080" },
+                { value: "2560x1440", label: "1440p", hint: "2560 × 1440" },
+              ]}
+            />
           </Field>
           <Field label={t("Kadr tezligi (FPS)")} hint={t("Yuqori FPS render vaqtini oshiradi.")}>
-            <Select value={s.video_fps} onChange={(e) => set("video_fps", Number(e.target.value) as UserSettings["video_fps"])}>
-              <option value={30}>30 fps</option>
-              <option value={60}>60 fps</option>
-              <option value={120}>120 fps</option>
-            </Select>
+            <Picker<UserSettings["video_fps"]>
+              value={s.video_fps}
+              title={t("Kadr tezligi (FPS)")}
+              onChange={(v) => set("video_fps", v)}
+              options={[
+                { value: 30, label: "30 fps" },
+                { value: 60, label: "60 fps" },
+                { value: 120, label: "120 fps" },
+              ]}
+            />
           </Field>
         </div>
       </div>
@@ -238,21 +251,20 @@ export function PreferencesForm({ initial }: { initial: UserSettings }) {
         <h3 className="mb-4 text-base font-semibold">{t("Saqlash")}</h3>
         <div className="grid gap-4 sm:grid-cols-2">
           <Field label={t("Demo fayllarni saqlash muddati")} hint={t("Eski demo fayllar o'chiriladi, killlar va tayyor kliplar qoladi.")}>
-            <Select value={s.retention_days} onChange={(e) => set("retention_days", Number(e.target.value))}>
-              {[7, 14, 30, 60, 90, 180, 365].map((d) => (
-                <option key={d} value={d}>
-                  {t("{n} kun", { n: d })}
-                </option>
-              ))}
-            </Select>
+            <Picker<number>
+              value={s.retention_days}
+              title={t("Demo fayllarni saqlash muddati")}
+              onChange={(v) => set("retention_days", v)}
+              options={[7, 14, 30, 60, 90, 180, 365].map((d) => ({ value: d, label: t("{n} kun", { n: d }) }))}
+            />
           </Field>
-          <label className="flex items-start gap-3 rounded-xl border border-line bg-surface-2/50 p-3.5 text-sm">
-            <input type="checkbox" className="mt-0.5" checked={s.auto_download_demos} onChange={(e) => set("auto_download_demos", e.target.checked)} />
-            <span>
+          <div className="flex items-start gap-3 rounded-2xl bg-surface-2 p-3.5 text-sm">
+            <span className="flex-1">
               <span className="font-medium">{t("Valve demolarini avtomatik yuklab olish")}</span>
               <span className="mt-0.5 block text-xs text-muted">{t("Yangi match topilganda uning demosi avtomatik yuklanib, killlar tahlil qilinadi.")}</span>
             </span>
-          </label>
+            <Switch checked={s.auto_download_demos} onChange={(v) => set("auto_download_demos", v)} label={t("Valve demolarini avtomatik yuklab olish")} />
+          </div>
         </div>
       </div>
       <Button type="submit" variant="primary" loading={busy}>

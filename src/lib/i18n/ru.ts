@@ -622,4 +622,6 @@ export const RU: Record<string, string> = {
   "shu kod": "этот код",
   "eng eskisi": "самый старый",
   "nusxa olish": "копировать",
+  "Ha": "Да",
+  "O'tish": "Перейти",
 };

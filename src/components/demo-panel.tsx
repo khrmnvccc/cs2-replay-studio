@@ -11,6 +11,7 @@ import { useJobs } from "@/lib/client/use-jobs";
 import type { DemoFileRow, JobRow, MatchRow } from "@/lib/types";
 import { formatBytes, formatDate } from "@/lib/utils";
 import { useI18n } from "@/components/i18n";
+import { askConfirm } from "@/components/ui/confirm";
 
 const STATUS: Record<DemoFileRow["status"], { label: string; tone: "neutral" | "neon" | "violet" | "danger" | "warn" }> = {
   uploading: { label: "Yuklanmoqda", tone: "neutral" },
@@ -73,7 +74,7 @@ export function DemoPanel({ match, demos, jobs: initial, online }: { match: Matc
               variant="ghost"
               className="ml-auto text-subtle hover:text-danger"
               loading={busy === `rm${d.id}`}
-              onClick={() => confirm(t("Demo va undan yaratilgan kill eventlar hamda cliplar o'chirilsinmi?")) && call(`rm${d.id}`, `/api/demos/${d.id}`, "DELETE")}
+              onClick={async () => (await askConfirm(t("Demo va undan yaratilgan kill eventlar hamda cliplar o'chirilsinmi?"), { ok: t("O'chirish") })) && call(`rm${d.id}`, `/api/demos/${d.id}`, "DELETE")}
             >
               <Trash2 /> {t("O'chirish")}
             </Button>

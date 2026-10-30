@@ -3,6 +3,7 @@ import { Inter, JetBrains_Mono, Plus_Jakarta_Sans } from "next/font/google";
 import { Toaster } from "sonner";
 import { I18nProvider } from "@/components/i18n";
 import { InstallPrompt } from "@/components/install-prompt";
+import { ConfirmHost } from "@/components/ui/confirm";
 import { getLang, getTheme } from "@/lib/i18n/server";
 import { translate } from "@/lib/i18n";
 import "./globals.css";
@@ -39,6 +40,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
         <I18nProvider lang={lang}>
           {children}
           <InstallPrompt />
+          <ConfirmHost />
         </I18nProvider>
         <Toaster
           position="top-center"

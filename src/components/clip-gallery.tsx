@@ -13,6 +13,7 @@ import { useJobs } from "@/lib/client/use-jobs";
 import type { ClipRow, JobRow } from "@/lib/types";
 import { cn, formatBytes, formatDate } from "@/lib/utils";
 import { useI18n } from "@/components/i18n";
+import { askConfirm } from "@/components/ui/confirm";
 
 function downloadFile(href: string) {
   const a = document.createElement("a");
@@ -81,7 +82,7 @@ export function ClipGallery({ clips, online, renderOnline }: { clips: Clip[]; on
     }
   };
   const remove = async (c: Clip) => {
-    if (!confirm(t("\"{title}\" o'chirilsinmi? MP4 fayl ham o'chadi.", { title: c.title }))) return;
+    if (!(await askConfirm(t("\"{title}\" o'chirilsinmi? MP4 fayl ham o'chadi.", { title: c.title }), { ok: t("O'chirish") }))) return;
     setBusy(c.id);
     try {
       await api(`/api/clips/${c.id}`, { method: "DELETE" });

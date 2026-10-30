@@ -38,6 +38,7 @@ import { TourProvider, useTour } from "@/components/tour";
 import { RecordsCarousel } from "@/components/records-carousel";
 import { api, toastError } from "@/lib/client/api";
 import { cn } from "@/lib/utils";
+import { askConfirm } from "@/components/ui/confirm";
 
 export type ChromeUser = { name: string; avatarUrl: string | null; historyEnabled: boolean; owner: boolean; unread: number; telegram: "linked" | "unlinked" | "unavailable" };
 
@@ -405,7 +406,7 @@ function TelegramRow({ state }: { state: ChromeUser["telegram"] }) {
     }
   };
   const unlink = async () => {
-    if (!confirm(t("Telegram'ni uzasizmi? Xabarlar kelmay qoladi."))) return;
+    if (!(await askConfirm(t("Telegram'ni uzasizmi? Xabarlar kelmay qoladi."), { ok: t("Uzish") }))) return;
     try {
       await api("/api/telegram/link", { method: "DELETE" });
       toast.success(t("Telegram uzildi"));

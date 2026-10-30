@@ -27,6 +27,7 @@ import { Input } from "@/components/ui/primitives";
 import { Switch } from "@/components/ui/switch";
 import { api, toastError } from "@/lib/client/api";
 import { cn, formatDate } from "@/lib/utils";
+import { askConfirm } from "@/components/ui/confirm";
 
 type Sent = { id: string; title: string; key: string | null; who: string; telegram: string | null; at: string };
 type Lang = "uz" | "ru";
@@ -68,8 +69,8 @@ export function AdminNotifications({ templates, bot, linkedCount, sent, sentCoun
   const enabled = list.filter((x) => x.enabled || x.required).length;
   const dirty = useMemo(() => JSON.stringify(draft) !== JSON.stringify(list.find((x) => x.key === draft?.key)), [draft, list]);
 
-  const select = (tpl: NotificationTemplate) => {
-    if (dirty && !confirm(t("Saqlanmagan o'zgarishlar bor. Baribir boshqasiga o'tasizmi?"))) return;
+  const select = async (tpl: NotificationTemplate) => {
+    if (dirty && !(await askConfirm(t("Saqlanmagan o'zgarishlar bor. Baribir boshqasiga o'tasizmi?"), { ok: t("O'tish"), danger: false }))) return;
     setSelKey(tpl.key);
     setDraft(tpl);
     setTimeout(() => document.getElementById("tpl-editor")?.scrollIntoView({ behavior: "smooth", block: "start" }), 50);

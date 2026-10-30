@@ -7,6 +7,8 @@ import { DemoUpload } from "@/components/demo-upload";
 import { useT } from "@/components/i18n";
 import { Button } from "@/components/ui/button";
 import { Dialog } from "@/components/ui/dialog";
+import { Picker } from "@/components/ui/picker";
+import { MapBadge } from "@/components/match-card";
 
 /** Xarita tanlash: URL'dagi ?map= ni almashtiradi (boshqa filtrlar saqlanadi). */
 export function MapSelect({ maps }: { maps: { id: string; name: string }[] }) {
@@ -20,21 +22,17 @@ export function MapSelect({ maps }: { maps: { id: string; name: string }[] }) {
     router.push(`/matches${q.size ? `?${q}` : ""}`, { scroll: false });
   };
   return (
-    <label className="relative flex h-11 w-full items-center justify-center gap-2 rounded-2xl bg-surface text-sm font-semibold shadow-[0_4px_14px_-10px_rgb(16_42_67/0.4)]">
-      <MapIcon className="size-4 text-muted" />
-      <span>{maps.find((m) => m.id === sp.get("map"))?.name ?? t("Barcha xaritalar")}</span>
-      <svg viewBox="0 0 10 6" className="size-2.5 text-muted" fill="currentColor" aria-hidden>
-        <path d="M0 0h10L5 6z" />
-      </svg>
-      <select className="absolute inset-0 cursor-pointer opacity-0" value={sp.get("map") ?? ""} onChange={(e) => change(e.target.value)} aria-label={t("Xarita")}>
-        <option value="">{t("Barcha xaritalar")}</option>
-        {maps.map((m) => (
-          <option key={m.id} value={m.id}>
-            {m.name}
-          </option>
-        ))}
-      </select>
-    </label>
+    <Picker
+      value={sp.get("map") ?? ""}
+      onChange={change}
+      title={t("Xarita")}
+      icon={<MapIcon />}
+      center
+      options={[
+        { value: "", label: t("Barcha xaritalar"), icon: <span className="grid size-8 place-items-center rounded-lg bg-fg/[0.06] text-muted"><MapIcon className="size-4" /></span> },
+        ...maps.map((m) => ({ value: m.id, label: m.name, icon: <MapBadge map={m.id} className="size-8 rounded-lg text-[10px]" /> })),
+      ]}
+    />
   );
 }
 
