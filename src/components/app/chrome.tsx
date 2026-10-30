@@ -62,6 +62,7 @@ const TITLES: [string, string, typeof LayoutGrid][] = [
   ["/clips", "Kliplar", PlaySquare],
   ["/stats", "Statistika", BarChart3],
   ["/records", "Rekordlar", Trophy],
+  ["/callouts", "Xarita joy nomlari", MapPin],
   ["/settings", "Sozlamalar", Settings],
   ["/system", "Tizim holati", Server],
   ["/admin/notifications", "Bildirishnomalar", BellRing],
@@ -257,7 +258,7 @@ function MenuSheet({ open, onOpenChange, user }: { open: boolean; onOpenChange: 
         <ListGroup label={t("O'yiningiz")}>
           <Row icon={<Wand2 />} label="Skin changer" soon />
           <Row icon={<MapIcon />} label="Xaritalar" soon />
-          <Row icon={<MapPin />} label="Xarita joy nomlari" soon />
+          <Row icon={<MapPin />} label="Xarita joy nomlari" href="/callouts" />
           <Row icon={<Medal />} label="Turnirlar" soon />
           <Row icon={<Trophy />} label="Rekordlar" href="/records" />
           <Row icon={<Users />} label="Do'stlar" soon />

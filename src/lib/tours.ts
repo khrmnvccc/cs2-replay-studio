@@ -146,6 +146,32 @@ export const TOURS: Record<string, TourStep[]> = {
       "Сколько матчей на каждой карте, процент побед и K/D. Видно, где вы сильны, а где нет.",
     ]),
   ],
+  callouts: [
+    s(undefined, undefined, ["Xarita joy nomlari", "Названия позиций"], [
+      "Bu oynada har bir xaritadagi joylarning nomi bor. Jamoa bilan gaplashganda \"qayerda turibdi?\" degan savolga bir so'z bilan javob berish uchun kerak. Nomlar o'yinning o'z xarita ma'lumotidan olingan.",
+      "Здесь собраны названия позиций на каждой карте. Нужны, чтобы в игре одним словом сказать команде, где противник. Названия взяты из данных самой игры.",
+    ]),
+    s("callouts-maps", "action", ["Xaritani tanlang", "Выберите карту"], [
+      "Kerakli xaritani bosing: Mirage, Dust II, Inferno, Nuke va boshqalar. Telefonda ro'yxatni chapga surib qolganlarini ko'rasiz.",
+      "Нажмите на нужную карту: Mirage, Dust II, Inferno, Nuke и другие. На телефоне листайте ряд влево, чтобы увидеть остальные.",
+    ]),
+    s("callouts-radar", "action", ["Rangli joyni bosing", "Нажмите на цветную зону"], [
+      "Xaritadagi har bir rangli bo'lak — alohida joy. Bossangiz, u oq chiziq bilan ajralib, nomi kattaroq chiqadi va pastda inglizcha hamda ruscha nomi ko'rinadi. Ranglar tomonga qarab: to'q sariq — A, ko'k — B, sariq — o'rta, qizil — T, yashil — CT. \"Nomlar\" tugmasi xaritadagi yozuvlarni yoqadi yoki o'chiradi. Nuke va Vertigo'da yuqori va pastki qavat alohida.",
+      "Каждая цветная зона — отдельная позиция. Нажмите — она выделится белой линией, название станет крупнее, а внизу появятся английское и русское названия. Цвета по сторонам: оранжевый — A, синий — B, жёлтый — мид, красный — T, зелёный — CT. Кнопка «Названия» включает и выключает подписи. На Nuke и Vertigo верхний и нижний этажи отдельно.",
+    ]),
+    s("callouts-search", "optional", ["Qidiruv", "Поиск"], [
+      "Nomni bilsangiz, shu yerga yozing: inglizcha (Long, Banana) yoki ruscha (Лонг, Банан) bo'lsa ham topadi. Mos kelmagan joylar xaritada xiralashadi.",
+      "Если знаете название, введите его: найдёт и по-английски (Long, Banana), и по-русски (Лонг, Банан). Остальные зоны на карте станут бледными.",
+    ]),
+    s("callouts-groups", "optional", ["Tomon bo'yicha saralash", "Фильтр по сторонам"], [
+      "Faqat A tomoni, B tomoni, o'rta, T yoki CT tomonidagi joylarni ko'rsatadi. Yonidagi raqam — o'sha tomonda nechta joy borligi.",
+      "Показывает только позиции стороны A, B, мида, T или CT. Число рядом — сколько там позиций.",
+    ]),
+    s("callouts-list", "watch", ["Joylar ro'yxati", "Список позиций"], [
+      "Hamma joylar tomonlar bo'yicha guruhlangan va alifbo tartibida. Har birida rang (xaritadagi rangi), asosiy nom va ikkinchi nom bor. Nomni bossangiz, xaritada o'sha joy ko'rsatiladi.",
+      "Все позиции сгруппированы по сторонам и идут по алфавиту. У каждой — цвет как на карте, основное и второе название. Нажмите на название — позиция подсветится на карте.",
+    ]),
+  ],
   records: [
     s("records-count", "watch", ["Rekordlar soni", "Количество рекордов"], [
       "Nechta rekord o'rnatilganini ko'rsatadi. Rekordlar faqat siz o'ynagan va tahlil qilingan o'yinlardan hisoblanadi.",
@@ -229,6 +255,7 @@ export function tourKey(path: string): string | null {
   if (path.startsWith("/clips")) return "clips";
   if (path.startsWith("/stats")) return "stats";
   if (path.startsWith("/records")) return "records";
+  if (path.startsWith("/callouts")) return "callouts";
   if (path.startsWith("/settings")) return "settings";
   if (path.startsWith("/admin/notifications")) return "admin";
   return null;
