@@ -28,7 +28,7 @@ export default async function SettingsPage() {
   return (
     <div className="space-y-10">
 
-      <section>
+      <section data-tour="settings-profile">
         <SectionTitle eyebrow="Steam" title={t("Steam profili")} />
         <Card className="flex flex-col gap-5 p-5 sm:flex-row sm:items-center">
           {steam.avatar_url && <Image src={steam.avatar_url} alt="" width={64} height={64} className="rounded-2xl" unoptimized />}
@@ -70,14 +70,14 @@ export default async function SettingsPage() {
         </Card>
       </section>
 
-      <section>
+      <section data-tour="settings-video">
         <SectionTitle eyebrow={t("Render va saqlash")} title={t("Video va saqlash")} />
         <Card className="p-5">
           <PreferencesForm initial={settings} />
         </Card>
       </section>
 
-      <section>
+      <section data-tour="settings-sessions">
         <SectionTitle eyebrow={t("Xavfsizlik")} title={t("Sessiyalar")} />
         <Card className="divide-y divide-line">
           {(sessions.data ?? []).map((s) => (

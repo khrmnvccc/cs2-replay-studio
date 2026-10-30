@@ -141,7 +141,7 @@ export function ClipGallery({ clips, online, renderOnline }: { clips: Clip[]; on
       <div data-tour="clips-list" className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
         {clips.map((c) => (
           <div key={c.id} className={cn("group panel overflow-hidden transition", selected.has(c.id) && "neon-ring")}>
-            <div className="relative cursor-pointer" onClick={() => c.status === "ready" && setPreview(c)}>
+            <div data-tour="clip-thumb" className="relative cursor-pointer" onClick={() => c.status === "ready" && setPreview(c)}>
               <ClipThumb clip={c} lang={lang} />
               {c.status === "ready" && (
                 <label className="absolute left-2 top-2 grid size-7 cursor-pointer place-items-center rounded-lg bg-surface/80 backdrop-blur" onClick={(e) => e.stopPropagation()}>
@@ -172,6 +172,7 @@ export function ClipGallery({ clips, online, renderOnline }: { clips: Clip[]; on
                     </div>
                   </div>
                   <button
+                    data-tour="clip-rename"
                     className="grid size-7 shrink-0 place-items-center rounded-lg text-subtle hover:bg-fg/5 hover:text-fg"
                     aria-label={t("Nomini o'zgartirish")}
                     onClick={() => {
@@ -184,7 +185,7 @@ export function ClipGallery({ clips, online, renderOnline }: { clips: Clip[]; on
                 </div>
               )}
               {c.status === "failed" && c.error && <p className="line-clamp-3 text-xs text-danger/90">{t(c.error)}</p>}
-              <div className="flex flex-wrap gap-1.5">
+              <div data-tour="clip-buttons" className="flex flex-wrap gap-1.5">
                 <Button size="sm" variant="secondary" disabled={c.status !== "ready"} onClick={() => setPreview(c)}>
                   <Play /> {t("Ko'rish")}
                 </Button>

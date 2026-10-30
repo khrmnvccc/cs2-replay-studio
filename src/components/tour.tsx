@@ -10,7 +10,7 @@ type Ctx = { start: () => void; available: boolean };
 const TourCtx = createContext<Ctx>({ start: () => {}, available: false });
 export const useTour = () => useContext(TourCtx);
 
-const SEEN = (key: string) => `ace-tour:${key}`;
+const SEEN = (key: string) => `ace-tour:v2:${key}`;
 const seen = (key: string) => {
   try {
     return localStorage.getItem(SEEN(key)) === "1";
@@ -165,7 +165,7 @@ function TourOverlay({ steps, onClose }: { steps: TourStep[]; onClose: () => voi
       <div className="fixed inset-0" />
 
       <div ref={card} className="fixed inset-x-3 mx-auto max-w-md animate-[fade-in_.2s_ease-out] transition-[top] duration-300" style={pos}>
-        <div className="rounded-[1.75rem] bg-white p-5 text-[#102a43] shadow-[0_24px_60px_-20px_rgb(0_0_0/0.45)] dark:bg-[#13243a] dark:text-[#e6eef7]">
+        <div className="max-h-[calc(100dvh-24px)] overflow-y-auto rounded-[1.75rem] bg-white p-5 text-[#102a43] shadow-[0_24px_60px_-20px_rgb(0_0_0/0.45)] dark:bg-[#13243a] dark:text-[#e6eef7]">
           <div className="flex items-center gap-2">
             <span className="text-[15px] font-bold text-[#8fa3b5]">
               {i + 1} / {steps.length}

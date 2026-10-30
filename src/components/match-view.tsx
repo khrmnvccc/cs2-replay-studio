@@ -72,7 +72,9 @@ export function MatchView({ panels, initial = "board" }: { panels: Record<MatchT
             </button>
           ))}
         </div>
-        <div className="pt-5">{panels[tab]}</div>
+        <div data-tour="match-panel" className="pt-5">
+          {panels[tab]}
+        </div>
       </div>
     </div>
   );

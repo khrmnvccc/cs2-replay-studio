@@ -44,7 +44,7 @@ export function HistoryForm({ enabled, lastShareCode }: { enabled: boolean; last
     <form onSubmit={submit} className="space-y-4">
       <p className="text-[13px] leading-relaxed text-muted">{t("Bir martalik sozlash — keyin o'yinlaringiz o'zi chiqadi. Ikki qadam:")}</p>
 
-      <Step n={1} title="Authentication Code">
+      <Step n={1} title="Authentication Code" tour="settings-auth">
         <ol className="space-y-2 text-[13px] leading-relaxed text-muted">
           <li>
             <b className="text-fg">1.</b> {t("Steam'dagi CS2 match tarixi sahifasini oching:")}
@@ -75,7 +75,7 @@ export function HistoryForm({ enabled, lastShareCode }: { enabled: boolean; last
         </Field>
       </Step>
 
-      <Step n={2} title="Match Sharing Code">
+      <Step n={2} title="Match Sharing Code" tour="settings-share">
         <ol className="space-y-2 text-[13px] leading-relaxed text-muted">
           <li>
             <b className="text-fg">1.</b> {t("Counter-Strike 2'ni oching.")}
@@ -97,7 +97,7 @@ export function HistoryForm({ enabled, lastShareCode }: { enabled: boolean; last
       </Step>
 
       <p className="text-xs leading-relaxed text-subtle">{t("Kodlar Valve'da tekshiriladi va serverda shifrlangan holda saqlanadi.")}</p>
-      <div className="flex flex-wrap gap-2">
+      <div data-tour="settings-submit" className="flex flex-wrap gap-2">
         <Button type="submit" variant="primary" loading={busy} className="flex-1 sm:flex-none">
           <Link2 /> {enabled ? t("Kodlarni yangilash") : t("Match tarixini ulash")}
         </Button>
@@ -111,9 +111,9 @@ export function HistoryForm({ enabled, lastShareCode }: { enabled: boolean; last
   );
 }
 
-function Step({ n, title, children }: { n: number; title: string; children: React.ReactNode }) {
+function Step({ n, title, tour, children }: { n: number; title: string; tour?: string; children: React.ReactNode }) {
   return (
-    <section className="space-y-3 rounded-[1.25rem] bg-surface-2 p-4">
+    <section data-tour={tour} className="space-y-3 rounded-[1.25rem] bg-surface-2 p-4">
       <div className="flex items-center gap-3">
         <span className="grid size-8 shrink-0 place-items-center rounded-full bg-accent text-sm font-extrabold text-white">{n}</span>
         <h3 className="text-[15px] font-extrabold tracking-tight">{title}</h3>

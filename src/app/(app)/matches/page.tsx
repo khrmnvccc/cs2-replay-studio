@@ -119,9 +119,11 @@ export default async function MatchesPage({ searchParams }: PageProps<"/matches"
         })}
       </div>
 
-      <Suspense>
-        <MapSelect maps={maps} />
-      </Suspense>
+      <div data-tour="map-select">
+        <Suspense>
+          <MapSelect maps={maps} />
+        </Suspense>
+      </div>
 
       {groups.length ? (
         <div data-tour="match-list" className="space-y-5 pt-1">
@@ -130,7 +132,7 @@ export default async function MatchesPage({ searchParams }: PageProps<"/matches"
             const l = g.items.filter((m) => m.result === "loss").length;
             return (
               <section key={g.key}>
-                <div className="mb-2.5 flex items-center justify-between px-1">
+                <div data-tour="day-header" className="mb-2.5 flex items-center justify-between px-1">
                   <h2 className="text-[13px] font-semibold text-muted">{dayLabel(g.key)}</h2>
                   <span className="font-mono text-xs">
                     <span className="text-neon">{w}W</span> <span className="text-subtle">·</span> <span className="text-danger">{l}L</span>

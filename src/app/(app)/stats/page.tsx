@@ -61,7 +61,9 @@ export default async function StatsPage() {
             )}
           </div>
         </div>
-        <RefreshMatchesButton enabled={steam.history_enabled} initialJobs={jobs} online={owner ? online : undefined} />
+        <div data-tour="stats-refresh">
+          <RefreshMatchesButton enabled={steam.history_enabled} initialJobs={jobs} online={owner ? online : undefined} />
+        </div>
       </section>
 
       {steam.history_last_error && (

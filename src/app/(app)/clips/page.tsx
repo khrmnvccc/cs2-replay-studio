@@ -30,7 +30,7 @@ export default async function ClipsPage({ searchParams }: PageProps<"/clips">) {
             {t("{n} ta clip · {r} tasi MP4 tayyor", { n: clips.length, r: ready })}
           </p>
         </div>
-        <form method="get" className="flex w-full items-center gap-2 sm:w-auto">
+        <form method="get" data-tour="clips-sort" className="flex w-full items-center gap-2 sm:w-auto">
           <Select name="sort" defaultValue={sort} aria-label={t("Saralash")} className="min-w-0 flex-1 sm:w-52 sm:flex-none">
             <option value="new">{t("Avval yangilari")}</option>
             <option value="old">{t("Avval eskilari")}</option>

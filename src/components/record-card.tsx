@@ -41,11 +41,13 @@ export function RecordCard({ r, t, lang }: { r: RecordItem; t: TFn; lang: Lang }
   );
   const cls = "panel relative flex min-h-44 flex-col overflow-hidden p-4 transition";
   return m ? (
-    <Link href={`/matches/${m.id}`} className={cn(cls, "hover:-translate-y-0.5 active:scale-[0.99]")}>
+    <Link data-tour="record-card" href={`/matches/${m.id}`} className={cn(cls, "hover:-translate-y-0.5 active:scale-[0.99]")}>
       {body}
     </Link>
   ) : (
-    <div className={cls}>{body}</div>
+    <div data-tour="record-card" className={cls}>
+      {body}
+    </div>
   );
 }
 

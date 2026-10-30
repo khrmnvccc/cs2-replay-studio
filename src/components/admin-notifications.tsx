@@ -153,7 +153,7 @@ export function AdminNotifications({ templates, bot, linkedCount, sent, sentCoun
 
   return (
     <div className="space-y-6">
-      <div className="no-scrollbar -mx-4 flex gap-2 overflow-x-auto border-b border-line px-4 pb-3">
+      <div data-tour="admin-tabs" className="no-scrollbar -mx-4 flex gap-2 overflow-x-auto border-b border-line px-4 pb-3">
         {(
           [
             ["notifications", "Bildirishnomalar", Bell],
@@ -203,7 +203,7 @@ export function AdminNotifications({ templates, bot, linkedCount, sent, sentCoun
         </div>
       ) : (
         <>
-          <div className="flex flex-wrap items-center gap-3">
+          <div data-tour="admin-count" className="flex flex-wrap items-center gap-3">
             <span className="rounded-full border border-line bg-surface px-3 py-1 text-sm text-muted">{t("{a}/{b} yoqilgan", { a: enabled, b: list.length })}</span>
             {!bot && <span className="rounded-full bg-warn/10 px-3 py-1 text-sm text-warn">{t("Telegram bot ulanmagan — faqat ilovada ko'rinadi")}</span>}
           </div>
@@ -296,7 +296,7 @@ export function AdminNotifications({ templates, bot, linkedCount, sent, sentCoun
                     <Switch checked={draft.enabled || draft.required} disabled={draft.required} onChange={(v) => set("enabled", v)} />
                   </div>
 
-                  <div className="space-y-3">
+                  <div data-tour="admin-text" className="space-y-3">
                     <div className="flex items-center justify-between">
                       <span className="label !text-[12px]">{t("Matn")}</span>
                       <Seg value={lang} onChange={setLang} options={[["uz", "UZ"], ["ru", "RU"]]} className="w-32" />
@@ -340,7 +340,7 @@ export function AdminNotifications({ templates, bot, linkedCount, sent, sentCoun
                     </label>
                   </div>
 
-                  <div className="space-y-3">
+                  <div data-tour="admin-buttons" className="space-y-3">
                     <div className="flex items-center justify-between">
                       <span className="label !text-[12px]">{t("Tugmalar")}</span>
                       <span className="text-sm text-subtle">{draft.buttons.length} / 3</span>
@@ -385,7 +385,7 @@ export function AdminNotifications({ templates, bot, linkedCount, sent, sentCoun
                     )}
                   </div>
 
-                  <div className="space-y-3">
+                  <div data-tour="admin-preview" className="space-y-3">
                     <span className="label !text-[12px]">{t("Telegram ko'rinishi")}</span>
                     <div className="rounded-3xl bg-sky-100 p-4 dark:bg-sky-950/40">
                       {draft.telegram ? (
@@ -422,7 +422,7 @@ export function AdminNotifications({ templates, bot, linkedCount, sent, sentCoun
                     <Save /> {t("Saqlash")}
                   </Button>
                   <p className="text-center text-xs text-subtle">{t("Saqlaganda xabar yuborilmaydi.")}</p>
-                  <Button variant="secondary" className="w-full" onClick={test} loading={testing}>
+                  <Button data-tour="admin-test" variant="secondary" className="w-full" onClick={test} loading={testing}>
                     <Bell /> {t("Menga sinov yuborish")}
                   </Button>
                 </section>
